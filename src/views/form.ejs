@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- BOOTSTRAP - CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <!-- DATATABLES CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
+    <script src="https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Formulario Beca</title>
+</head>
+<body>
+    <div class="signup">
+        <div class ="signup__container">
+            <div><img src="https://campus.construsoft.com/pluginfile.php/1/core_admin/logo/0x200/1663055089/ConstrusoftCampusLogo.png" alt="CampusCS"></div>
+            <form class="signup__container--form" action="/user" method="POST" enctype="multipart/form-data" id="newStudent">
+                <!-- 
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input id="tb1" type="text" class="form-control" name="username">
+                </div>
+                <div class="form-group">
+                    <label >Password</label>
+                    <div id="div1">
+                        <input id="txtPassword" type="password" class="form-control" name="password">
+                        <div id="strengthMessage"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p>La contraseña debería tener al menos 8 caracter(es), al menos 1 dígito(s), al menos 1 minúscula(s), al menos 1 mayúscula(s), al menos 1 caracter(es) no alfanuméricos como *,-, o #</p>
+                </div> -->
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input id="firstname" type="text" class="form-control" name="firstname"/>
+                </div>
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input id="lastname" type="text" class="form-control" name="lastname"/>
+                </div>
+                <div class="form-group">
+                    <label>Entidad Educativa</label>
+                    <input id="institution" type="text" class="form-control" name="institution"/>
+                </div>
+                <div class="form-group">
+                    <label>País</label>
+                    <select id="country" class="form-control" name="countryid">
+                        <option selected></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Selecciona un curso</label>
+                    <select id="course" class="form-control" name="courseid">
+                        <option selected></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input id="email" type="text" class="form-control" name="email"/>
+                </div>
+                <div class="form-group">
+                    <label>Email (de nuevo)</label>
+                    <input id="email2" type="text" class="form-control" name="email2"/>
+                </div> 
+                <div class="form-group">
+                    <label>Whatsapp</label>
+                    <div id="div1">
+                        <input type="tel" class="form-control" id="phone" name="phone"/>
+                        <div class="alert alert-info" style="display: none;"></div>
+                    </div>
+                </div>
+                    <label class="form-label" for="customFile">Adjunta un documento que acredite que eres estudiante</label>
+                    <input type="file" class="form-control" id="customFile" name="file"/>
+                <div class="form-group">
+                    <div>
+                        <input type="checkbox" id="radioOption" name="optradio"></input>
+                        <p>He leído y acepto la Política de Privacidad</p>
+                    </div>
+                    <a class="form-group-a" href="https://campus.construsoft.com/local/staticpage/view.php?page=privacy">Haga clic aquí para leer la Política de Privacidad</a>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <input type="checkbox" id="radioOption" name="optradio"></input>
+                        <p>Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.</p>
+                    </div>
+                </div>
+            </form>
+            <button class="button" type="submit" id="send">
+                Enviar solicitud
+            </button>
+            <!--<form method="POST" action="/user/upload" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="text" name="fileName" placeholder="File name">
+                <input type="submit">
+            </form> -->
+            <button class="button" id="valNumber">
+                userID
+            </button>
+        </div>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="/js/form.js"></script>
+</body>
+</html>

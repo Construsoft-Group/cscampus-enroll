@@ -1,0 +1,30 @@
+{
+  "name": "enrol_management",
+  "version": "1.0.0",
+  "description": "This application allow us to set customized flows to create and enroll users in moodle",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-layouts": "^1.0.0",
+    "form-data": "^4.0.0",
+    "formidable": "^2.1.1",
+    "mysql": "^2.18.1",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^3.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20"
+  }
+}

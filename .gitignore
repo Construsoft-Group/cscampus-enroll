@@ -1,0 +1,14 @@
+# Nodejs
+node_modules
+
+# recycle
+recycle
+
+# npm
+package-lock.json
+
+# environment variables
+.env
+
+## dist
+dist
