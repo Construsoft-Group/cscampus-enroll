@@ -5,6 +5,8 @@ import fs from 'fs'
 import { fileURLToPath } from 'url';
 import path from 'path';
 import pool from "../database.js"
+import { application } from "express";
+import FormData from 'form-data';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,49 +14,59 @@ const __dirname = path.dirname(__filename);
 var WebServiceUrl = "https://strusite.com/webservice/rest/server.php";
 
 export const newRecord = async (req, res, next) => {
+    var selectCountries = { 
+        "1": "Argentina", 
+        "2": "Belice", 
+        "3": "Bolivia", 
+        "4": "Brasil", 
+        "5": "Chile",
+        "6": "Colombia",
+        "7": "Costa Rica",
+        "8": "Cuba",
+        "9": "Ecuador",
+        "10": "El Salvador",
+        "11": "España",
+        "12": "Guatemala",
+        "13": "Haití",
+        "14": "Honduras",
+        "15": "Jamaica",
+        "16": "México",
+        "17": "Nicaragua",
+        "18": "Panamá",
+        "19": "Paraguay",
+        "20": "Perú",
+        "21": "República dominicana",
+        "22": "Uruguay",
+        "23": "Otro"
+     };
+    var selectCourses = { 
+        "1": "Fundamentos Tekla Structures Acero", 
+        "2": "Fundamentos Tekla Structures Hormigón", 
+        "3": "Teoría y cálculo de uniones metálicas con IDEA STATICA", 
+        "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
+        "5": "Análisis y diseño de edificaciones con Tekla Structures Designer",
+        "6": "Common Data Environment con Trimble Connect",
+        "7": "Optimización de flujos BIM con Trimble Connect"
+     };
+
     var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
-        var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
-        var newPath = path.resolve(__dirname, '../uploads/TestFile'+ extension);
-        fs.rename(files.file.filepath, newPath, function (errorRename) {
-			console.log("File saved = " + newPath);
-		});
-        var selectCountries = { 
-            "1": "Argentina", 
-            "2": "Belice", 
-            "3": "Bolivia", 
-            "4": "Brasil", 
-            "5": "Chile",
-            "6": "Colombia",
-            "7": "Costa Rica",
-            "8": "Cuba",
-            "9": "Ecuador",
-            "10": "El Salvador",
-            "11": "España",
-            "12": "Guatemala",
-            "13": "Haití",
-            "14": "Honduras",
-            "15": "Jamaica",
-            "16": "México",
-            "17": "Nicaragua",
-            "18": "Panamá",
-            "19": "Paraguay",
-            "20": "Perú",
-            "21": "República dominicana",
-            "22": "Uruguay",
-            "23": "Otro"
-         };
-        var selectCourses = { 
-            "1": "Fundamentos Tekla Structures Acero", 
-            "2": "Fundamentos Tekla Structures Hormigón", 
-            "3": "Teoría y cálculo de uniones metálicas con IDEA STATICA", 
-            "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
-            "5": "Análisis y diseño de edificaciones con Tekla Structures Designer",
-            "6": "Common Data Environment con Trimble Connect",
-            "7": "Optimización de flujos BIM con Trimble Connect"
-         };
+        console.log(files);
         const {firstname, lastname, institution, countryid, courseid, email, phone} = fields;
         const username = firstname.substring(0,2)+lastname.substring(0,2);
+        var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
+        var filename = username +"-"+ files.file.originalFilename;
+        var newPath = path.resolve(__dirname, '../uploads/template'+ extension);
+        fs.rename(files.file.filepath, newPath, function (errorRename) {
+			console.log("File saved = " + newPath);
+            fs.readFile(newPath, async (err, data) => {
+                if (err) throw err;
+                var spAccessToken = await getSpAccessToken();
+                var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
+                console.log(uploadSpFile.data);
+            });
+		});
+
         const country = selectCountries[parseInt(countryid)];
         const course = selectCourses[parseInt(courseid)];
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
@@ -126,6 +138,61 @@ export const moodle = async () => {
     }else{
         return "No hay usuarios nuevos";
     }
+}
+
+async function getSpAccessToken() {
+    const formData = new URLSearchParams();
+    formData.append("grant_type", "refresh_token");
+    formData.append("client_id", `${process.env.SP_CLIENT_ID}@${process.env.SP_TENANT_ID}`);
+    formData.append("client_secret", process.env.SP_CLIENT_SECRET);
+    formData.append("resource", `00000003-0000-0ff1-ce00-000000000000/${process.env.SP_TENANT_NAME}.sharepoint.com@${process.env.SP_TENANT_ID}`);
+    formData.append("refresh_token", process.env.SP_REFRESHTOKEN);
+
+    /* var requestOptions = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formData,
+        redirect: 'follow'
+      };
+
+    fetch("https://accounts.accesscontrol.windows.net/d6971593-02bc-4bc6-8936-dfec77834a12/tokens/OAuth/2", requestOptions)
+    .then(response => response.json())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error)); */
+
+    var config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `https://accounts.accesscontrol.windows.net/${process.env.SP_TENANT_ID}/tokens/OAuth/2`,
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data : formData
+      };
+      let res = await axios(config)
+      return res;
+}
+
+async function sendFileToSp(file, filename, spAccessToken) {
+    var sitename =  'UNIVERSIDADES-ProyectoEducacional';
+    var folderPath = 'General/7. Documentos aspirantes'
+    var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/GetFolderByServerRelativeURL('/sites/${sitename}/Shared Documents/${folderPath}/')/Files/add(url='${filename}',overwrite=true)`;
+    var config = {
+        method: 'post',
+        url: spurl,
+        headers: {
+            'Authorization': `Bearer ${spAccessToken}`,
+            'X-RequestDigest': '', 
+            'Accept': 'application/json; odata=nometadata', 
+            'Content-Type': 'application/pdf'
+        },
+        data : file
+      };
+
+    let res = await axios(config)
+    return res;
 }
 
 async function queryMoodleUser(email){
@@ -216,3 +283,13 @@ async function addUserToMoodleGroup(userId, groupid){
     return res;
 }
 
+function sendEmail() {
+    contentHTML = `
+        <h1>User Information</h1>
+        <ul>
+            <li>Username: </li>
+            <li>User email: </li>
+            <li>Phone: </li>
+        </ul>
+    `;
+}
