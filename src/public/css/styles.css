@@ -13,7 +13,7 @@
     color: rgb(0, 0, 0);
     padding: 60px 40px 40px;
     min-height: 600px;
-    width: 450px;
+    width: 420px;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
@@ -40,7 +40,7 @@
     padding-bottom: 5px;
   }
   .form-group > label {
-    width: 180px;
+    width: 150px;
     font-size: 14.5px;
     align-items: center;
   }
@@ -118,7 +118,7 @@
     margin:auto;  
   }
   
-  @media only screen and (max-width: 500px){
+  @media only screen and (max-width: 400px){
   .form-group{
     display: flex;
     flex-direction: column;
