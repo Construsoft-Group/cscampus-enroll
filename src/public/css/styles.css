@@ -11,26 +11,27 @@
     border: 2px solid rgba(56, 56, 56, 0.1);
     border-radius: 40px;
     color: rgb(0, 0, 0);
-    padding: 60px 68px 40px;
-    min-height: 700px;
-    width: 550px;
+    padding: 60px 40px 40px;
+    min-height: 600px;
+    width: 450px;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
   }
+  .signup__container > h3{
+    text-align: center;
+  }
+  
   .signup__container--form {
     display: flex;
     flex-direction: column;
   }
-
   .signup__container--form > div > p{
     font-size: 9px;
     text-align: center;
   }
-
-  .signup__container > h3{
-    text-align: center;
-    padding-bottom: 10px;
+  .signup__container--form > label{
+    font-size: 14.5px;
   }
 
   .form-group{
@@ -38,25 +39,26 @@
     flex-direction: row;
     padding-bottom: 5px;
   }
-
   .form-group > label {
     width: 180px;
+    font-size: 14.5px;
     align-items: center;
   }
-
   .form-group > input {
-    width: 230px;
+    width: 185px;
     align-items: center;
+    height: 25px;
   }
   .form-group > select {
-    width: 230px;
+    width: 185px;
     align-items: center;
+    height: 25px;
+  }
+  #phone{
+    width: 185px;
+    height: 25px;
   }
 
-  .form-group > div > input {
-    width: 230px;
-    align-items: center;
-  }
   #radioOption{
     width: 15px;
     font-size: 9px;
@@ -69,25 +71,22 @@
   #strengthMessage{
     text-align: right;
   }
-
-  .button{
-    background-color: rgba(56, 56, 56, 0.1);
-    border: none;
-    border-radius: 25px;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    height: 50px;
-    letter-spacing: 1px;
-    margin:10px 0px;
+  #customFile{
+    margin-bottom: 10px;
   }
-
    .form-group > div > p{
-    font-size: 9px;
+    font-size: 7.5px;
     padding-top: 2px;
     padding-left: 0px;
-    margin: 5px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+  }
+  .form-group-a{
+    font-size: 7.5px;
+    padding-top: 2px;
+    padding-left: 20px;
+    margin-left: 3px;
+    margin-bottom: 3px;
   }
 
   .form-group > div{
@@ -99,34 +98,49 @@
     padding-top: 5px;
   }
 
-  .form-group-a{
-    font-size: 9px;
-    padding-top: 2px;
-    padding-left: 10px;
-    margin: 5px;
+  .button{
+    background-color: #00a1e6;
+    border: none;
+    border-radius: 25px;
+    color:white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    height: 50px;
+    letter-spacing: 1px;
+    margin:10px 0px;
   }
 
   .signup__container > div > img {
     width: 300px;
-    /* border-bottom: 2px solid rgba(56, 56, 56, 0.1); */
     padding-bottom: 10px;
     display:block;
     margin:auto;  
   }
-  #phone{
-    width: 230px;
-  }
-
-  @media only screen and (max-width: 600px){
+  
+  @media only screen and (max-width: 500px){
   .form-group{
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
   .signup__container{
     width: 370px;
   }
   .signup__container > div > img {
     width: 200px;
+  }
+  .form-group > label {
+    width: 285px;
+  }
+  .form-group > input {
+    width: 285px;
+  }
+  .form-group > select {
+    width: 285px;
+  }
+  #phone{
+    width: 285px;
   }
 }
 

@@ -5,8 +5,8 @@ import fs from 'fs'
 import { fileURLToPath } from 'url';
 import path from 'path';
 import pool from "../database.js"
-import { application } from "express";
 import FormData from 'form-data';
+import nodemailer from 'nodemailer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,7 +51,6 @@ export const newRecord = async (req, res, next) => {
 
     var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
-        console.log(files);
         const {firstname, lastname, institution, countryid, courseid, email, phone} = fields;
         const username = firstname.substring(0,2)+lastname.substring(0,2);
         var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
@@ -63,20 +62,23 @@ export const newRecord = async (req, res, next) => {
                 if (err) throw err;
                 var spAccessToken = await getSpAccessToken();
                 var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
-                console.log(uploadSpFile.data);
+                //console.log(uploadSpFile.data);
             });
 		});
-
+        
         const country = selectCountries[parseInt(countryid)];
         const course = selectCourses[parseInt(courseid)];
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
         
         var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
-        console.log(user);
+        //console.log(user);
+
+        const mail = await sendEmail();
+        console.log('Message Sent', mail)
 
         if(user!=[])
         {
-            await pool.query('INSERT INTO users set ?', [newUser])
+            //await pool.query('INSERT INTO users set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
         }else{
             console.log("usuario ya registrado")
@@ -283,8 +285,8 @@ async function addUserToMoodleGroup(userId, groupid){
     return res;
 }
 
-function sendEmail() {
-    contentHTML = `
+async function sendEmail() {
+    var contentHTML = `
         <h1>User Information</h1>
         <ul>
             <li>Username: </li>
@@ -292,4 +294,22 @@ function sendEmail() {
             <li>Phone: </li>
         </ul>
     `;
+    var htmlPath = path.resolve(__dirname, './mail_beca.html');
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.hostinger.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'no-reply@strusite.com',
+            pass: 'Contrasena*123',
+        }
+    });
+
+    const info = await transporter.sendMail({
+        from: "'Server Strusite' <no-reply@strusite.com>",
+        to: 'juan.diaz@construsoft.com',
+        subject: 'Formulario becas',
+        html: { path: htmlPath }
+    });
+    return info.messageId
 }
