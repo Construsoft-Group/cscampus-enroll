@@ -1,4 +1,12 @@
 /* sucess view */
+.success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0px 30px;
+  min-height: calc(100vh - 200px);
+}
 .success__container {
   background-color: rgba(255,255,255,0.1);
   border: 2px solid rgba(56, 56, 56, 0.1);
@@ -14,7 +22,7 @@
 .parrafo {
   text-align: center;
 }
-.success__container > h3, a{
+.success__container > h3, .success__container > a{
   margin-top: 10px;
   text-align: center;
 }

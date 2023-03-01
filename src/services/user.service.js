@@ -73,7 +73,7 @@ export const moodle = async () => {
                 var newUser = await createMoodleUser(mUser);
                 var newUserData = newUser.data.split("<hr>");
                 let newUserRes = JSON.parse(newUserData[2]);
-                console.log(newUserRes); // Todavía hay un problema con la ñ en algnos paises
+                //console.log("newUserRes"); // Todavía hay un problema con la ñ en algnos paises
                 
                 var enrollment = await enrollMoodleuser(newUserRes[0].id, 2);
                 var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, 1);
