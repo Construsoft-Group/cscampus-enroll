@@ -78,7 +78,7 @@ export const newRecord = async (req, res, next) => {
 
         if(user!=[])
         {
-            //await pool.query('INSERT INTO users set ?', [newUser])
+            await pool.query('INSERT INTO users set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
         }else{
             console.log("usuario ya registrado")
