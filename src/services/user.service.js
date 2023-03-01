@@ -31,7 +31,6 @@ export const newRecord = async (req, res, next) => {
                 //console.log(uploadSpFile.data);
             });
 		});
-        //const course = selectCourses[parseInt(courseid)];
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
         console.log(newUser);
         var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
@@ -40,26 +39,13 @@ export const newRecord = async (req, res, next) => {
         {
             const mail = await sendEmail();
             console.log('Message Sent', mail)
-            //await pool.query('INSERT INTO users set ?', [newUser])
+            await pool.query('INSERT INTO users set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
-            res.status(200).json({'status': "ok", 'email': newUser.email});
+            res.redirect('/user/success');
         }else{
             res.status(200).json({'status': "usuario ya registrado"});
             console.log("usuario ya registrado")
         }
-        /*
-        var qUser = await queryMoodleUser(newUser.email);
-        var data = qUser.data.split("<hr>");
-        let response = JSON.parse(data[2]);
-        console.log(response);
-        if(response[0].user){
-            res("Usuario ya existe");
-        }
-        else
-        {
-            await pool.query('INSERT INTO users set ?', [newUser])
-        }
-        */
     });
 }
 

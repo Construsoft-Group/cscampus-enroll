@@ -84,6 +84,7 @@ function validar() {
     console.log(email.value)
     console.log(emailConfirm.value)
    if(email.value == emailConfirm.value){
+        $('#strengthMessage').text("");
         $('#strengthMessage').removeClass();
         return true;
     } else {

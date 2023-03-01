@@ -1,3 +1,25 @@
+/* sucess view */
+.success__container {
+  background-color: rgba(255,255,255,0.1);
+  border: 2px solid rgba(56, 56, 56, 0.1);
+  border-radius: 40px;
+  color: rgb(0, 0, 0);
+  padding: 60px 40px 40px;
+  min-height: 250px;
+  width: 420px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.parrafo {
+  text-align: center;
+}
+.success__container > h3, a{
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* form */
 .signup {
     display: flex;
     align-items: center;
@@ -18,10 +40,10 @@
     justify-content: space-around;
     flex-direction: column;
   }
+
   .signup__container > h3{
     text-align: center;
   }
-  
   .signup__container--form {
     display: flex;
     flex-direction: column;
@@ -124,13 +146,14 @@
     margin:10px 0px;
   }
 
-  .signup__container > div > img {
+  .success__container  > div > img {
     width: 300px;
     padding-bottom: 10px;
     display:block;
     margin:auto;  
   }
   
+ /*  Responsive */
   @media only screen and (max-width: 400px){
   .form-group{
     display: flex;
