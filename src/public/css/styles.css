@@ -30,8 +30,12 @@
     font-size: 9px;
     text-align: center;
   }
+  #customFile {
+    font-size: 13px;
+  }
+
   .signup__container--form > label{
-    font-size: 14.5px;
+    font-size: 13px;
   }
 
   .form-group{
@@ -53,23 +57,32 @@
     width: 185px;
     align-items: center;
     height: 25px;
+    font-size: 14.5;
+    padding-top: 0;
+    padding-bottom: 0;
   }
+
+  option {
+    font-size: 14.5px;
+  }
+
   #phone{
     width: 185px;
     height: 25px;
   }
-
   #radioOption{
     width: 15px;
     font-size: 9px;
   }
-
   #div1{
     display: flex;
     flex-direction: column;
   }
   #strengthMessage{
-    text-align: right;
+    text-align: center;
+    font-size: 12px;
+    padding: 5px;
+    margin: 0;
   }
   #customFile{
     margin-bottom: 10px;

@@ -6,6 +6,8 @@ const phoneInput = window.intlTelInput(phoneInputField, { preferredCountries: ["
     "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
 });
 
+var studentForm = jQuery("#newStudent");
+
  $(document).on("click", "#valNumber", async function() {
     var requestOptions = {
         method: 'GET',
@@ -56,55 +58,47 @@ $(document).ready(function () {
         $('#country').append($("<option></option>").attr("value", key).text(value)); 
     });
     $.each(selectCourses, function(key, value) {   
-        $('#course').append($("<option></option>").attr("value", key).text(value)); 
+        $('#courses').append($("<option></option>").attr("value", value).text(value)); 
     });
-    /*$('#txtPassword').keyup(function () {
-        $('#strengthMessage').html(checkStrength($('#txtPassword').val()))
-    })
-     function checkStrength(password) {
-        var strength = 0
-        if (password.length < 6) {
-            $('#strengthMessage').removeClass()
-            $('#strengthMessage').addClass('Short')
-            return 'Too short'
-        }
-        if (password.length > 7) strength += 1
-        // If password contains both lower and uppercase characters, increase strength value.
-        if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1
-        // If it has numbers and characters, increase strength value.
-        if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) strength += 1
-        // If it has one special character, increase strength value.
-        if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
-        // If it has two special characters, increase strength value.
-        if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
-        // Calculated strength value, we can return messages
-        // If value is less than 2
-        if (strength < 2) {
-            $('#strengthMessage').removeClass()
-            $('#strengthMessage').addClass('Weak')
-            return 'Weak'
-        } else if (strength == 2) {
-            $('#strengthMessage').removeClass()
-            $('#strengthMessage').addClass('Good')
-            return 'Good'
-        } else {
-            $('#strengthMessage').removeClass()
-            $('#strengthMessage').addClass('Strong')
-            return 'Strong'
-        }
-    } */
+
 });
 
-$(document).on("click", "#send", function() {
+
+$(studentForm).on('submit', function (e, skipRecaptcha) {
+    if(skipRecaptcha) {
+        return;
+    }
+    e.preventDefault();
+    grecaptcha.execute();
+});
+
+function submitStudentForm() {
+    studentForm.trigger('submit', [true]);
+}
+
+
+
+
+
+/* $(document).on("click", "#validation", function() {
     const phoneNumber = phoneInput.getNumber();
     document.getElementById('phone').value = phoneNumber;
     var option = document.getElementById('radioOption');
-    if(!option.checked){
-        alert("Es necesario aprobar los términos y condiciones.");
-        console.log("Es necesario aprobar los términos y condiciones.")
-    } else {
-        alert("Check ok");
-        document.getElementById('newStudent').submit()
-    }
-});
 
+   if(!option.checked){
+        //alert("Es necesario aprobar los términos y condiciones.");
+        $('#strengthMessage').text("Debes aprobar los términos y condiciones");
+        $('#strengthMessage').addClass('alert alert-danger');
+    } else {
+        //alert("Check ok");
+        $('#strengthMessage').text("Solicitud enviada");
+        $('#strengthMessage').removeClass();
+        $('#strengthMessage').addClass('alert alert-success');
+        document.getElementById('send').click();
+        //document.getElementById('captcha').click();
+        //document.getElementById('newStudent').submit()
+    }
+}); */
+
+
+ 

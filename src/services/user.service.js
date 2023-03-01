@@ -300,13 +300,13 @@ async function sendEmail() {
         port: 465,
         secure: true,
         auth: {
-            user: 'no-reply@strusite.com',
-            pass: 'Contrasena*123',
+            user: 'notificacion@strusite.com',
+            pass: process.env.MAIL_PASS,
         }
     });
 
     const info = await transporter.sendMail({
-        from: "'Server Strusite' <no-reply@strusite.com>",
+        from: "'Server Strusite' <notificacion@strusite.com >",
         to: 'juan.diaz@construsoft.com',
         subject: 'Formulario becas',
         html: { path: htmlPath }
