@@ -18,7 +18,8 @@ export const newRecord = async (req, res, next) => {
 	formData.parse(req, async (error, fields, files) => {
         //console.log(fields);
         const {firstname, lastname, institution, country, course, email, phone} = fields;
-        const username = firstname.substring(0,2)+lastname.substring(0,2);
+        const usernamestr = firstname.substring(0,2)+lastname.substring(0,2);
+        const username = usernamestr.toLowerCase();
         var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
         var filename = username +"-"+ files.file.originalFilename;
         var newPath = path.resolve(__dirname, '../uploads/template'+ extension);
@@ -32,12 +33,12 @@ export const newRecord = async (req, res, next) => {
             });
 		});
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
-        console.log(newUser);
+        //console.log(newUser);
         var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
 
         if(user!=[])
         {
-            const mail = await sendEmail();
+            const mail = await sendEmail(newUser.email);
             console.log('Message Sent', mail)
             await pool.query('INSERT INTO users set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
@@ -235,7 +236,7 @@ async function addUserToMoodleGroup(userId, groupid){
     return res;
 }
 
-async function sendEmail() {
+async function sendEmail(emailReciever) {
     var contentHTML = `
         <h1>User Information</h1>
         <ul>
@@ -257,7 +258,7 @@ async function sendEmail() {
 
     const info = await transporter.sendMail({
         from: "'Server Strusite' <notificacion@strusite.com >",
-        to: 'juan.diaz@construsoft.com',
+        to: emailReciever,
         subject: 'Formulario becas',
         html: { path: htmlPath }
     });
