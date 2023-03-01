@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 var WebServiceUrl = "https://strusite.com/webservice/rest/server.php";
 
 export const newRecord = async (req, res, next) => {
+    
     var selectCountries = { 
         "1": "Argentina", 
         "2": "Belice", 
@@ -51,11 +52,13 @@ export const newRecord = async (req, res, next) => {
 
     var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
+        console.log(fields);
         const {firstname, lastname, institution, countryid, courseid, email, phone} = fields;
         const username = firstname.substring(0,2)+lastname.substring(0,2);
         var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
         var filename = username +"-"+ files.file.originalFilename;
         var newPath = path.resolve(__dirname, '../uploads/template'+ extension);
+        console.log(courseid);
         fs.rename(files.file.filepath, newPath, function (errorRename) {
 			console.log("File saved = " + newPath);
             fs.readFile(newPath, async (err, data) => {
@@ -65,11 +68,11 @@ export const newRecord = async (req, res, next) => {
                 //console.log(uploadSpFile.data);
             });
 		});
-        
+        const course = courseid;
         const country = selectCountries[parseInt(countryid)];
-        const course = selectCourses[parseInt(courseid)];
+        //const course = selectCourses[parseInt(courseid)];
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
-        
+        console.log(newUser);
         var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
         //console.log(user);
 
