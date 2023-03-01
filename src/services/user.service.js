@@ -14,51 +14,14 @@ const __dirname = path.dirname(__filename);
 var WebServiceUrl = "https://strusite.com/webservice/rest/server.php";
 
 export const newRecord = async (req, res, next) => {
-    
-    var selectCountries = { 
-        "1": "Argentina", 
-        "2": "Belice", 
-        "3": "Bolivia", 
-        "4": "Brasil", 
-        "5": "Chile",
-        "6": "Colombia",
-        "7": "Costa Rica",
-        "8": "Cuba",
-        "9": "Ecuador",
-        "10": "El Salvador",
-        "11": "España",
-        "12": "Guatemala",
-        "13": "Haití",
-        "14": "Honduras",
-        "15": "Jamaica",
-        "16": "México",
-        "17": "Nicaragua",
-        "18": "Panamá",
-        "19": "Paraguay",
-        "20": "Perú",
-        "21": "República dominicana",
-        "22": "Uruguay",
-        "23": "Otro"
-     };
-    var selectCourses = { 
-        "1": "Fundamentos Tekla Structures Acero", 
-        "2": "Fundamentos Tekla Structures Hormigón", 
-        "3": "Teoría y cálculo de uniones metálicas con IDEA STATICA", 
-        "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
-        "5": "Análisis y diseño de edificaciones con Tekla Structures Designer",
-        "6": "Common Data Environment con Trimble Connect",
-        "7": "Optimización de flujos BIM con Trimble Connect"
-     };
-
-    var formData = new formidable.IncomingForm();
+        var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
-        console.log(fields);
-        const {firstname, lastname, institution, countryid, courseid, email, phone} = fields;
+        //console.log(fields);
+        const {firstname, lastname, institution, country, course, email, phone} = fields;
         const username = firstname.substring(0,2)+lastname.substring(0,2);
         var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
         var filename = username +"-"+ files.file.originalFilename;
         var newPath = path.resolve(__dirname, '../uploads/template'+ extension);
-        console.log(courseid);
         fs.rename(files.file.filepath, newPath, function (errorRename) {
 			console.log("File saved = " + newPath);
             fs.readFile(newPath, async (err, data) => {
@@ -68,22 +31,20 @@ export const newRecord = async (req, res, next) => {
                 //console.log(uploadSpFile.data);
             });
 		});
-        const course = courseid;
-        const country = selectCountries[parseInt(countryid)];
         //const course = selectCourses[parseInt(courseid)];
         const newUser = { username, firstname, lastname, institution, country, course, email, phone};
         console.log(newUser);
         var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
-        //console.log(user);
-
-        const mail = await sendEmail();
-        console.log('Message Sent', mail)
 
         if(user!=[])
         {
-            await pool.query('INSERT INTO users set ?', [newUser])
+            const mail = await sendEmail();
+            console.log('Message Sent', mail)
+            //await pool.query('INSERT INTO users set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
+            res.status(200).json({'status': "ok", 'email': newUser.email});
         }else{
+            res.status(200).json({'status': "usuario ya registrado"});
             console.log("usuario ya registrado")
         }
         /*

@@ -55,12 +55,11 @@ $(document).ready(function () {
         "7": "Optimización de flujos BIM con Trimble Connect"
      };
     $.each(selectCountries, function(key, value) {   
-        $('#country').append($("<option></option>").attr("value", key).text(value)); 
+        $('#country').append($("<option></option>").attr("value", value).text(value)); 
     });
     $.each(selectCourses, function(key, value) {   
         $('#courses').append($("<option></option>").attr("value", value).text(value)); 
     });
-
 });
 
 
@@ -73,32 +72,25 @@ $(studentForm).on('submit', function (e, skipRecaptcha) {
 });
 
 function submitStudentForm() {
+    const phoneNumber = phoneInput.getNumber();
+    document.getElementById('phone').value = phoneNumber;
     studentForm.trigger('submit', [true]);
 }
 
 
-
-
-
-/* $(document).on("click", "#validation", function() {
-    const phoneNumber = phoneInput.getNumber();
-    document.getElementById('phone').value = phoneNumber;
-    var option = document.getElementById('radioOption');
-
-   if(!option.checked){
-        //alert("Es necesario aprobar los términos y condiciones.");
-        $('#strengthMessage').text("Debes aprobar los términos y condiciones");
-        $('#strengthMessage').addClass('alert alert-danger');
-    } else {
-        //alert("Check ok");
-        $('#strengthMessage').text("Solicitud enviada");
+function validar() {
+    var email = document.getElementById('email');
+    var emailConfirm = document.getElementById('emailConfirm');
+    console.log(email.value)
+    console.log(emailConfirm.value)
+   if(email.value == emailConfirm.value){
         $('#strengthMessage').removeClass();
-        $('#strengthMessage').addClass('alert alert-success');
-        document.getElementById('send').click();
-        //document.getElementById('captcha').click();
-        //document.getElementById('newStudent').submit()
+        return true;
+    } else {
+        $('#strengthMessage').removeClass();
+        $('#strengthMessage').text("Los campos email deben coincidir");
+        $('#strengthMessage').addClass('alert alert-danger');
+        return false;
     }
-}); */
-
-
+}
  
