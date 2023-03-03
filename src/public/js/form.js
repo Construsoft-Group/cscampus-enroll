@@ -22,28 +22,27 @@ var studentForm = jQuery("#newStudent");
 $(document).ready(function () {
     var selectCountries = { 
         "1": "Argentina", 
-        "2": "Belice", 
+        "2": "Belize", 
         "3": "Bolivia", 
-        "4": "Brasil", 
+        "4": "Brazil", 
         "5": "Chile",
         "6": "Colombia",
         "7": "Costa Rica",
         "8": "Cuba",
-        "9": "Ecuador",
-        "10": "El Salvador",
-        "11": "España",
+        "9": "Dominican Republic",
+        "10": "Ecuador",
+        "11": "El Salvador",
         "12": "Guatemala",
         "13": "Haití",
         "14": "Honduras",
         "15": "Jamaica",
-        "16": "México",
+        "16": "Mexico",
         "17": "Nicaragua",
-        "18": "Panamá",
+        "18": "Panama",
         "19": "Paraguay",
-        "20": "Perú",
-        "21": "República dominicana",
-        "22": "Uruguay",
-        "23": "Otro"
+        "20": "Peru",
+        "21": "Spain",
+        "22": "Uruguay"
      };
     var selectCourses = { 
         "1": "Fundamentos Tekla Structures Acero", 

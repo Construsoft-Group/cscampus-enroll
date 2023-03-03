@@ -28,16 +28,16 @@
 }
 
 /* form */
-.signup {
+.form {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 0px 30px;
     min-height: calc(100vh - 200px);
+    background-color: #f8f8ff;
   }
-  .signup__container {
-    background-color: rgba(255,255,255,0.1);
+  .form__container {
     border: 2px solid rgba(56, 56, 56, 0.1);
     border-radius: 40px;
     color: rgb(0, 0, 0);
@@ -49,14 +49,14 @@
     flex-direction: column;
   }
 
-  .signup__container > h3{
+  .form__container > h3{
     text-align: center;
   }
-  .signup__container--form {
+  .form__container--form {
     display: flex;
     flex-direction: column;
   }
-  .signup__container--form > div > p{
+  .form__container--form > div > p{
     font-size: 9px;
     text-align: center;
   }
@@ -64,7 +64,7 @@
     font-size: 13px;
   }
 
-  .signup__container--form > label{
+  .form__container--form > label{
     font-size: 13px;
   }
 
