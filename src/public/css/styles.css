@@ -6,6 +6,7 @@
   flex-direction: column;
   padding: 0px 30px;
   min-height: calc(100vh - 200px);
+  background-color: #f8f8ff;
 }
 .success__container {
   background-color: rgba(255,255,255,0.1);
@@ -65,7 +66,7 @@
   }
 
   .form__container--form > label{
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .form-group{

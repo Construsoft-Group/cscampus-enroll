@@ -18,32 +18,17 @@
     <link rel="stylesheet" href="/css/styles.css">
     <title>Formulario Beca</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-     <script>
+    <script>
        function onSubmit(token) {
          document.getElementById("newStudent").submit();
        }
-     </script>
+    </script>
 </head>
 <body>
     <div class="form">
         <div class ="form__container">
             <h3 id="titulo">Solicita tu beca</h3>
             <form class="form__container--form" action="/user" method="POST" enctype="multipart/form-data" id="newStudent">
-                <!-- 
-                <div class="form-group">
-                    <label>Usuario</label>
-                    <input id="tb1" type="text" class="form-control" name="username">
-                </div>
-                <div class="form-group">
-                    <label >Password</label>
-                    <div id="div1">
-                        <input id="txtPassword" type="password" class="form-control" name="password">
-                        <div id="strengthMessage"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <p>La contraseña debería tener al menos 8 caracter(es), al menos 1 dígito(s), al menos 1 minúscula(s), al menos 1 mayúscula(s), al menos 1 caracter(es) no alfanuméricos como *,-, o #</p>
-                </div> -->
                 <div class="form-group">
                     <label>Nombre</label>
                     <input id="firstname" type="text" class="form-control" name="firstname" required>
@@ -59,6 +44,12 @@
                 <div class="form-group">
                     <label>País</label>
                     <select id="country" class="form-control" name="country" required>
+                        <option selected></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estudiante o profesor</label>
+                    <select id="roles" class="form-control" name="role" required>
                         <option selected></option>
                     </select>
                 </div>
@@ -83,7 +74,7 @@
                         <div class="alert alert-info" style="display: none;"></div>
                     </div>
                 </div>
-                <label class="form-label" for="customFile">Adjunta un documento que acredite que eres estudiante</label>
+                <label class="form-label" for="customFile">Adjunta un documento que acredite que eres estudiante o profesor</label>
                 <input type="file" accept="application/pdf, image/gif, image/jpeg, image/png" class="form-control" id="customFile" name="file" required>
                 <div class="form-group">
                     <div>

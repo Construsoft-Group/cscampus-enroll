@@ -6,22 +6,22 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import pool from "../database.js"
 import FormData from 'form-data';
-import nodemailer from 'nodemailer';
+
+import enrollmentGroups from '../config/courses.js';
+import { sendEmailToUser, sendInternalEmail } from '../config/sendMail.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-var WebServiceUrl = "https://strusite.com/webservice/rest/server.php";
+var WebServiceUrl = process.env.MDL_DOMAIN + "webservice/rest/server.php";
 
 export const newRecord = async (req, res, next) => {
     let date = new Date()
     var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
-        const {firstname, lastname, institution, country, course, email, phone} = fields;
-        const usernamestr = firstname.substring(0,2)+lastname.substring(0,2)+ "-" +date.getTime().toString().substring(9,13);
-        const username = usernamestr.toLowerCase();
+        const {firstname, lastname, institution, country, role, course, email, phone} = fields;
         var extension = files.file.originalFilename.substr(files.file.originalFilename.lastIndexOf("."));
-        var filename = username +"-"+ files.file.originalFilename;
+        var filename = email +"-"+ files.file.originalFilename;
         var newPath = path.resolve(__dirname, '../uploads/template'+ extension);
         fs.rename(files.file.filepath, newPath, function (errorRename) {
 			console.log("File saved = " + newPath);
@@ -29,23 +29,23 @@ export const newRecord = async (req, res, next) => {
                 if (err) throw err;
                 var spAccessToken = await getSpAccessToken();
                 var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
-                //console.log(uploadSpFile.data);
             });
 		});
-        const newUser = { username, firstname, lastname, institution, country, course, email, phone};
-        //console.log(newUser);
-        var user = await pool.query('SELECT * from users WHERE email = ?', newUser.email);
+        const newUser = {firstname, lastname, institution, country, role, course, email, phone};
+        var user = await pool.query('SELECT * from request WHERE email = ?', newUser.email);
 
         if(user!=[])
         {
-            const mail = await sendEmail(newUser.email);
-            console.log('Message Sent', mail)
-            await pool.query('INSERT INTO users set ?', [newUser])
+            await pool.query('INSERT INTO request set ?', [newUser])
             console.log("Nuevo registro exitoso" + newUser.email)
+            const notifyUser = await sendEmailToUser(newUser);
+            const notifyinternal = await sendInternalEmail(newUser);
+            console.log('Message Sent ', notifyUser)
             res.redirect('/user/success');
         }else{
             res.status(200).json({'status': "usuario ya registrado"});
             console.log("usuario ya registrado")
+            res.redirect('/user/success');
         }
     });
 }
@@ -59,37 +59,60 @@ export const moodle = async () => {
     let fecha_now = new Date(); //Fecha Actual
     var mlSeconds = 24*60*60000;
     var newDateObj = new Date(fecha_now - mlSeconds);
-    var userjd = await pool.query(`SELECT * FROM users WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND campus_id = "0"`);
+    var groupName = "";
+    var userjd = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND campus_id = "0"`);
     if(userjd.length!=0){
         for(let i = 0; i <= userjd.length; i++){
-            var mUser = { username: userjd[i].username, firstname: userjd[i].firstname, lastname: userjd[i].lastname, institution: userjd[i].institution, country: userjd[i].country, course: userjd[i].course, email: userjd[i].email, phone: userjd[i].phone};
+            const usernamestr = userjd[i].firstname.substring(0,2)+userjd[i].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13);
+            const username = usernamestr.toLowerCase();
+            var mUser = { 
+                username: username, 
+                firstname: userjd[i].firstname, 
+                lastname: userjd[i].lastname, 
+                institution: userjd[i].institution, 
+                country: userjd[i].country,
+                role: userjd[i].role,
+                course: userjd[i].course, 
+                email: userjd[i].email, 
+                phone: userjd[i].phone,
+                campusId: userjd[i].campus_id
+            };
+            await pool.query('INSERT INTO users set ?', [mUser]);
+
             var qUser = await queryMoodleUser(userjd[i].email);
             var data = qUser.data.split("<hr>");
             let response = JSON.parse(data[2]);
-            if(!response.users){
-                    console.log("Usuario ya existe");
-                    return "Usuario ya existe";
-            }else{
+
+            var iC = enrollmentGroups.setItems.map(obj => obj.courseName).indexOf(mUser.course);
+            if(mUser.role == "Estudiante"){
+                groupName = "PROGRAMA ESTUDIANTES 2023";
+            } else {
+                groupName = "PROGRAMA PROFESORES 2023";
+            }
+            var iG = enrollmentGroups[iC].groups.setItems.map(obj => obj.ssGroupStName).indexOf(groupName);
+            
+            if(!response.users){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
+                    var enrollment = await enrollMoodleuser(mUser.campusId, iC.courseId);
+                    var addToGroup = await addUserToMoodleGroup(mUser.campusId, iG.ssGroupStId);
+                    return "Usuario ya existe, matriculado";
+            }
+            else //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
+            {  
                 var newUser = await createMoodleUser(mUser);
                 var newUserData = newUser.data.split("<hr>");
                 let newUserRes = JSON.parse(newUserData[2]);
-                //console.log("newUserRes"); // Todavía hay un problema con la ñ en algnos paises
-                
-                var enrollment = await enrollMoodleuser(newUserRes[0].id, 2);
-                var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, 1);
-
-                await pool.query(`UPDATE users SET campus_id = ${newUserRes[0].id} WHERE email="${userjd[i].email}"`,  (err,res)=>{
+                var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId);
+                var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.ssGroupStId);
+                await pool.query(`UPDATE users SET campus_id = ${newUserRes[0].id} WHERE email="${userjd[i].email}"`);
+                await pool.query(`UPDATE request SET campus_id = ${newUserRes[0].id} WHERE email="${userjd[i].email}"`,  (err,res)=>{
                     console.log(err,res);
                     var response =  {Created: "ok", userId : newUserRes[0].id, enrollment: enrollment, group: addToGroup};
                     console.log(response);
                     return response;
                 });
-                //res.status(201).json({Created: "ok", userId : newUserRes[0].id, enrollment: enrollment, group: addToGroup});
-                //console.log("Aqui se crea el usuario " + userjd[i].email + " y se enrola");
             }
         }
     }else{
-        //return  fecha_now.getTime().toString().substring(9,13);
         return "No hay usuarios nuevos";
     }
 }
@@ -101,21 +124,6 @@ async function getSpAccessToken() {
     formData.append("client_secret", process.env.SP_CLIENT_SECRET);
     formData.append("resource", `00000003-0000-0ff1-ce00-000000000000/${process.env.SP_TENANT_NAME}.sharepoint.com@${process.env.SP_TENANT_ID}`);
     formData.append("refresh_token", process.env.SP_REFRESHTOKEN);
-
-    /* var requestOptions = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: formData,
-        redirect: 'follow'
-      };
-
-    fetch("https://accounts.accesscontrol.windows.net/d6971593-02bc-4bc6-8936-dfec77834a12/tokens/OAuth/2", requestOptions)
-    .then(response => response.json())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error)); */
-
     var config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -237,31 +245,4 @@ async function addUserToMoodleGroup(userId, groupid){
     return res;
 }
 
-async function sendEmail(emailReciever) {
-    var contentHTML = `
-        <h1>User Information</h1>
-        <ul>
-            <li>Username: </li>
-            <li>User email: </li>
-            <li>Phone: </li>
-        </ul>
-    `;
-    var htmlPath = path.resolve(__dirname, './mail1_aspirante copy.html');
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.hostinger.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'notificacion@strusite.com',
-            pass: process.env.MAIL_PASS,
-        }
-    });
 
-    const info = await transporter.sendMail({
-        from: "'Server Strusite' <notificacion@strusite.com >",
-        to: emailReciever,
-        subject: 'Formulario becas',
-        html: { path: htmlPath }
-    });
-    return info.messageId
-}

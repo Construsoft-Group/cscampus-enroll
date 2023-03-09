@@ -49,15 +49,23 @@ $(document).ready(function () {
         "2": "Fundamentos Tekla Structures Hormigón", 
         "3": "Teoría y cálculo de uniones metálicas con IDEA STATICA", 
         "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
-        "5": "Análisis y diseño de edificaciones con Tekla Structures Designer",
+        "5": "Análisis y diseño de edificaciones con Tekla Structural Designer",
         "6": "Common Data Environment con Trimble Connect",
-        "7": "Optimización de flujos BIM con Trimble Connect"
+        "7": "Optimización de flujos BIM con Trimble Connect",
+        "8": "Strusite"
      };
+     var selectRoles = {
+        "1": "Estudiante", 
+        "2": "Profesor", 
+     }
     $.each(selectCountries, function(key, value) {   
         $('#country').append($("<option></option>").attr("value", value).text(value)); 
     });
     $.each(selectCourses, function(key, value) {   
         $('#courses').append($("<option></option>").attr("value", value).text(value)); 
+    });
+    $.each(selectRoles, function(key, value) {   
+        $('#roles').append($("<option></option>").attr("value", value).text(value)); 
     });
 });
 
