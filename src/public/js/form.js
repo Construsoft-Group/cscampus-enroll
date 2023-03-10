@@ -51,8 +51,8 @@ $(document).ready(function () {
         "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
         "5": "Análisis y diseño de edificaciones con Tekla Structural Designer",
         "6": "Common Data Environment con Trimble Connect",
-        "7": "Optimización de flujos BIM con Trimble Connect",
-        "8": "Strusite"
+        "7": "Optimización de flujos BIM con Trimble Connect"/* ,
+        "8": "Strusite" */
      };
      var selectRoles = {
         "1": "Estudiante", 

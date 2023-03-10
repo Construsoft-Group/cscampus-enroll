@@ -5,12 +5,12 @@ const enrollmentGroups = [
         "courseName": "Fundamentos Tekla Structures Acero",
         "groups": [
             {
-                "ssGroupStId": 1618,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1618,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1619,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1619,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -19,12 +19,12 @@ const enrollmentGroups = [
         "courseName": "Fundamentos Tekla Structures Hormigón",
         "groups": [
             {
-                "ssGroupStId": 1621,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1621,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1620,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1620,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -33,12 +33,12 @@ const enrollmentGroups = [
         "courseName": "Teoría y cálculo de uniones metálicas con IDEA STATICA",
         "groups": [
             {
-                "ssGroupStId": 1622,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1622,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1623,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1623,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -47,12 +47,12 @@ const enrollmentGroups = [
         "courseName": "Teoría y cálculo de elementos HA con IDEA STATICA",
         "groups": [
             {
-                "ssGroupStId": 1625,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1625,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1624,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1624,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -61,12 +61,12 @@ const enrollmentGroups = [
         "courseName": "Análisis y diseño de edificaciones con Tekla Structural Designer",
         "groups": [
             {
-                "ssGroupStId": 1626,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1626,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1627,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1627,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -75,12 +75,12 @@ const enrollmentGroups = [
         "courseName": "Common Data Environment con Trimble Connect",
         "groups": [
             {
-                "ssGroupStId": 1629,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1629,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1628,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1628,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -89,12 +89,12 @@ const enrollmentGroups = [
         "courseName": "Optimización de flujos BIM con Trimble Connect",
         "groups": [
             {
-                "ssGroupStId": 1630,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 1630,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 1631,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 1631,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     },
@@ -103,12 +103,12 @@ const enrollmentGroups = [
         "courseName": "Strusite",
         "groups": [
             {
-                "ssGroupStId": 33,
-                "ssGroupStName": "PROGRAMA ESTUDIANTES 2023"
+                "groupId": 33,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
             },
             {
-                "ssGroupTeId": 34,
-                "ssGroupTeName": "PROGRAMA PROFESORES 2023"
+                "groupId": 34,
+                "groupName": "PROGRAMA PROFESORES 2023"
             }
         ]
     }
