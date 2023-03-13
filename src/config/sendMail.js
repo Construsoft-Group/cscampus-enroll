@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 
 export const sendEmailToUser = async (newUser) => {
-    var htmlPath = path.resolve(__dirname, './email_templates/mail1_aspirante.html');
+    var htmlPath = path.resolve(__dirname, './email_templates/mail_aspirante.html');
     const transporter = nodemailer.createTransport({
         host: 'cloud01.dowhilestudio.com',
         port: 465,

@@ -1,0 +1,266 @@
+a[href] {
+    white-space:normal;
+    }
+    /* Client-specific Styles */
+    #outlook a {padding:0;} /* Force Outlook to provide a "view in browser" menu link. */
+    body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+    /* Prevent Webkit and Windows Mobile platforms from changing default font sizes, while not breaking desktop design. */
+    .ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Force Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
+    #backgroundTable {margin:0; padding:0; width:100% !important;}
+    img {outline:none; text-decoration:none;border:none; -ms-interpolation-mode: bicubic;}
+    a img {border:none;}
+    .image_fix {display:block;}
+    table td {border-collapse: collapse;}
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    /*a {color: #e95353;text-decoration: none;text-decoration:none!important;}*/
+    /*STYLES*/
+    table[class=full] { width: 100%; clear: both; }
+    /*################################################*/
+    /*tablet STYLES*/
+    /*################################################*/
+    @media only screen and (max-width: 640px) {
+    a[href^="tel"], a[href^="sms"] {
+    text-decoration: default;
+    color: inherit;
+    pointer-events: none;
+    cursor: default;
+    }
+    .mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+    text-decoration: default;
+    color: #ffffff !important;
+    pointer-events: auto;
+    cursor: default;
+    }
+    td[class=devicewidth] img					{max-width: 440px!important; height: auto!important;}
+    td[class=devicewidthouter] img				{max-width: 440px!important; height: auto!important;}
+    td[class=devicewidth] img:not([width])		{width: auto!important;}
+    td[class=devicewidthouter] img:not([width])	{width: auto!important;}
+    table[class=devicewidth]					{width: 440px!important;}
+    div[class=devicewidth]						{width: 440px!important;}
+    td[class=devicewidth]						{width: 440px!important; display: table!important;}
+    td[class=devicewidthtable]					{width: 440px!important;}
+    img[class=devicewidth]						{width: 440px!important;}
+    table[class=devicewidthouter]				{width: 440px!important;}
+    div[class=devicewidthouter]					{width: 440px!important;}
+    td[class=devicewidthouter]					{width: 440px!important;}
+    img[class=devicewidthouter]					{width: 440px!important;}
+    table[class=devicewidthborder]				{width: 440px!important;}
+    div[class=devicewidthborder]				{width: 440px!important;}
+    td[class=devicewidthborder]					{width: 440px!important;}
+    img[class=devicewidthborder]				{width: 440px!important;}
+    td[class=milogo] img                        {max-width: 440px!important; height:auto!important;}
+    td[class=mologo] img                        {max-width: 440px!important; height:auto!important;}
+    td[class=miheader] img                      {max-width: 440px!important; height:auto!important;}
+    td[class=moheader] img                      {max-width: 440px!important; height:auto!important;}
+    td[class=mifooter] img                      {max-width: 440px!important; height:auto!important;}
+    td[class=mofooter] img                      {max-width: 440px!important; height:auto!important;}
+    td[class=miheader], td[class=miheader] table    {width: 440px!important;}
+    td[class=moheader], td[class=moheader] table    {width: 440px!important;}
+    td[class=mifooter], td[class=mifooter] table    {width: 440px!important;}
+    td[class=mofooter], td[class=mofooter] table    {width: 440px!important;}
+    }
+    /*##############################################*/
+    /*PHONE STYLES  IPHONE 6 Plus*/
+    /*##############################################*/
+    @media only screen and (max-width: 440px) {
+    a[href^="tel"], a[href^="sms"] {
+    text-decoration: default;
+    color: inherit;
+    pointer-events: none;
+    cursor: default;
+    }
+    .mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+    text-decoration: default;
+    color: #ffffff !important;
+    pointer-events: auto;
+    cursor: default;
+    }
+    td[class=devicewidth] img					{max-width: 414px!important; height: auto!important;}
+    td[class=devicewidthouter] img				{max-width: 414px!important; height: auto!important;}
+    td[class=devicewidth] img:not([width])		{width: auto!important;}
+    td[class=devicewidthouter] img:not([width])	{width: auto!important;}
+    table[class=devicewidth]					{width: 414px!important;}
+    div[class=devicewidth]						{width: 414px!important;}
+    td[class=devicewidth]						{width: 414px!important; display: table!important;}
+    td[class=devicewidthtable]					{width: 414px!important;}
+    img[class=devicewidth]						{width: 414px!important;}
+    table[class=devicewidthouter]				{width: 414px!important;}
+    div[class=devicewidthouter]					{width: 414px!important;}
+    td[class=devicewidthouter]					{width: 414px!important;}
+    img[class=devicewidthouter]					{width: 414px!important;}
+    table[class=devicewidthborder]				{width: 414px!important;}
+    div[class=devicewidthborder]				{width: 414px!important;}
+    td[class=devicewidthborder]					{width: 414px!important;}
+    img[class=devicewidthborder]				{width: 414px!important;}
+    td[class=milogo] img                        {max-width: 414px!important; height:auto!important;}
+    td[class=mologo] img                        {max-width: 414px!important; height:auto!important;}
+    td[class=miheader] img                      {max-width: 414px!important; height:auto!important;}
+    td[class=moheader] img                      {max-width: 414px!important; height:auto!important;}
+    td[class=mifooter] img                      {max-width: 414px!important; height:auto!important;}
+    td[class=mofooter] img                      {max-width: 414px!important; height:auto!important;}
+    td[class=miheader], td[class=miheader] table    {width: 414px!important;}
+    td[class=moheader], td[class=moheader] table    {width: 414px!important;}
+    td[class=mifooter], td[class=mifooter] table    {width: 414px!important;}
+    td[class=mofooter], td[class=mofooter] table    {width: 414px!important;}
+    }
+    /*##############################################*/
+    /*PHONE STYLES IPHONE 6*/
+    /*##############################################*/
+    @media only screen and (max-width: 375px) {
+    a[href^="tel"], a[href^="sms"] {
+    text-decoration: default;
+    color: inherit;
+    pointer-events: none;
+    cursor: default;
+    }
+    .mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+    text-decoration: default;
+    color: #ffffff !important;
+    pointer-events: auto;
+    cursor: default;
+    }
+    td[class=devicewidth] img					{max-width: 375px!important; height: auto!important;}
+    td[class=devicewidthouter] img				{max-width: 375px!important; height: auto!important;}
+    td[class=devicewidth] img:not([width])		{width: auto!important;}
+    td[class=devicewidthouter] img:not([width])	{width: auto!important;}
+    table[class=devicewidth]					{width: 375px!important;}
+    div[class=devicewidth]						{width: 375px!important;}
+    td[class=devicewidth]						{width: 375px!important; display: table!important;}
+    td[class=devicewidthtable]					{width: 375px!important;}
+    img[class=devicewidth]						{width: 375px!important;}
+    table[class=devicewidthouter]				{width: 375px!important;}
+    div[class=devicewidthouter]					{width: 375px!important;}
+    td[class=devicewidthouter]					{width: 375px!important;}
+    img[class=devicewidthouter]					{width: 375px!important;}
+    table[class=devicewidthborder]				{width: 375px!important;}
+    div[class=devicewidthborder]				{width: 375px!important;}
+    td[class=devicewidthborder]					{width: 375px!important;}
+    img[class=devicewidthborder]				{width: 375px!important;}
+    td[class=milogo] img                        {max-width: 375px!important; height:auto!important;}
+    td[class=mologo] img                        {max-width: 375px!important; height:auto!important;}
+    td[class=miheader] img                      {max-width: 375px!important; height:auto!important;}
+    td[class=moheader] img                      {max-width: 375px!important; height:auto!important;}
+    td[class=mifooter] img                      {max-width: 375px!important; height:auto!important;}
+    td[class=mofooter] img                      {max-width: 375px!important; height:auto!important;}
+    td[class=miheader], td[class=miheader] table    {width: 375px!important;}
+    td[class=moheader], td[class=moheader] table    {width: 375px!important;}
+    td[class=mifooter], td[class=mifooter] table    {width: 375px!important;}
+    td[class=mofooter], td[class=mofooter] table    {width: 375px!important;}
+    }
+    /*##############################################*/
+    /*PHONE STYLES*/
+    /*##############################################*/
+    @media only screen and (max-width: 374px) {
+    a[href^="tel"], a[href^="sms"] {
+    text-decoration: default;
+    color: inherit;
+    pointer-events: none;
+    cursor: default;
+    }
+    .mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+    text-decoration: default;
+    color: #ffffff !important;
+    pointer-events: auto;
+    cursor: default;
+    }
+    td[class=devicewidth] img					{max-width: 280px!important; height: auto!important;}
+    td[class=devicewidthouter] img				{max-width: 280px!important; height: auto!important;}
+    td[class=devicewidth] img:not([width])		{width: auto!important;}
+    td[class=devicewidthouter] img:not([width])	{width: auto!important;}
+    table[class=devicewidth]					{width: 280px!important;}
+    div[class=devicewidth]						{width: 280px!important;}
+    td[class=devicewidth]						{width: 280px!important; display: table!important;}
+    td[class=devicewidthtable]					{width: 280px!important;}
+    img[class=devicewidth]						{width: 280px!important;}
+    table[class=devicewidthouter]				{width: 280px!important;}
+    div[class=devicewidthouter]					{width: 280px!important;}
+    td[class=devicewidthouter]					{width: 280px!important;}
+    img[class=devicewidthouter]					{width: 280px!important;}
+    table[class=devicewidthborder]				{width: 280px!important;}
+    div[class=devicewidthborder]				{width: 280px!important;}
+    td[class=devicewidthborder]					{width: 280px!important;}
+    img[class=devicewidthborder]				{width: 280px!important;}
+    td[class=milogo] img                        {max-width: 280px!important; height:auto!important;}
+    td[class=mologo] img                        {max-width: 280px!important; height:auto!important;}
+    td[class=miheader] img                      {max-width: 280px!important; height:auto!important;}
+    td[class=moheader] img                      {max-width: 280px!important; height:auto!important;}
+    td[class=mifooter] img                      {max-width: 280px!important; height:auto!important;}
+    td[class=mofooter] img                      {max-width: 280px!important; height:auto!important;}
+    td[class=miheader], td[class=miheader] table    {width: 280px!important;}
+    td[class=moheader], td[class=moheader] table    {width: 280px!important;}
+    td[class=mifooter], td[class=mifooter] table    {width: 280px!important;}
+    td[class=mofooter], td[class=mofooter] table    {width: 280px!important;}
+    }
+    @media only screen and (max-width: 640px) {
+    td[class=devicewidth] .mcol1 { width: 430px!important; }
+    td[class=devicewidth] .mcol1 img { max-width: 430px!important;height: auto!important; }
+    td[class=devicewidth] .mcol2 { width: 440px!important; }
+    td[class=devicewidth] .mcol2 img { max-width: 440px!important;height: auto!important; }
+    td[class=devicewidth] .mcol3 { width: 440px!important; }
+    td[class=devicewidth] .mcol3 img { max-width: 440px!important;height: auto!important; }
+    td[class=devicewidth] .mcol4 { width: 440px!important; }
+    td[class=devicewidth] .mcol4 img { max-width: 440px!important;height: auto!important; }
+    td[class=devicewidth] .mcol5 { width: 420px!important; }
+    td[class=devicewidth] .mcol5 img { max-width: 420px!important;height: auto!important; }
+    td[class=devicewidth] .mcol6 { width: 440px!important; }
+    td[class=devicewidth] .mcol6 img { max-width: 440px!important;height: auto!important; }
+    }
+    @media only screen and (max-width: 440px) {
+    td[class=devicewidth] .mcol1 { width: 404px!important; }
+    td[class=devicewidth] .mcol1 img { max-width: 404px!important;height: auto!important; }
+    td[class=devicewidth] .mcol2 { width: 414px!important; }
+    td[class=devicewidth] .mcol2 img { max-width: 414px!important;height: auto!important; }
+    td[class=devicewidth] .mcol3 { width: 414px!important; }
+    td[class=devicewidth] .mcol3 img { max-width: 414px!important;height: auto!important; }
+    td[class=devicewidth] .mcol4 { width: 414px!important; }
+    td[class=devicewidth] .mcol4 img { max-width: 414px!important;height: auto!important; }
+    td[class=devicewidth] .mcol5 { width: 394px!important; }
+    td[class=devicewidth] .mcol5 img { max-width: 394px!important;height: auto!important; }
+    td[class=devicewidth] .mcol6 { width: 414px!important; }
+    td[class=devicewidth] .mcol6 img { max-width: 414px!important;height: auto!important; }
+    }
+    @media only screen and (max-width: 375px) {
+    td[class=devicewidth] .mcol1 { width: 365px!important; }
+    td[class=devicewidth] .mcol1 img { max-width: 365px!important;height: auto!important; }
+    td[class=devicewidth] .mcol2 { width: 375px!important; }
+    td[class=devicewidth] .mcol2 img { max-width: 375px!important;height: auto!important; }
+    td[class=devicewidth] .mcol3 { width: 375px!important; }
+    td[class=devicewidth] .mcol3 img { max-width: 375px!important;height: auto!important; }
+    td[class=devicewidth] .mcol4 { width: 375px!important; }
+    td[class=devicewidth] .mcol4 img { max-width: 375px!important;height: auto!important; }
+    td[class=devicewidth] .mcol5 { width: 355px!important; }
+    td[class=devicewidth] .mcol5 img { max-width: 355px!important;height: auto!important; }
+    td[class=devicewidth] .mcol6 { width: 375px!important; }
+    td[class=devicewidth] .mcol6 img { max-width: 375px!important;height: auto!important; }
+    }
+    @media only screen and (max-width: 374px) {
+    td[class=devicewidth] .mcol1 { width: 270px!important; }
+    td[class=devicewidth] .mcol1 img { max-width: 270px!important;height: auto!important; }
+    td[class=devicewidth] .mcol2 { width: 280px!important; }
+    td[class=devicewidth] .mcol2 img { max-width: 280px!important;height: auto!important; }
+    td[class=devicewidth] .mcol3 { width: 280px!important; }
+    td[class=devicewidth] .mcol3 img { max-width: 280px!important;height: auto!important; }
+    td[class=devicewidth] .mcol4 { width: 280px!important; }
+    td[class=devicewidth] .mcol4 img { max-width: 280px!important;height: auto!important; }
+    td[class=devicewidth] .mcol5 { width: 260px!important; }
+    td[class=devicewidth] .mcol5 img { max-width: 260px!important;height: auto!important; }
+    td[class=devicewidth] .mcol6 { width: 280px!important; }
+    td[class=devicewidth] .mcol6 img { max-width: 280px!important;height: auto!important; }
+    }
+    a[href^="x-apple-data-detectors:"],	a[href^="tel:"] {
+        color: inherit;
+        font-size: inherit;
+        font-family: inherit;
+        text-decoration: inherit;
+    }
+    body, table, tr, td, div, textarea, input
+    {
+    color:					#000000;
+    font-family:			'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size:				12px;
+    /* Extended Stationery Text Styles */
+    /* Page background, Borders, Corners */
+    /* Header Styles */
+    /* Footer Style Defaults */
+    }
