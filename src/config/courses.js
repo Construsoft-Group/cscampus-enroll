@@ -3,6 +3,7 @@ const enrollmentGroups = [
     {
         "courseId": 149,
         "courseName": "Fundamentos Tekla Structures Acero",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=149",
         "groups": [
             {
                 "groupId": 1618,
@@ -17,6 +18,7 @@ const enrollmentGroups = [
     {
         "courseId": 98,
         "courseName": "Fundamentos Tekla Structures Hormigón",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=98",
         "groups": [
             {
                 "groupId": 1621,
@@ -31,6 +33,7 @@ const enrollmentGroups = [
     {
         "courseId":  76,
         "courseName": "Teoría y cálculo de uniones metálicas con IDEA STATICA",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=76",
         "groups": [
             {
                 "groupId": 1622,
@@ -45,6 +48,7 @@ const enrollmentGroups = [
     {
         "courseId": 141,
         "courseName": "Teoría y cálculo de elementos HA con IDEA STATICA",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=141",
         "groups": [
             {
                 "groupId": 1625,
@@ -59,6 +63,7 @@ const enrollmentGroups = [
     {
         "courseId": 135,
         "courseName": "Análisis y diseño de edificaciones con Tekla Structural Designer",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=135",
         "groups": [
             {
                 "groupId": 1626,
@@ -73,6 +78,7 @@ const enrollmentGroups = [
     {
         "courseId": 81,
         "courseName": "Common Data Environment con Trimble Connect",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=81",
         "groups": [
             {
                 "groupId": 1629,
@@ -87,6 +93,7 @@ const enrollmentGroups = [
     {
         "courseId": 96,
         "courseName": "Optimización de flujos BIM con Trimble Connect",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=96",
         "groups": [
             {
                 "groupId": 1630,
@@ -101,6 +108,7 @@ const enrollmentGroups = [
     {
         "courseId": 2,
         "courseName": "Strusite",
+        "courseLink" : "",
         "groups": [
             {
                 "groupId": 33,

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
-import { sendEmailToUser, sendInternalEmail } from '../config/sendMail.js';
+import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 
 var WebServiceUrl = process.env.MDL_DOMAIN + "webservice/rest/server.php";
 
@@ -42,8 +42,24 @@ export const newRecord = async (req, res, next) => {
 }
 
 export const fileTest = async(req, res, next) => {
+    var mUser = { 
+        username: 'username', 
+        firstname: 'Camila', 
+        lastname: 'Ocampo', 
+        institution: 'userjd[0].institution', 
+        country: 'userjd[0].country',
+        role: 'userjd[0].role',
+        course: 'Análisis y diseño de edificaciones con Tekla Structural Designer', 
+        email: 'juan.diaz@construsoft.com', 
+        phone: 'userjd[0].phone',
+        campus_id: 0
+    };
+    var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
+    
+    sendEnrollNotification(mUser, iC);
     const form = new formidable.IncomingForm();
-    form.parse(req, (err, fields, files) => {
+
+    /* form.parse(req, (err, fields, files) => {
       if (err) {
         console.error("aca el error");
         return;
@@ -59,7 +75,7 @@ export const fileTest = async(req, res, next) => {
         var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
         console.log(data);
       });
-    });
+    }); */
 }
 
 export const queryUserdb = async (req, res, next) => {
@@ -121,6 +137,7 @@ export const moodle = async () => {
                 var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
                 var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
                 var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
+                sendEnrollNotification(mUser, iC);
                 return "usuario matriculado " + mUser.email;
             }
             else //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
@@ -135,6 +152,7 @@ export const moodle = async () => {
                 var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
                 var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
                 var updateReqDb = await pool.query(`UPDATE request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
+                sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
                 return "usuario creado y matriculado " + mUser.email;
             }
     }else{
