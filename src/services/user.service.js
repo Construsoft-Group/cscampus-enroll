@@ -111,8 +111,13 @@ export const moodle = async () => {
             }
             //console.log(iC + " " + iG);
 
+            var iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
+            var timeEnd = new Date();
+            timeEnd.setDate(fecha_now.getDate() + 60);
+            var endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
+
             if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
-                var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId);
+                var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
                 var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
                 var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
                 var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
@@ -125,7 +130,7 @@ export const moodle = async () => {
                 //let newUserRes = JSON.parse(newUserData[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
                 let newUserRes = newUser.data;
                 mUser.campus_id = newUserRes[0].id;
-                var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId);
+                var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
                 var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
                 var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
                 var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
@@ -223,7 +228,7 @@ async function createMoodleUser(user) {
     return res;
 }
 
-async function enrollMoodleuser(userId, courseId){
+async function enrollMoodleuser(userId, courseId, timestart, timeend){
     const params = new URLSearchParams();
     params.append('moodlewsrestformat', 'json');
     params.append('wsfunction', 'enrol_manual_enrol_users');
@@ -231,8 +236,8 @@ async function enrollMoodleuser(userId, courseId){
     params.append('enrolments[0][roleid]', '5');
     params.append('enrolments[0][userid]', userId);
     params.append('enrolments[0][courseid]', courseId);
-    params.append('enrolments[0][timestart]', '1672178173');
-    params.append('enrolments[0][timeend]', '1678921849');
+    params.append('enrolments[0][timestart]', timestart);
+    params.append('enrolments[0][timeend]', timeend);
     params.append('enrolments[0][suspend]', '0'); //Este valor se puede usar para automatizar la extensión de matrícula
 
     var config = {
