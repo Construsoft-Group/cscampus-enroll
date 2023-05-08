@@ -1,6 +1,7 @@
 import express from "express";
 import path from 'path';
 import userRouter from "./user.router.js";
+import csRouter from "./cs.router.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,6 +13,7 @@ app.use(express.json());
 function routerApi(app) {
     app.get('/', (req, res) => {res.send('hello world')});
     app.use('/user', userRouter);
+    app.use('/cs', csRouter);
 }
 
 

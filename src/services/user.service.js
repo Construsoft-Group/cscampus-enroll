@@ -1,9 +1,6 @@
-import fetch from "node-fetch";
 import axios from 'axios';
 import formidable from "formidable";
 import fs from 'fs'
-import { fileURLToPath } from 'url';
-import path from 'path';
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
@@ -26,7 +23,7 @@ export const newRecord = async (req, res, next) => {
         const newUser = {firstname, lastname, institution, country, role, course, email, phone};
         //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
         var user = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
-        console.log(user);
+        //console.log(user);
         if(user.length == 0)
         {
             await pool.query('INSERT INTO request set ?', [newUser]);
@@ -90,71 +87,77 @@ export const moodle = async () => {
     var groupName = "";
     var userjd = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND status = ""`);
     //console.log(userjd);
+    const replaceSpecialChars = (str) => {
+        const specialChars = { "ñ": "n" };
+        return str.replace(/[ñ]/g, (match) => specialChars[match]);
+      };
     if(userjd.length!=0){
-        const usernamestr = userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13);
-            const username = usernamestr.toLowerCase();
-            var mUser = { 
-                username: username, 
-                firstname: userjd[0].firstname, 
-                lastname: userjd[0].lastname, 
-                institution: userjd[0].institution, 
-                country: userjd[0].country,
-                role: userjd[0].role,
-                course: userjd[0].course, 
-                email: userjd[0].email, 
-                phone: userjd[0].phone,
-                campus_id: 0
-            };
-            //console.log(mUser);
-            var qUser = await queryMoodleUser(mUser.email); // consultamos este usuario en el moodle
-            //console.log(response);
-            //var data = qUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
-            //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
-            let response = qUser.data;
-            //console.log(response);
-            var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
-            if(mUser.role == "Estudiante"){
-                groupName = "PROGRAMA ESTUDIANTES 2023";
-            } else {
-                groupName = "PROGRAMA PROFESORES 2023";
-            }
-            var iG = iC.groups.find(obj => obj.groupName === groupName);
-            var newEnrollment = {
-                course_id: iC.courseId,
-                user_email: mUser.email,
-                role: mUser.role,
-                course_group: iG.groupId
-            }
-            //console.log(iC + " " + iG);
+        //const usernamestr = userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13);
+        //const username = usernamestr.toLowerCase();
+        const mUser = { 
+            username: replaceSpecialChars(userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13)).toLowerCase(), 
+            firstname: replaceSpecialChars(userjd[0].firstname), 
+            lastname: replaceSpecialChars(userjd[0].lastname), 
+            institution: replaceSpecialChars(userjd[0].institution), 
+            country: replaceSpecialChars(userjd[0].country),
+            role: replaceSpecialChars(userjd[0].role),
+            course: replaceSpecialChars(userjd[0].course), 
+            email: replaceSpecialChars(userjd[0].email), 
+            phone: replaceSpecialChars(userjd[0].phone),
+            campus_id: 0
+          };
+        //console.log(mUser);
+        var qUser = await queryMoodleUser(mUser.email); // consultamos este usuario en el moodle
+        //console.log(response);
+        //var data = qUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
+        //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
+        let response = qUser.data;
+        //console.log(response);
+        console.log(response.users.length);
+        var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
+        if(mUser.role == "Estudiante"){
+            groupName = "PROGRAMA ESTUDIANTES 2023";
+        } else {
+            groupName = "PROGRAMA PROFESORES 2023";
+        }
+        var iG = iC.groups.find(obj => obj.groupName === groupName);
+        var newEnrollment = {
+            course_id: iC.courseId,
+            user_email: mUser.email,
+            role: mUser.role,
+            course_group: iG.groupId
+        }
+        //console.log(iC + " " + iG);
 
-            var iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
-            var timeEnd = new Date();
-            timeEnd.setDate(fecha_now.getDate() + 60);
-            var endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
-
-            if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
-                var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
-                var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
-                var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
-                var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
-                sendEnrollNotification(mUser, iC);
-                return "usuario matriculado " + mUser.email;
-            }
-            else //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
-            {  
-                var newUser = await createMoodleUser(mUser);
-                //var newUserData = newUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
-                //let newUserRes = JSON.parse(newUserData[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
-                let newUserRes = newUser.data;
-                mUser.campus_id = newUserRes[0].id;
-                var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
-                var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
-                var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
-                var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
-                var updateReqDb = await pool.query(`UPDATE request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
-                sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
-                return "usuario creado y matriculado " + mUser.email;
-            }
+        var iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
+        var timeEnd = new Date();
+        timeEnd.setDate(fecha_now.getDate() + 60);
+        var endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
+        if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
+            var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
+            //console.log(enrollment);
+            var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
+            var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
+            var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
+            sendEnrollNotification(mUser, iC);
+            return "usuario matriculado " + mUser.email;
+        }
+        else //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
+        {  
+            var newUser = await createMoodleUser(mUser);
+            console.log(newUser.data);
+            //var newUserData = newUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
+            //let newUserRes = JSON.parse(newUserData[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
+            let newUserRes = newUser.data;
+            mUser.campus_id = newUserRes[0].id;
+            var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
+            var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
+            var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
+            var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
+            var updateReqDb = await pool.query(`UPDATE request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
+            sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
+            return "usuario creado y matriculado " + mUser.email;
+        }
     }else{
         return "No hay usuarios nuevos";
     }
