@@ -88,9 +88,21 @@ export const moodle = async () => {
     var userjd = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND status = ""`);
     //console.log(userjd);
     const replaceSpecialChars = (str) => {
-        const specialChars = { "ñ": "n" };
-        return str.replace(/[ñ]/g, (match) => specialChars[match]);
+      const specialChars = { "ñ": "n" };
+      const accents = {
+        á: "a",
+        é: "e",
+        í: "i",
+        ó: "o",
+        ú: "u",
+        Á: "A",
+        É: "E",
+        Í: "I",
+        Ó: "O",
+        Ú: "U"
       };
+      return str.replace(/[ñáéíóúÁÉÍÓÚ]/g, (match) => specialChars[match] || accents[match] || match);
+    };
     if(userjd.length!=0){
         //const usernamestr = userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13);
         //const username = usernamestr.toLowerCase();
@@ -101,7 +113,7 @@ export const moodle = async () => {
             institution: replaceSpecialChars(userjd[0].institution), 
             country: replaceSpecialChars(userjd[0].country),
             role: replaceSpecialChars(userjd[0].role),
-            course: replaceSpecialChars(userjd[0].course), 
+            course: userjd[0].course, //Aqui no se hace el reemplazo, de lo contrario no se encuentra el curso para retornar su id en enrollmentgroups 
             email: replaceSpecialChars(userjd[0].email), 
             phone: replaceSpecialChars(userjd[0].phone),
             campus_id: 0
@@ -109,8 +121,8 @@ export const moodle = async () => {
         //console.log(mUser);
         var qUser = await queryMoodleUser(mUser.email); // consultamos este usuario en el moodle
         //console.log(response);
-        //var data = qUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
-        //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
+        //var data = qUser.data.split("<hr>"); //Esta linea es necesaria cuando es campus Strusite (Test)
+        //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es campus Strusite (Test)
         let response = qUser.data;
         //console.log(response);
         console.log(response.users.length);
@@ -127,7 +139,7 @@ export const moodle = async () => {
             role: mUser.role,
             course_group: iG.groupId
         }
-        //console.log(iC + " " + iG);
+        //console.log(newEnrollment);
 
         var iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
         var timeEnd = new Date();
@@ -137,7 +149,9 @@ export const moodle = async () => {
             var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
             //console.log(enrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
+            //console.log(addToGroup);
             var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
+            //console.log(insertEnrollDb);
             var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
             sendEnrollNotification(mUser, iC);
             return "usuario matriculado " + mUser.email;
