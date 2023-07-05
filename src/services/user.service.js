@@ -125,7 +125,7 @@ export const moodle = async () => {
         //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es campus Strusite (Test)
         let response = qUser.data;
         //console.log(response);
-        console.log(response.users.length);
+        //console.log(response.users.length);
         var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
         if(mUser.role == "Estudiante"){
             groupName = "PROGRAMA ESTUDIANTES 2023";

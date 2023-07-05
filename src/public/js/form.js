@@ -42,7 +42,8 @@ $(document).ready(function () {
         "19": "Paraguay",
         "20": "Peru",
         "21": "Spain",
-        "22": "Uruguay"
+        "22": "Uruguay",
+        "23": "Venezuela"
      };
     var selectCourses = { 
         "1": "Fundamentos Tekla Structures Acero", 
