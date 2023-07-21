@@ -2,37 +2,8 @@ body{
   background-color: #f8f8ff;
 }
 
-/* sucess view */
-.success {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0px 30px;
-  min-height: calc(100vh - 200px);
-}
-.success__container {
-  background-color: rgba(255,255,255,0.1);
-  border: 2px solid rgba(56, 56, 56, 0.1);
-  border-radius: 40px;
-  color: rgb(0, 0, 0);
-  padding: 60px 40px 40px;
-  min-height: 250px;
-  width: 420px;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-}
-.parrafo {
-  text-align: center;
-}
-.success__container > h3, .success__container > a{
-  margin-top: 10px;
-  text-align: center;
-}
-
 /* form */
-  .form {
+.form {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,21 +11,23 @@ body{
     padding: 0px 30px;
     min-height: calc(100vh - 200px);
   }
-
   .form__container {
     border: 2px solid rgba(56, 56, 56, 0.1);
     border-radius: 40px;
     color: rgb(0, 0, 0);
     padding: 60px 40px 40px;
     min-height: 600px;
-    width: 420px;
+    width: 600px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-direction: column;
   }
 
   .form__container > h3{
     text-align: center;
+    font-size: 23px;
+    font-weight: 700;
+    padding-bottom: 15px;
   }
   .form__container--form {
     display: flex;
@@ -78,18 +51,27 @@ body{
     padding-bottom: 5px;
     justify-content: space-around;
   }
+
+  .form-group-privacy{
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    padding-bottom: 5px;
+    justify-content: space-around;
+  }
+
   .form-group > label {
-    width: 150px;
+    width: 200px;
     font-size: 14.5px;
     align-items: center;
   }
   .form-group > input {
-    width: 185px;
+    width: 220px;
     align-items: center;
     height: 25px;
   }
   .form-group > select {
-    width: 185px;
+    width: 220px;
     align-items: center;
     height: 25px;
     font-size: 14.5;
@@ -102,7 +84,7 @@ body{
   }
 
   #phone{
-    width: 185px;
+    width: 220px;
     height: 25px;
   }
   #radioOption{
@@ -122,18 +104,16 @@ body{
   #customFile{
     margin-bottom: 10px;
   }
-   .form-group > div > p{
-    font-size: 7.5px;
+   .form-group-privacy > div > p{
+    font-size: 8.5px;
     padding-top: 2px;
     padding-left: 0px;
     margin-left: 3px;
     margin-bottom: 3px;
   }
-  .form-group-a{
-    font-size: 7.5px;
-    padding-top: 2px;
-    padding-left: 20px;
-    margin-left: 3px;
+  .form-group-privacy-a{
+    font-size: 15px;
+    padding-top: 15px;
     margin-bottom: 3px;
   }
 
@@ -141,6 +121,13 @@ body{
     display: flex;
     flex-direction: row;
   }
+
+  .form-group-privacy > div{
+    display: flex;
+    flex-direction: row;
+    width: 452px;
+  }
+
 
   .form-group > div > label{
     padding-top: 5px;

@@ -2,6 +2,7 @@ import express from "express";
 import path from 'path';
 import becaRouter from "./beca.router.js";
 import csRouter from "./cs.router.js";
+import tcRouter from "./tc.router.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,8 +13,9 @@ app.use(express.json());
 
 function routerApi(app) {
     app.get('/', (req, res) => {res.send('hello world')});
-    app.use('/user', becaRouter);
+    app.use('/beca', becaRouter);
     app.use('/cs', csRouter);
+    app.use('/tc', tcRouter);
 }
 
 
