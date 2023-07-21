@@ -1,6 +1,6 @@
-import {moodle} from "./services/user.service.js";
+import {enroller} from "./services/beca.service.js";
 
 export const job = async () =>{
-    const user = await moodle();
+    const user = await enroller();
     console.log(user)
 }

@@ -4,14 +4,14 @@ import fs from 'fs'
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
-
-var WebServiceUrl = process.env.MDL_DOMAIN + "webservice/rest/server.php";
+import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
+import { getSpAccessToken, sendFileToSp } from '../config/sharepoint.js';
 
 export const newRecord = async (req, res, next) => {
-    let fecha_now = new Date(); //Fecha Actual
-    var mlSeconds = 24*60*60000;
-    var newDateObj = new Date(fecha_now - mlSeconds);
-    var formData = new formidable.IncomingForm();
+  let fecha_now = new Date(); //Fecha Actual
+  var mlSeconds = 24*60*60000;
+  var newDateObj = new Date(fecha_now - mlSeconds);
+  var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
         const {firstname, lastname, institution, country, role, course, email, phone} = fields;
         var filename = email +"-"+ files.file.originalFilename;
@@ -38,49 +38,7 @@ export const newRecord = async (req, res, next) => {
     });
 }
 
-export const fileTest = async(req, res, next) => {
-    var mUser = { 
-        username: 'username', 
-        firstname: 'Camila', 
-        lastname: 'Ocampo', 
-        institution: 'userjd[0].institution', 
-        country: 'userjd[0].country',
-        role: 'userjd[0].role',
-        course: 'Análisis y diseño de edificaciones con Tekla Structural Designer', 
-        email: 'juan.diaz@construsoft.com', 
-        phone: 'userjd[0].phone',
-        campus_id: 0
-    };
-    var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
-    
-    sendEnrollNotification(mUser, iC);
-    const form = new formidable.IncomingForm();
-
-    /* form.parse(req, (err, fields, files) => {
-      if (err) {
-        console.error("aca el error");
-        return;
-      }
-      var filename = files.file.originalFilename;
-      const file = files.file;
-      fs.readFile(file.filepath, async (err, data) => {
-        if (err) {
-          console.error("aca el error");
-          return;
-        }
-        var spAccessToken = await getSpAccessToken();
-        var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
-        console.log(data);
-      });
-    }); */
-}
-
-export const queryUserdb = async (req, res, next) => {
-    var users = await pool.query('SELECT * from users WHERE username = "judi"');
-    console.log(users);
-}
-
-export const moodle = async () => {
+export const enroller = async () => {
     let fecha_now = new Date(); //Fecha Actual
     var mlSeconds = 24*60*60000;
     var newDateObj = new Date(fecha_now - mlSeconds);
@@ -120,11 +78,10 @@ export const moodle = async () => {
           };
         //console.log(mUser);
         var qUser = await queryMoodleUser(mUser.email); // consultamos este usuario en el moodle
-        //console.log(response);
         //var data = qUser.data.split("<hr>"); //Esta linea es necesaria cuando es campus Strusite (Test)
         //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es campus Strusite (Test)
         let response = qUser.data;
-        //console.log(response);
+        console.log(response);
         //console.log(response.users.length);
         var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
         if(mUser.role == "Estudiante"){
@@ -147,7 +104,7 @@ export const moodle = async () => {
         var endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
         if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
             var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
-            //console.log(enrollment);
+            console.log(enrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
             //console.log(addToGroup);
             var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
@@ -177,132 +134,47 @@ export const moodle = async () => {
     }
 }
 
-async function getSpAccessToken() {
-    const formData = new URLSearchParams();
-    formData.append("grant_type", "refresh_token");
-    formData.append("client_id", `${process.env.SP_CLIENT_ID}@${process.env.SP_TENANT_ID}`);
-    formData.append("client_secret", process.env.SP_CLIENT_SECRET);
-    formData.append("resource", `00000003-0000-0ff1-ce00-000000000000/${process.env.SP_TENANT_NAME}.sharepoint.com@${process.env.SP_TENANT_ID}`);
-    formData.append("refresh_token", process.env.SP_REFRESHTOKEN);
-    var config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `https://accounts.accesscontrol.windows.net/${process.env.SP_TENANT_ID}/tokens/OAuth/2`,
-        headers: { 
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data : formData
-      };
-      let res = await axios(config)
-      return res;
+//A continuación son funciones de testing-->
+
+export const fileTest = async(req, res, next) => {
+  var mUser = { 
+      username: 'username', 
+      firstname: 'Camila', 
+      lastname: 'Ocampo', 
+      institution: 'userjd[0].institution', 
+      country: 'userjd[0].country',
+      role: 'userjd[0].role',
+      course: 'Análisis y diseño de edificaciones con Tekla Structural Designer', 
+      email: 'juan.diaz@construsoft.com', 
+      phone: 'userjd[0].phone',
+      campus_id: 0
+  };
+  var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
+  
+  sendEnrollNotification(mUser, iC);
+  const form = new formidable.IncomingForm();
+
+  /* form.parse(req, (err, fields, files) => {
+    if (err) {
+      console.error("aca el error");
+      return;
+    }
+    var filename = files.file.originalFilename;
+    const file = files.file;
+    fs.readFile(file.filepath, async (err, data) => {
+      if (err) {
+        console.error("aca el error");
+        return;
+      }
+      var spAccessToken = await getSpAccessToken();
+      var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
+      console.log(data);
+    });
+  }); */
 }
 
-async function sendFileToSp(file, filename, spAccessToken) {
-    var sitename =  'UNIVERSIDADES-ProyectoEducacional';
-    var folderPath = 'General/7. Documentos aspirantes'
-    var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/GetFolderByServerRelativeURL('/sites/${sitename}/Shared Documents/${folderPath}/')/Files/add(url='${filename}',overwrite=true)`;
-    var config = {
-        method: 'post',
-        url: spurl,
-        headers: {
-            'Authorization': `Bearer ${spAccessToken}`,
-            'X-RequestDigest': '', 
-            'Accept': 'application/json; odata=nometadata', 
-            'Content-Type': 'application/pdf'
-        },
-        data : file
-      };
-
-    let res = await axios(config)
-    return res;
+export const queryUserdb = async (req, res, next) => {
+  var users = await pool.query('SELECT * from users WHERE username = "judi"');
+  console.log(users);
 }
-
-async function queryMoodleUser(email){
-    const params = new URLSearchParams();
-    params.append('moodlewsrestformat', 'json');
-    params.append('wsfunction', 'core_user_get_users');
-    params.append('wstoken', process.env.MDL_TOKEN);
-    params.append('criteria[0][key]', 'email');
-    params.append('criteria[0][value]', email);
-    var config = {
-        method: 'get',
-        url: WebServiceUrl,
-        headers: {},
-        params :  params
-      };
-
-    let res = await axios(config)
-    return res;
-}
-
-async function createMoodleUser(user) {
-    //console.log(user);
-    const params = new URLSearchParams();
-    params.append('moodlewsrestformat', 'json');
-    params.append('wsfunction', 'core_user_create_users');
-    params.append('wstoken', process.env.MDL_TOKEN);
-    params.append('users[0][username]', user.username);
-    params.append('users[0][createpassword]', 1);
-    params.append('users[0][firstname]', user.firstname);
-    params.append('users[0][lastname]', user.lastname);
-    params.append('users[0][institution]', user.institution);
-    params.append('users[0][country]', user.country);
-    params.append('users[0][phone1]', user.phone);
-    params.append('users[0][email]', user.email);
-    params.append('users[0][idnumber]', 'AUTOGENERATEDID002');
-    params.append('users[0][description]', 'auto-generated');
-    params.append('users[0][lang]', 'en');
-    var config = {
-        method: 'post',
-        url: WebServiceUrl,
-        headers: {},
-        params :  params
-      };
-
-    let res = await axios(config)
-    return res;
-}
-
-async function enrollMoodleuser(userId, courseId, timestart, timeend){
-    const params = new URLSearchParams();
-    params.append('moodlewsrestformat', 'json');
-    params.append('wsfunction', 'enrol_manual_enrol_users');
-    params.append('wstoken', process.env.MDL_TOKEN);
-    params.append('enrolments[0][roleid]', '5');
-    params.append('enrolments[0][userid]', userId);
-    params.append('enrolments[0][courseid]', courseId);
-    params.append('enrolments[0][timestart]', timestart);
-    params.append('enrolments[0][timeend]', timeend);
-    params.append('enrolments[0][suspend]', '0'); //Este valor se puede usar para automatizar la extensión de matrícula
-
-    var config = {
-        method: 'post',
-        url: WebServiceUrl,
-        headers: {},
-        params :  params
-      };
-
-    let res = await axios(config)
-    return res;
-}
-
-async function addUserToMoodleGroup(userId, groupid){
-    const params = new URLSearchParams();
-    params.append('moodlewsrestformat', 'json');
-    params.append('wsfunction', 'core_group_add_group_members');
-    params.append('wstoken', process.env.MDL_TOKEN);
-    params.append('members[0][groupid]', groupid); //id del grupo al cual se espera incluir al usuario
-    params.append('members[0][userid]', userId);
-
-    var config = {
-        method: 'post',
-        url: WebServiceUrl,
-        headers: {},
-        params :  params
-      };
-
-    let res = await axios(config)
-    return res;
-}
-
 
