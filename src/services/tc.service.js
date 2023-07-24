@@ -14,25 +14,24 @@ export const newTcRecord = async (req, res, next) => {
     var newDateObj = new Date(fecha_now - mlSeconds);
     var formData = new formidable.IncomingForm();
         formData.parse(req, async (error, fields, files) => {
-            console.log(fields)
-            //const {firstname, lastname, institution, country, role, course, email, phone} = fields;
-            //const newUser = {firstname, lastname, institution, country, role, course, email, phone};
-            //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
-            //var user = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
-            //console.log(user);
-            /*
+            const {firstname, lastname, email, country, phone, company, company_category, company_activity, position, promo} = fields;
+            const promoValue = promo ?? "off";
+            const newUser = {firstname, lastname, email, country, phone, company, company_category, company_activity, position, promoValue};
+            console.log(newUser);
+
+            var user = await pool.query(`SELECT * FROM tc_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`); //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
+            console.log(user);
+            
             if(user.length == 0)
             {
-                await pool.query('INSERT INTO request set ?', [newUser]);
-                console.log("Nuevo registro exitoso" + newUser.email);
-                await sendEmailToUser(newUser);
-                await sendInternalEmail(newUser);
-
+                await pool.query('INSERT INTO tc_request set ?', [newUser]);
+                console.log("Nuevo registro TC exitoso" + newUser.email);
+                //await sendEmailToUser(newUser);
+                //await sendInternalEmail(newUser);
+                /*
                 var qUser = await queryMoodleUser(newUser.email);
                 let response = qUser.data;
                 console.log(response);
-
-
 
                  const mUser = { 
                     username: replaceSpecialChars(userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13)).toLowerCase(), 
@@ -46,7 +45,7 @@ export const newTcRecord = async (req, res, next) => {
                     phone: replaceSpecialChars(userjd[0].phone),
                     campus_id: 0
                 }; 
-
+                
                 if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
 
                     var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
@@ -60,14 +59,14 @@ export const newTcRecord = async (req, res, next) => {
                     var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
                     var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
                 }
+                */
 
 
-
-                res.redirect('/user/success');
+                res.redirect('/tc/success');
             }else{
                 console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
-                res.redirect('/user/not-success');
+                res.redirect('/tc/not-success');
             }
-            */
+            
         });
 }

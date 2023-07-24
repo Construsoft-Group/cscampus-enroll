@@ -30,10 +30,10 @@ export const newRecord = async (req, res, next) => {
             console.log("Nuevo registro exitoso" + newUser.email);
             await sendEmailToUser(newUser);
             await sendInternalEmail(newUser);
-            res.redirect('/user/success');
+            res.redirect('/beca/success');
         }else{
             console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
-            res.redirect('/user/not-success');
+            res.redirect('/beca/not-success');
         }
     });
 }
