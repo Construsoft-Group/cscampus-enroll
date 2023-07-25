@@ -22,11 +22,11 @@ export const newRecord = async (req, res, next) => {
           });
         const newUser = {firstname, lastname, institution, country, role, course, email, phone};
         //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
-        var user = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
+        var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
         //console.log(user);
         if(user.length == 0)
         {
-            await pool.query('INSERT INTO request set ?', [newUser]);
+            await pool.query('INSERT INTO beca_request set ?', [newUser]);
             console.log("Nuevo registro exitoso" + newUser.email);
             await sendEmailToUser(newUser);
             await sendInternalEmail(newUser);
@@ -43,7 +43,7 @@ export const enroller = async () => {
     var mlSeconds = 24*60*60000;
     var newDateObj = new Date(fecha_now - mlSeconds);
     var groupName = "";
-    var userjd = await pool.query(`SELECT * FROM request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND status = ""`);
+    var userjd = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND status = ""`);
     //console.log(userjd);
     const replaceSpecialChars = (str) => {
       const specialChars = { "ñ": "n" };
@@ -107,9 +107,9 @@ export const enroller = async () => {
             console.log(enrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
             //console.log(addToGroup);
-            var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
+            var insertEnrollDb = await pool.query('INSERT INTO beca_enrollments set ?', [newEnrollment]);
             //console.log(insertEnrollDb);
-            var updateReqDb = await pool.query(`UPDATE request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
+            var updateReqDb = await pool.query(`UPDATE beca_request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
             sendEnrollNotification(mUser, iC);
             return "usuario matriculado " + mUser.email;
         }
@@ -124,8 +124,8 @@ export const enroller = async () => {
             var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
             var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
             var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
-            var insertEnrollDb = await pool.query('INSERT INTO enrollments set ?', [newEnrollment]);
-            var updateReqDb = await pool.query(`UPDATE request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
+            var insertEnrollDb = await pool.query('INSERT INTO beca_enrollments set ?', [newEnrollment]);
+            var updateReqDb = await pool.query(`UPDATE beca_request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
             sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
             return "usuario creado y matriculado " + mUser.email;
         }
@@ -174,7 +174,7 @@ export const fileTest = async(req, res, next) => {
 }
 
 export const queryUserdb = async (req, res, next) => {
-  var users = await pool.query('SELECT * from users WHERE username = "judi"');
+  var users = await pool.query('SELECT * from users WHERE role = "Profesor"');
   console.log(users);
 }
 
