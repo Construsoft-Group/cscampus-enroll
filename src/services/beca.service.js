@@ -107,7 +107,7 @@ export const enroller = async () => {
             console.log(enrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
             //console.log(addToGroup);
-            var insertEnrollDb = await pool.query('INSERT INTO beca_enrollments set ?', [newEnrollment]);
+            var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
             //console.log(insertEnrollDb);
             var updateReqDb = await pool.query(`UPDATE beca_request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
             sendEnrollNotification(mUser, iC);
@@ -123,8 +123,8 @@ export const enroller = async () => {
             mUser.campus_id = newUserRes[0].id;
             var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
             var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
-            var insertuserDb = await pool.query('INSERT INTO users set ?', [mUser]);
-            var insertEnrollDb = await pool.query('INSERT INTO beca_enrollments set ?', [newEnrollment]);
+            var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
+            var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
             var updateReqDb = await pool.query(`UPDATE beca_request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
             sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
             return "usuario creado y matriculado " + mUser.email;
@@ -174,7 +174,7 @@ export const fileTest = async(req, res, next) => {
 }
 
 export const queryUserdb = async (req, res, next) => {
-  var users = await pool.query('SELECT * from users WHERE role = "Profesor"');
-  console.log(users);
+  var users = await pool.query('SELECT * from all_users WHERE role = "Profesor"');
+  res.status(200).json(users);
 }
 

@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmailToUser = async (newUser) => {
-    var htmlPath = path.resolve(__dirname, './email_templates/mail_aspirante.html');
+    var htmlPath = path.resolve(__dirname, './email_templates/beca_mail_aspirante.html');
     
     const info = await transporter.sendMail({
         from: "'Campus Construsoft' <campus@construsoft.es>",
@@ -54,7 +54,7 @@ export const sendEnrollNotification = (newUser, course) => {
     var courseName = course.courseName;
     var courseLink = course.courseLink;
     //console.log(studentName + " " + courseName +" "+ courseLink);
-    ejs.renderFile(__dirname + '/email_templates/mail_enrolled.ejs', {studentName, courseName, courseLink} , (err, data) => {
+    ejs.renderFile(__dirname + '/email_templates/beca_mail_enrolled.ejs', {studentName, courseName, courseLink} , (err, data) => {
         if (err) {
             console.log(err);
         } else {
