@@ -106,6 +106,29 @@ const enrollmentGroups = [
         ]
     },
     {
+        "courseId": 174,
+        "courseName": "Common Data Environment con Trimble Connect NUEVO",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=174",
+        "groups": [
+            {
+                "groupId": 2518,
+                "groupName": "23_ADM"
+            },
+            {
+                "groupId": 2517,
+                "groupName": "23_CON"
+            },
+            {
+                "groupId": 2519,
+                "groupName": "23_FULL"
+            },
+            {
+                "groupId": 2520,
+                "groupName": "23_OWN"
+            }
+        ]
+    },
+    {
         "courseId": 2,
         "courseName": "Strusite",
         "courseLink" : "",

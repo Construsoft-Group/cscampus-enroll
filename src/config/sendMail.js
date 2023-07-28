@@ -37,6 +37,7 @@ export const sendInternalEmail = async (newUser) => {
             <li>Role: ${newUser.role}</li>
             <li>Curso: ${newUser.course}</li>
             <li>Phone: ${newUser.phone}</li>
+            <li>Universidad: ${newUser.institution}</li>
         </ul>
     `;
 
@@ -49,12 +50,12 @@ export const sendInternalEmail = async (newUser) => {
     return info.messageId
 }
 
-export const sendEnrollNotification = (newUser, course) => {
+export const sendEnrollNotification = (newUser, course, emailTemplate) => {
     var studentName = newUser.firstname;
     var courseName = course.courseName;
     var courseLink = course.courseLink;
     //console.log(studentName + " " + courseName +" "+ courseLink);
-    ejs.renderFile(__dirname + '/email_templates/beca_mail_enrolled.ejs', {studentName, courseName, courseLink} , (err, data) => {
+    ejs.renderFile(__dirname + `/email_templates/${emailTemplate}`, {studentName, courseName, courseLink} , (err, data) => {
         if (err) {
             console.log(err);
         } else {

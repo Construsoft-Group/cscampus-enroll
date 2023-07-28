@@ -5,32 +5,48 @@ import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
-import { getSpAccessToken, sendFileToSp } from '../config/sharepoint.js';
+import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
 
 export const newRecord = async (req, res, next) => {
   let fecha_now = new Date(); //Fecha Actual
   var mlSeconds = 24*60*60000;
   var newDateObj = new Date(fecha_now - mlSeconds);
+
+  var sitename =  'UNIVERSIDADES-ProyectoEducacional'; //nombre del sharepoint
+  var folderPath = 'General/7. Documentos aspirantes'; //ruta de archivo en el sharepoint 
+  var listname = 'Matriculaciones web'; //Nombre de la lista en SP
+  
   var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
         const {firstname, lastname, institution, country, role, course, email, phone} = fields;
         var filename = email +"-"+ files.file.originalFilename;
         const file = files.file;
-        fs.readFile(file.filepath, async (err, data) => { //Se lee el archivo desde temp y se inserta el buffer como data en sharepoint.
-            var spAccessToken = await getSpAccessToken();
-            var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
-          });
         const newUser = {firstname, lastname, institution, country, role, course, email, phone};
+        var spAccessToken = await getSpAccessToken();
+        fs.readFile(file.filepath, async (err, data) => { //Se lee el archivo desde temp y se inserta el buffer como data en sharepoint.
+            var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token, sitename, folderPath);
+          });
         //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
         var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
-        //console.log(user);
         if(user.length == 0)
         {
             await pool.query('INSERT INTO beca_request set ?', [newUser]);
-            console.log("Nuevo registro exitoso" + newUser.email);
             await sendEmailToUser(newUser);
             await sendInternalEmail(newUser);
+            let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
+              "Title": filename,
+              "Nombres": newUser.firstname,
+              "Apellidos": newUser.lastname,
+              "Instituci_x00f3_n": newUser.institution,
+              "Pais": newUser.country,
+              "curso": newUser.course,
+              "phone":newUser.phone,
+              "email": newUser.email
+            }
+            var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+            console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
             res.redirect('/beca/success');
+            
         }else{
             console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
             res.redirect('/beca/not-success');
@@ -44,7 +60,7 @@ export const enroller = async () => {
     var newDateObj = new Date(fecha_now - mlSeconds);
     var groupName = "";
     var userjd = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "2023-01-01 00:00:00" AND "${newDateObj.toISOString()}" AND status = ""`);
-    //console.log(userjd);
+
     const replaceSpecialChars = (str) => {
       const specialChars = { "ñ": "n" };
       const accents = {
@@ -62,8 +78,6 @@ export const enroller = async () => {
       return str.replace(/[ñáéíóúÁÉÍÓÚ]/g, (match) => specialChars[match] || accents[match] || match);
     };
     if(userjd.length!=0){
-        //const usernamestr = userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13);
-        //const username = usernamestr.toLowerCase();
         const mUser = { 
             username: replaceSpecialChars(userjd[0].firstname.substring(0,2)+userjd[0].lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13)).toLowerCase(), 
             firstname: replaceSpecialChars(userjd[0].firstname), 
@@ -82,7 +96,6 @@ export const enroller = async () => {
         //let response = JSON.parse(data[2]); //Esta linea es necesaria cuando es campus Strusite (Test)
         let response = qUser.data;
         console.log(response);
-        //console.log(response.users.length);
         var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
         if(mUser.role == "Estudiante"){
             groupName = "PROGRAMA ESTUDIANTES 2023";
@@ -96,7 +109,6 @@ export const enroller = async () => {
             role: mUser.role,
             course_group: iG.groupId
         }
-        //console.log(newEnrollment);
 
         var iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
         var timeEnd = new Date();
@@ -110,24 +122,44 @@ export const enroller = async () => {
             var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
             //console.log(insertEnrollDb);
             var updateReqDb = await pool.query(`UPDATE beca_request SET status = "enrolled" WHERE id_ext="${userjd[0].id_ext}"`);
-            sendEnrollNotification(mUser, iC);
+            sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs');
             return "usuario matriculado " + mUser.email;
         }
         else //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
         {  
-            var newUser = await createMoodleUser(mUser);
-            console.log(newUser.data);
-            //var newUserData = newUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
-            //let newUserRes = JSON.parse(newUserData[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
-            let newUserRes = newUser.data;
-            mUser.campus_id = newUserRes[0].id;
-            var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
-            var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
-            var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
-            var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
-            var updateReqDb = await pool.query(`UPDATE beca_request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
-            sendEnrollNotification(mUser, iC); //Se envía correo de notificación con para acceder al curso
-            return "usuario creado y matriculado " + mUser.email;
+          if (mUser.country == "Costa Rica" || mUser.country == "El Salvador" || mUser.country == "Dominican Republic" ){
+            mUser.country = "";
+          }
+          var newUser = await createMoodleUser(mUser);
+          console.log(newUser.data);
+          //var newUserData = newUser.data.split("<hr>"); //Esta linea es necesaria cuando es canpus Strusite (Test)
+          //let newUserRes = JSON.parse(newUserData[2]); //Esta linea es necesaria cuando es canpus Strusite (Test)
+          let newUserRes = newUser.data;
+          mUser.campus_id = newUserRes[0].id;
+          var enrollment = await enrollMoodleuser(newUserRes[0].id, iC.courseId, iniEnrollment, endEnrollment);
+          var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
+          var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
+          var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
+          var updateReqDb = await pool.query(`UPDATE beca_request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
+
+          var spAccessToken = await getSpAccessToken();
+          let data = {
+              "__metadata": {
+              "type": "SP.Data.Matriculaciones_x0020_webListItem"
+              },
+              "Title": mUser.campus_id,
+              "Nombres": mUser.firstname,
+              "Apellidos": mUser.lastname,
+              "email": mUser.email,
+              "Instituci_x00f3_n": mUser.institution,
+              "Pais": mUser.country,
+              "curso": mUser.course,
+              "phone": mUser.phone
+          }
+          await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+
+          sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
+          return "usuario creado y matriculado " + mUser.email;
         }
     }else{
         return "No hay usuarios nuevos";
@@ -151,7 +183,7 @@ export const fileTest = async(req, res, next) => {
   };
   var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
   
-  sendEnrollNotification(mUser, iC);
+  sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs');
   const form = new formidable.IncomingForm();
 
   /* form.parse(req, (err, fields, files) => {

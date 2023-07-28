@@ -20,9 +20,7 @@ export async function getSpAccessToken() {
       return res;
 }
 
-export async function sendFileToSp(file, filename, spAccessToken) {
-    var sitename =  'UNIVERSIDADES-ProyectoEducacional';
-    var folderPath = 'General/7. Documentos aspirantes'
+export async function sendFileToSp(file, filename, spAccessToken, sitename, folderPath) {
     var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/GetFolderByServerRelativeURL('/sites/${sitename}/Shared Documents/${folderPath}/')/Files/add(url='${filename}',overwrite=true)`;
     var config = {
         method: 'post',
@@ -40,3 +38,20 @@ export async function sendFileToSp(file, filename, spAccessToken) {
     return res;
 }
 
+export async function createListItem(spAccessToken, data, sitename, listname) {
+  var spurl = `https://construsoftgroup.sharepoint.com/sites/${sitename}/_api/web/lists/GetByTitle('${listname}')/items'`;
+  var config = {
+      method: 'post',
+      url: spurl,
+      headers: {
+          'Authorization': `Bearer ${spAccessToken}`,
+          'X-RequestDigest': '', 
+          'Accept': 'application/json; odata=nometadata', 
+          'Content-Type': 'application/json; odata=verbose'
+      },
+      data : data
+    };
+
+  let res = await axios(config)
+  return res;
+}
