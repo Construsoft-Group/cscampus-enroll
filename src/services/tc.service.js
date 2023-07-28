@@ -42,8 +42,8 @@ export const newTcRecord = async (req, res, next) => {
             {
                 await pool.query('INSERT INTO tc_request set ?', [newUser]);
                 console.log("Nuevo registro TC exitoso" + newUser.email);
-                await sendEmailToUser(newUser);
-                await sendInternalEmail(newUser);
+                //await sendEmailToUser(newUser);
+                //await sendInternalEmail(newUser);
 
                 switch(newUser.company_category){
                     case "Administración / Institución pública":
