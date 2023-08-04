@@ -52,7 +52,7 @@ export const newTcRecord = async (req, res, next) => {
                     case "Promotor / Dueño de proyecto":
                         groupName = "23_OWN"; 
                         break;
-                    case "Constructora": 
+                    case "Constructora / Ingenieria": 
                     case "Otro":
                         groupName = "23_CON"; 
                         break;
@@ -89,6 +89,28 @@ export const newTcRecord = async (req, res, next) => {
                     campus_id: 0
                 }; 
 
+                var owner = "";
+                // Objeto que mapea países con sus propietarios
+                const countryOwners = {
+                    "Argentina": "LATAM - Trimble Connect leads",
+                    "Bolivia": "LATAM - Trimble Connect leads",
+                    "Chile": "LATAM - Trimble Connect leads",
+                    "Colombia": "LATAM - Trimble Connect leads",
+                    "Ecuador": "LATAM - Trimble Connect leads",
+                    "Paraguay": "LATAM - Trimble Connect leads",
+                    "Uruguay": "LATAM - Trimble Connect leads",
+                    "Venezuela": "LATAM - Trimble Connect leads",
+                    "Spain": "ES - General Leads",
+                };
+                
+                // Verificar si el país existe en el objeto countryOwners
+                if (newUser.country in countryOwners) {
+                owner = countryOwners[newUser.country];
+                } else {
+                owner = "ES - Marketing";
+                }
+                console.log(owner);
+                
                 if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
                     mUser.campus_id = response.users[0].id;
                     var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
@@ -105,7 +127,7 @@ export const newTcRecord = async (req, res, next) => {
                         "Product": "Timble Connect",
                         "Segment": newUser.company_activity,
                         "Phone": newUser.phone,
-                        "Owner": "juan.diaz@construsoft.com"
+                        "Owner": owner
                     }
                     var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
@@ -122,6 +144,7 @@ export const newTcRecord = async (req, res, next) => {
                     var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
                     var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
 
+
                     var spAccessToken = await getSpAccessToken();
                     let data = {
                         "__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
@@ -133,12 +156,13 @@ export const newTcRecord = async (req, res, next) => {
                         "Product": "Timble Connect",
                         "Segment": newUser.company_activity,
                         "Phone": newUser.phone,
-                        "Owner": "juan.diaz@construsoft.com"
+                        "Owner": owner
                     }
                     var listItemResult  = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
                     console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
                 }
+                
                 res.redirect('/tc/success');
             }else{
                 console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");

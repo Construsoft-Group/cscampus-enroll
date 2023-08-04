@@ -48,7 +48,7 @@ $(document).ready(function () {
     var selectCategories = {
     "1": "Administración / Institución pública",
     "2": "Promotor / Dueño de proyecto",
-    "3": "Constructora",
+    "3": "Constructora / Ingenieria",
     "4": "Otro"
     }
     var selectActivity = { 
