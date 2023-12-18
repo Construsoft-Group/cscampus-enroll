@@ -116,6 +116,7 @@ export const newTcRecord = async (req, res, next) => {
                     var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
                     var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
                     var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
+                    /* Se comenta esta parte hasta resolver problema con Sharepoint
                     var spAccessToken = await getSpAccessToken();
                     let data = {
                         "__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
@@ -129,6 +130,7 @@ export const newTcRecord = async (req, res, next) => {
                         "Phone": newUser.phone,
                         "Owner": owner
                     }
+                    */
                     var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
                     console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
@@ -144,7 +146,7 @@ export const newTcRecord = async (req, res, next) => {
                     var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
                     var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
 
-
+                    /*  Se comenta esta parte hasta resolver problema con Sharepoint
                     var spAccessToken = await getSpAccessToken();
                     let data = {
                         "__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
@@ -158,6 +160,7 @@ export const newTcRecord = async (req, res, next) => {
                         "Phone": newUser.phone,
                         "Owner": owner
                     }
+                    */
                     var listItemResult  = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
                     console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
