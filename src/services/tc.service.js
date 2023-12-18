@@ -130,8 +130,9 @@ export const newTcRecord = async (req, res, next) => {
                         "Phone": newUser.phone,
                         "Owner": owner
                     }
-                    */
+                    
                     var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+                    */
                     sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
                     console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
 
@@ -160,8 +161,8 @@ export const newTcRecord = async (req, res, next) => {
                         "Phone": newUser.phone,
                         "Owner": owner
                     }
-                    */
                     var listItemResult  = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+                    */
                     sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
                     console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
                 }

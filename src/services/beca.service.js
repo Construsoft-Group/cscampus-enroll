@@ -36,6 +36,7 @@ export const newRecord = async (req, res, next) => {
             await pool.query('INSERT INTO beca_request set ?', [newUser]);
             await sendEmailToUser(newUser);
             await sendInternalEmail(newUser);
+            /* Se comenta esta parte hasta resolver problema con Sharepoint
             let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
               "Title": filename,
               "Nombres": newUser.firstname,
@@ -46,7 +47,9 @@ export const newRecord = async (req, res, next) => {
               "phone":newUser.phone,
               "email": newUser.email
             }
+
             var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+            */
             console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
             res.redirect('/beca/success');
             
@@ -160,9 +163,8 @@ export const enroller = async () => {
               "curso": mUser.course,
               "phone": mUser.phone
           }
-          */
           await createListItem(spAccessToken.data.access_token, data, sitename, listname);
-
+          */
           sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
           return "usuario creado y matriculado " + mUser.email;
         }
