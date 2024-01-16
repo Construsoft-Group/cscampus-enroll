@@ -1,11 +1,11 @@
 const phoneInputField = document.querySelector("#phone");
 const info = document.querySelector(".alert-info");
-/*
+
 const phoneInput = window.intlTelInput(phoneInputField, { preferredCountries: ["es", "co", "cl", "pe", "ar"],
     utilsScript:
     "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
 });
-*/
+
 
 var studentForm = jQuery("#newStudent");
 
