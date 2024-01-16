@@ -1,10 +1,11 @@
 const phoneInputField = document.querySelector("#phone");
 const info = document.querySelector(".alert-info");
-
+/*
 const phoneInput = window.intlTelInput(phoneInputField, { preferredCountries: ["es", "co", "cl", "pe", "ar"],
     utilsScript:
     "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
 });
+*/
 
 var studentForm = jQuery("#newStudent");
 
@@ -45,57 +46,45 @@ $(document).ready(function () {
         "22": "Uruguay",
         "23": "Venezuela"
      };
-     
-    var selectCategories = {
-    "1": "Administración / Institución pública",
-    "2": "Promotor / Dueño de proyecto",
-    "3": "Constructora / Ingenieria",
-    "4": "Otro"
-    }
+     var selectPosition = { 
+        "1": "General Director", 
+        "2": "Technical Manager", 
+        "3": "Logistics Manager", 
+        "4": "Production Manager",
+        "5": "IT Manager",
+        "6": "BIM Manager",
+        "7": "Technical Office",
+        "8": "Draftman",
+        "9": "Calculator",
+        "10": "Modeler",
+        "11": "Production Dept",
+        "12": "Purchasing Dept",
+        "13": "Logistics Dept",
+        "14": "IT Dept",
+        "15": "Secretary",
+        "16": "Teacher",
+        "17": "Student"
+    };
 
     var selectActivity = { 
-    "1": "Centro educativo", 
-    "2": "Construcciones metálicas", 
-    "3": "Constructora", 
-    "4": "Hormigón In-situ",
-    "5": "Hormigón prefabricado",
-    "6": "Ingeniería",
-    "7": "Madera",
-    "8": "Otro"
+        "1": "Centro educativo", 
+        "2": "Construcciones metálicas", 
+        "3": "Constructora", 
+        "4": "Hormigón In-situ",
+        "5": "Hormigón prefabricado",
+        "6": "Ingeniería",
+        "7": "Madera",
+        "8": "Otro"
     };
-
-    var selectPosition = { 
-    "1": "General Director", 
-    "2": "Technical Manager", 
-    "3": "Logistics Manager", 
-    "4": "Production Manager",
-    "5": "IT Manager",
-    "6": "BIM Manager",
-    "7": "Technical Office",
-    "8": "Draftman",
-    "9": "Calculator",
-    "10": "Modeler",
-    "11": "Production Dept",
-    "12": "Purchasing Dept",
-    "13": "Logistics Dept",
-    "14": "IT Dept",
-    "15": "Secretary",
-    "16": "Teacher",
-    "17": "Student"
-    };
-
 
     $.each(selectCountries, function(key, value) {   
         $('#country').append($("<option></option>").attr("value", value).text(value)); 
     });
-    $.each(selectCategories, function(key, value) {   
-        $('#category').append($("<option></option>").attr("value", value).text(value)); 
+    $.each(selectPosition, function(key, value) {   
+        $('#position').append($("<option></option>").attr("value", value).text(value)); 
     });
     $.each(selectActivity, function(key, value) {   
         $('#activity').append($("<option></option>").attr("value", value).text(value)); 
-    });
-    $.each(selectPosition, function(key, value) {   
-        $('#position').append($("<option></option>").attr("value", value).text(value)); 
     });
 });
 
@@ -114,7 +103,6 @@ function submitStudentForm() {
     studentForm.trigger('submit', [true]);
 }
 
-
 function validar() {
     var email = document.getElementById('email');
     var emailConfirm = document.getElementById('emailConfirm');
@@ -131,3 +119,4 @@ function validar() {
         return false;
     }
 }
+ 

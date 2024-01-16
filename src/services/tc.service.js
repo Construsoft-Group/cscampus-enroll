@@ -3,6 +3,7 @@ import formidable from "formidable";
 import fs from 'fs'
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
+import { replaceSpecialChars } from '../config/specialChars.js';
 
 import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
@@ -20,24 +21,8 @@ export const newTcRecord = async (req, res, next) => {
             const {firstname, lastname, email, country, phone, company, company_category, company_activity, position, promo} = fields;
             const promoValue = promo ?? "off";
             const newUser = {firstname, lastname, email, country, phone, company, company_category, company_activity, position, promoValue};
-            const replaceSpecialChars = (str) => {
-                const specialChars = { "ñ": "n" };
-                const accents = {
-                  á: "a",
-                  é: "e",
-                  í: "i",
-                  ó: "o",
-                  ú: "u",
-                  Á: "A",
-                  É: "E",
-                  Í: "I",
-                  Ó: "O",
-                  Ú: "U"
-                };
-                return str.replace(/[ñáéíóúÁÉÍÓÚ]/g, (match) => specialChars[match] || accents[match] || match);
-              };
 
-              var user = await pool.query(`SELECT * FROM tc_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`); //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
+            var user = await pool.query(`SELECT * FROM tc_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`); //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
             if(user.length == 0)
             {
                 await pool.query('INSERT INTO tc_request set ?', [newUser]);
@@ -59,8 +44,8 @@ export const newTcRecord = async (req, res, next) => {
                 };
                 var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
                 var iG = iC.groups.find(obj => obj.groupName === groupName);
-                console.log(groupName);
-                console.log(iG);
+                //console.log(groupName);
+                //console.log(iG);
                 var newEnrollment = {
                     course_id: iC.courseId,
                     user_email: newUser.email,

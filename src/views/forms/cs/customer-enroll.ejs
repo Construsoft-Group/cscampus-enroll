@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
     <script src="https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/stylescs.css">
     <title>Solicita tu acceso gratis al curso</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
@@ -32,52 +32,62 @@
             <form class="form__container--form" action="/cs/customer-enroll" method="POST" enctype="multipart/form-data" id="newStudent">
                 <input type="hidden" name="courseId" value="<%= courseId %>">
                 <div class="form-group">
-                    <label>Nombre</label>
-                    <input id="firstname" type="text" class="form-control" name="firstname" required>
+                    <div class="form-group_row">
+                        <label>Nombre</label>
+                        <input id="firstname" type="text" class="form-control" name="firstname" required>
+                    </div>
+                    <div class="form-group_row">
+                        <label>Apellidos</label>
+                        <input id="lastname" type="text" class="form-control" name="lastname" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Apellidos</label>
-                    <input id="lastname" type="text" class="form-control" name="lastname" required>
-                </div>
-                <div class="form-group">
-                    <label>Empresa</label>
-                    <input id="company" type="text" class="form-control" name="institution" required>
-                </div>
-                <!--<div class="form-group">
-                    <label>Cargo</label>
-                    <select id="position" class="form-control" name="country" required>
+                    <div class="form-group_row">
+                        <label>Empresa</label>
+                        <input id="company" type="text" class="form-control" name="institution" required>
+                    </div>
+                    <div class="form-group_row">
+                        <label>Actividad empresa</label>
+                        <select id="activity" class="form-control" name="activity" required>
                         <option selected></option>
-                    </select>
-                </div>-->
-                <div class="form-group">
-                    <label>Email</label>
-                    <input id="email" type="email" class="form-control" name="email" required>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Confirma tu email</label>
-                    <input id="emailConfirm" type="email" class="form-control" name="emailConfirm" required>
-                </div> 
+                    <div class="form-group_row">
+                        <label>Email</label>
+                        <input id="email" type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="form-group_row">
+                        <label>Confirma tu email</label>
+                        <input id="emailConfirm" type="email" class="form-control" name="emailConfirm" required>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>Whatsapp</label>
-                    <div id="div1">
+                    <div class="form-group_row">
+                        <label>Whatsapp</label>
+                        <div id="div1">
                         <input type="tel" class="form-control" id="phone" name="phone" required>
                         <div class="alert alert-info" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="form-group_row">
+                        <label>Cargo</label>
+                        <select id="position" class="form-control" name="position" required>
+                        <option selected></option>
+                        </select>
                     </div>
                 </div>
                 <!--<label class="form-label" for="customFile">Adjunta un documento que acredite que eres estudiante o profesor</label>
                 <input type="file" accept="application/pdf, image/gif, image/jpeg, image/png" class="form-control" id="customFile" name="file" required>-->
-                <div class="form-group">
-                    <div>
-                        <input type="checkbox" id="radioOption" name="optradio" required></input>
-                        <p>He leído y acepto la Política de Privacidad</p>
-                    </div>
+                <div class="form-group_check">
+                    <input type="checkbox" id="radioOption" name="optradio" required></input>
+                    <p>He leído y acepto la Política de Privacidad</p>
                     <a class="form-group-a" href="https://www.construsoft.es/es/politica-privacidad">Haga clic aquí para leer la Política de Privacidad</a>
                 </div>
-                <div class="form-group">
-                    <div>
-                        <input type="checkbox" id="radioOption" name="optradio"></input>
-                        <p>Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.</p>
-                    </div>
+                <div class="form-group_check">
+                    <input type="checkbox" id="radioOption" name="promo"></input>
+                    <p>Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.</p>
                 </div>
                 <div id="strengthMessage"></div>
                 <div class="g-recaptcha"
@@ -85,13 +95,15 @@
                     data-callback="submitStudentForm"
                     data-size="invisible">
                 </div>
-                <button class="button" id="send" onclick="return validar()">Enviar solicitud</button>
+                <div class="form-group_button">
+                    <button class="button" id="send" onclick="return validar()">Enviar solicitud</button>
+                </div>
             </form>
         </div>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-    <script src="/js/formBeca.js"></script>
+    <script src="/js/formcs.js"></script>
 </body>
 </html>
