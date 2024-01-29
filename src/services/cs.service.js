@@ -38,13 +38,18 @@ export const customerEnrollmentReq = async (req, res, next) => {
   var newDateObj = new Date(fecha_now - mlSeconds);
   var formData = new formidable.IncomingForm();
   formData.parse(req, async (error, fields, files) => {
+    //console.log(fields);
     const {courseId, firstname, lastname, company, activity, email, phone, position, promo} = fields;
     const promoValue = promo ?? "off";
-    const newUser = {courseId, firstname, lastname, company, activity, email, phone, position, promoValue};
+    const newUser = {course_Id : courseId, firstname, lastname, company, activity, email, phone, position, promoValue};
+    //console.log(newUser);
     var user = await pool.query(`SELECT * FROM customer_enrollment_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
+    console.log(user.length);
+        
         if(user.length == 0)
         {
-          await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
+          var res = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
+          console.log(res);
           await sendEmailToUser(newUser);
           await sendInternalEmail(newUser);
           /* Se comenta esta parte hasta resolver problema con Sharepoint
@@ -63,7 +68,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
           
           console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           */
-
+          
           var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.courseId));
           //var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
           var groupName =  "PROGRAMA ESTUDIANTES 2024";
@@ -102,6 +107,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
             var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
+
             /* Se comenta esta parte hasta resolver problema con Sharepoint
             var spAccessToken = await getSpAccessToken();
             let data = {
@@ -121,7 +127,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             */
             sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
             console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
-
+            
           }else{ //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
               
               var mUserMoodle = await createMoodleUser(mUser);
@@ -157,6 +163,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
             res.redirect('/cs/not-success');
         }
+        
   })
 
 }

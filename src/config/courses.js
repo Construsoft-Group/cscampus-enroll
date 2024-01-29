@@ -12,6 +12,14 @@ const enrollmentGroups = [
             {
                 "groupId": 1619,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2569,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 2567,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
@@ -27,6 +35,14 @@ const enrollmentGroups = [
             {
                 "groupId": 1620,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2570,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 2566,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
@@ -42,6 +58,10 @@ const enrollmentGroups = [
             {
                 "groupId": 1623,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2561,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
@@ -57,6 +77,10 @@ const enrollmentGroups = [
             {
                 "groupId": 1624,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2563,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
@@ -72,6 +96,10 @@ const enrollmentGroups = [
             {
                 "groupId": 1627,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2562,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
@@ -83,6 +111,10 @@ const enrollmentGroups = [
             {
                 "groupId": 1629,
                 "groupName": "PROGRAMA ESTUDIANTES 2023"
+            },
+            {
+                "groupId": 1628,
+                "groupName": "PROGRAMA PROFESORES 2023"
             },
             {
                 "groupId": 1628,
@@ -102,12 +134,20 @@ const enrollmentGroups = [
             {
                 "groupId": 1631,
                 "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2578,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 2564,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },
     {
         "courseId": 174,
-        "courseName": "Common Data Environment con Trimble Connect NUEVO",
+        "courseName": "Common Data Environment con Trimble Connect",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=174",
         "groups": [
             {
@@ -125,6 +165,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2520,
                 "groupName": "23_OWN"
+            },
+            {
+                "groupId": 2565,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
             }
         ]
     },

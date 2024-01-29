@@ -1,5 +1,9 @@
 body{
   background-color: #FFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* sucess view */ 
@@ -31,21 +35,36 @@ body{
   text-align: center;
 }
 
+/*form-banner*/
+  .banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #00a1e5;
+    width: -webkit-fill-available;
+  }
+  .banner > h2,h3{
+    text-align: center;
+    color: #FFFF;
+    font-family: "SansaPro",sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
 /* form */
   .form {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     padding: 0px 30px;
     min-height: calc(100vh - 200px);
   }
 
   .form__container {
-    /*border: 2px solid rgba(56, 56, 56, 0.1);*/
-    /*border-radius: 40px;*/
     color: rgb(0, 0, 0);
-    padding: 60px 40px 40px;
+    padding: 5px 40px 40px;
     min-height: 600px;
     width: 700px;
     display: flex;
@@ -53,19 +72,10 @@ body{
     flex-direction: column;
   }
 
-  .form__container > h2,h3{
-    text-align: center;
-  }
+  
   .form__container--form {
     display: flex;
     flex-direction: column;
-  }
-  .form__container--form > div > p{
-    font-size: 12px;
-    text-align: center;
-  }
-  #customFile {
-    font-size: 13px;
   }
 
   .form__container--form > label{
@@ -91,10 +101,36 @@ body{
     display: flex;
     justify-content: center;
   }
+
   .form-group_check{
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    align-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
+
+  .form-group_check > p{
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 15px;
+    margin-bottom: 0;
+  }
+
+  .form-group_check > a{
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 20px;
+  }
+
   .form-group > label {
     width: 150px;
     font-size: 14.5px;
@@ -118,11 +154,6 @@ body{
     font-size: 14.5px;
   }
 
-  #phone{
-    width: 185px;
-    height: 25px;
-  }
-  
   #radioOption{
     width: 15px;
   }
@@ -137,24 +168,18 @@ body{
     padding: 5px;
     margin: 0;
   }
-  #customFile{
-    margin-bottom: 10px;
-  }
-   .form-group > div > p{
+
+  .form-group > div > p{
+    align-items: end;
     font-size: 12px;
     padding-top: 2px;
     padding-left: 0px;
+    /*
     margin-left: 3px;
     margin-bottom: 3px;
+    */
   }
-  .form-group-a{
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    margin-left: 3px;
-  }
+  
   .form-group > div > label{
     padding-top: 5px;
   }
@@ -179,9 +204,14 @@ body{
     display:block;
     margin:auto;  
   }
-  
+
+  #phone{
+    width: 270px;
+    height: 38.48px;
+  }
+
  /*  Responsive */
-  @media only screen and (max-width: 400px){
+  @media only screen and (max-width: 600px){
   .form-group{
     display: flex;
     flex-direction: column;
@@ -202,8 +232,12 @@ body{
   .form-group > select {
     width: 285px;
   }
+  .h3{
+    width: 270px;
+  }
   #phone{
-    width: 285px;
+    width: 270px;
+    height: 38.48px;
   }
 }
 

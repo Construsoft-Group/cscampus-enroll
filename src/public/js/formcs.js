@@ -1,3 +1,4 @@
+
 const phoneInputField = document.querySelector("#phone");
 const info = document.querySelector(".alert-info");
 
