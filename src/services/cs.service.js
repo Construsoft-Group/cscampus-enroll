@@ -69,7 +69,8 @@ export const customerEnrollmentReq = async (req, res, next) => {
           console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           */
           
-          var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.courseId));
+          var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.course_Id));
+          console.log(iC);
           //var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
           var groupName =  "PROGRAMA ESTUDIANTES 2024";
           var iG = iC.groups.find(obj => obj.groupName === groupName);
@@ -124,9 +125,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
             }
             
             var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+            console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
             */
             sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
-            console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
+            console.log("usuario matriculado " + mUser.email );
             
           }else{ //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
               
@@ -158,10 +160,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
               sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
               console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
           }
-            res.redirect('/cs/success');  
+            res.redirect('/cs/customer-enroll/success');  
         }else{
             console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
-            res.redirect('/cs/not-success');
+            res.redirect('/cs/customer-enroll/not-success');
         }
         
   })

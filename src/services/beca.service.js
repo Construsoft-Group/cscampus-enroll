@@ -106,9 +106,9 @@ export const enroller = async () => {
         console.log(response);
         var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
         if(mUser.role == "Estudiante"){
-            groupName = "PROGRAMA ESTUDIANTES 2023";
+            groupName = "PROGRAMA ESTUDIANTES 2024";
         } else {
-            groupName = "PROGRAMA PROFESORES 2023";
+            groupName = "PROGRAMA PROFESORES 2024";
         }
         var iG = iC.groups.find(obj => obj.groupName === groupName);
         var newEnrollment = {

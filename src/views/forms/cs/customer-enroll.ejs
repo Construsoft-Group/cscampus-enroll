@@ -33,7 +33,10 @@
         <div class ="form__container">
             
             <form class="form__container--form" action="/cs/customer-enroll" method="POST" enctype="multipart/form-data" id="newStudent">
-                <input type="hidden" name="courseId" value="<%= courseId %>">
+                <input name="courseId" value="<%= courseId %>">
+                <select id="position" class="form-control" name="position" required>
+                    <option selected></option>
+                    
                 <div class="form-group">
                     <div class="form-group_row">
                         <label>Nombre</label>
