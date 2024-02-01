@@ -97,7 +97,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
           var endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
 
           var qUser = await queryMoodleUser(newUser.email);
-          let response = qUser.data;
+          let qUserData = qUser.data;
 
           const mUser = { 
             username: replaceSpecialChars(newUser.firstname.substring(0,2)+newUser.lastname.substring(0,2)+ "-" +fecha_now.getTime().toString().substring(9,13)).toLowerCase(), 
@@ -111,10 +111,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
             campus_id: 0
           }; 
 
-          if(response.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
-            mUser.campus_id = response.users[0].id;
-            var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
-            var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
+          if(qUserData.users.length != 0){ //Cuando el usuario ya esta registrado entonces lo matricula y lo añade al curso.
+            mUser.campus_id = qUserData.users[0].id;
+            var enrollment = await enrollMoodleuser(qUserData.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
+            var addToGroup = await addUserToMoodleGroup(qUserData.users[0].id, iG.groupId);
             var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
             
             /* Se comenta esta parte hasta resolver problema con Sharepoint
