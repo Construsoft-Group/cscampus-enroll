@@ -78,6 +78,17 @@ $(document).ready(function () {
         "8": "Otro"
     };
 
+    var selectCourses = {
+        "1": "Fundamentos Tekla Structures Acero", 
+        "2": "Fundamentos Tekla Structures Hormigón", 
+        "3": "Detallado de Elementos Prefabricados en Tekla Structures", 
+        "4": "Componentes Personalizados en Tekla Structures",
+        "5": "Editor de cuadros en Tekla Structures",
+        "6": "Gestión de la numeración de Tekla Structures",
+        "7": "Macros de Construsoft para Tekla Structures",
+        "8": "Optimización de flujos BIM con Trimble Connect"
+    }
+
     $.each(selectCountries, function(key, value) {   
         $('#country').append($("<option></option>").attr("value", value).text(value)); 
     });
@@ -87,6 +98,10 @@ $(document).ready(function () {
     $.each(selectActivity, function(key, value) {   
         $('#activity').append($("<option></option>").attr("value", value).text(value)); 
     });
+    $.each(selectCourses, function(key, value) {   
+        $('#courseName').append($("<option></option>").attr("value", value).text(value)); 
+    });
+
 });
 
 
@@ -105,14 +120,23 @@ function submitStudentForm() {
 }
 
 function validar() {
-    var email = document.getElementById('email');
-    var emailConfirm = document.getElementById('emailConfirm');
-    console.log(email.value)
-    console.log(emailConfirm.value)
-   if(email.value == emailConfirm.value){
+    var email = $('#email').val();
+    var emailConfirm = $('#emailConfirm').val();
+    //console.log(email.value)
+    //console.log(emailConfirm.value)
+    // Expresión regular para verificar si el dominio del correo es corporativo
+    var corporateEmailRegex = /^[a-zA-Z0-9._%+-]+@(?!gmail\.com|outlook\.com|yahoo\.com|hotmail\.com|vodafone\.com|movistar\.com|telefonica\.com|live\.com|msn\.com|google\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+   if(email == emailConfirm){
+    if (corporateEmailRegex.test(email)) {
         $('#strengthMessage').text("");
         $('#strengthMessage').removeClass();
         return true;
+    } else {
+        $('#strengthMessage').text("Por favor, utiliza una cuenta de correo corporativa.");
+        $('#strengthMessage').addClass('alert alert-danger');
+        return false;
+    }
     } else {
         $('#strengthMessage').removeClass();
         $('#strengthMessage').text("Los campos email deben coincidir");

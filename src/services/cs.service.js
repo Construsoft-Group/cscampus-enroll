@@ -39,19 +39,26 @@ export const customerEnrollmentReq = async (req, res, next) => {
   var formData = new formidable.IncomingForm();
   formData.parse(req, async (error, fields, files) => {
     //console.log(fields);
-    const {courseId, firstname, lastname, company, activity, email, phone, position, promo} = fields;
-    const promoValue = promo ?? "off";
-    const newUser = {course_Id : courseId, firstname, lastname, company, activity, email, phone, position, promoValue};
-    //console.log(newUser);
+    
+    const {courseName, firstname, lastname, company, activity, email, phone, position, optradio} = fields;
+    var course = enrollmentGroups.find(obj => obj.courseName === courseName);
+    //console.log(course);
+    const promoValue = optradio ?? "off";
+    const newUser = {course_Id : course.courseId, firstname, lastname, company, activity, email, phone, position, promoValue};
+    console.log(newUser);
+
+    
     var user = await pool.query(`SELECT * FROM customer_enrollment_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
     console.log(user.length);
         
         if(user.length == 0)
         {
-          var res = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
-          console.log(res);
+          var userCreated = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
+          console.log(userCreated);
           await sendEmailToUser(newUser);
           await sendInternalEmail(newUser);
+          
+
           /* Se comenta esta parte hasta resolver problema con Sharepoint
           let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
             "Title": filename,
@@ -69,10 +76,11 @@ export const customerEnrollmentReq = async (req, res, next) => {
           console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           */
           
+          
           var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.course_Id));
           console.log(iC);
           //var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
-          var groupName =  "PROGRAMA ESTUDIANTES 2024";
+          var groupName =  "PROGRAMA CLIENTES TEKLA 2024";
           var iG = iC.groups.find(obj => obj.groupName === groupName);
           console.log(groupName);
 
@@ -108,7 +116,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
             var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
             var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
-
+            
             /* Se comenta esta parte hasta resolver problema con Sharepoint
             var spAccessToken = await getSpAccessToken();
             let data = {
@@ -127,6 +135,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
             console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
             */
+           
             sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
             console.log("usuario matriculado " + mUser.email );
             
@@ -140,7 +149,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
 
               var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
               var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
-
+              
               /*  Se comenta esta parte hasta resolver problema con Sharepoint
               var spAccessToken = await getSpAccessToken();
               let data = {
@@ -157,6 +166,8 @@ export const customerEnrollmentReq = async (req, res, next) => {
               }
               var listItemResult  = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
               */
+
+              
               sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
               console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
           }
@@ -171,8 +182,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
 }
 
 export const renderCourseForm = async (req, res, next) => {
+  res.render("forms/cs/customer-enroll");
+  /*
   const { courseId } = req.params;
   var courseDetails = enrollmentGroups.find(obj => obj.courseId === parseInt(courseId));
-  
   res.render("forms/cs/customer-enroll", {courseId: courseDetails.courseId, courseName: courseDetails.courseName})
+  */
 }

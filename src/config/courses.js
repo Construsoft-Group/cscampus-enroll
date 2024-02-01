@@ -20,6 +20,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2567,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2581,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -43,6 +47,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2566,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2582,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -62,6 +70,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2561,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2583,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -81,6 +93,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2563,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2584,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -100,6 +116,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2562,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2585,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -142,6 +162,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2564,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2587,
+                "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
     },
@@ -169,6 +193,65 @@ const enrollmentGroups = [
             {
                 "groupId": 2565,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2586,
+                "groupName": "PROGRAMA PROFESORES 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 116,
+        "courseName": "Detallado de Elementos Prefabricados en Tekla Structures",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=116",
+        "groups": [
+            {
+                "groupId": 2577,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 89,
+        "courseName": "Componentes Personalizados en Tekla Structures",
+        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=89",
+        "groups": [
+            {
+                "groupId": 2572,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 113,
+        "courseName": "Editor de cuadros en Tekla Structures",
+        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=113",
+        "groups": [
+            {
+                "groupId": 2573,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 114,
+        "courseName": "Gestión de la numeración de Tekla Structures",
+        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=114",
+        "groups": [
+            {
+                "groupId": 2574,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 115,
+        "courseName": "Macros de Construsoft para Tekla Structures",
+        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=115",
+        "groups": [
+            {
+                "groupId": 2575,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
             }
         ]
     },

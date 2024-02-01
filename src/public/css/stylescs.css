@@ -51,6 +51,15 @@ body{
     font-weight: 600;
     line-height: 1.2;
   }
+  .banner > div{
+    width: 600px;
+  }
+  .banner > div > p{
+    text-align: center;
+    color: #FFFF;
+    font-family: "SansaPro",sans-serif;
+  }
+
 
 /* form */
   .form {
@@ -95,6 +104,14 @@ body{
     padding-left: 15px;
     padding-right: 15px;
     width: 300px;
+  }
+  .form-group_row_temp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 600px;
   }
 
   .form-group_button{

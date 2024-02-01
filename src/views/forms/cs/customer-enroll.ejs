@@ -26,17 +26,30 @@
 </head>
 <body>
     <div class="banner">
-        <h2 id="titulo">Solicita tu acceso gratis al curso</h2>
-        <h3 id="courseName"><%= courseName %></h3>
+        <h2 id="titulo">Cursos Online Tekla Structures | Acceso 2024</h2>
+        <div>
+            <p>¡APRENDE TEKLA SIN COSTE! Ventaja exclusiva para clientes en mantenimiento o suscripción de Tekla Structures.
+                Cumplimenta este formulario y recibirás un email con el acceso gratuito al curso en pocos segundos. Es necesario acceder al curso con tu CORREO CORPORATIVO.</p>
+        </div>
     </div>
     <div class="form">
         <div class ="form__container">
-            
             <form class="form__container--form" action="/cs/customer-enroll" method="POST" enctype="multipart/form-data" id="newStudent">
-                <input name="courseId" value="<%= courseId %>">
-                <select id="position" class="form-control" name="position" required>
-                    <option selected></option>
-                    
+                <div class="form-group">
+                    <!--<div class="form-group_row">
+                         <div class="form-group">
+                            <label>Número Cliente Tekla</label>
+                            <a href="http://ow.ly/iVwA50ySODx">Solicita aquí</a>
+                        </div>
+                        <input id="customerNumber" type="text" class="form-control" name="customerNumber" required> 
+                    </div>-->
+                    <div class="form-group_row_temp">
+                        <label>¿A qué curso te quieres matricular?</label>
+                        <select id="courseName" class="form-control" name="courseName" required>
+                            <option selected></option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="form-group_row">
                         <label>Nombre</label>

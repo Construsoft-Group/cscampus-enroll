@@ -5,7 +5,7 @@ const router = express.Router();
 router.use(express.json());
 /* Rutas de matriulaciones clientes */
 router.post('/customer-enroll', customerEnrollmentReq)
-router.get('/customer-enroll/:courseId', renderCourseForm);
+router.get('/customer-enroll/', renderCourseForm);
 router.get('/customer-enroll/success', (req, res) => {res.render("forms/cs/cs_success")});
 router.get('/customer-enroll/not-success', (req, res) => {res.render("forms/cs/cs_not-success")});
 
