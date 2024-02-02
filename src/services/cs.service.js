@@ -55,8 +55,8 @@ export const customerEnrollmentReq = async (req, res, next) => {
         {
           var userCreated = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
           console.log(userCreated);
-          await sendEmailToUser(newUser);
-          await sendInternalEmail(newUser);
+          //await sendEmailToUser(newUser);
+          //await sendInternalEmail(newUser);
           
 
           /* Se comenta esta parte hasta resolver problema con Sharepoint
@@ -136,7 +136,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
             console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
             */
            
-            sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
+            sendEnrollNotification(mUser, iC,  'gen_mail_enrolled.ejs');
             console.log("usuario matriculado " + mUser.email );
             
           }else{ //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
@@ -168,7 +168,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
               */
 
               
-              sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
+              sendEnrollNotification(mUser, iC, 'gen_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
               console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
           }
             res.redirect('/cs/customer-enroll/success');  

@@ -24,28 +24,16 @@ var studentForm = jQuery("#newStudent");
 $(document).ready(function () {
     var selectCountries = { 
         "1": "Argentina", 
-        "2": "Belize", 
-        "3": "Bolivia", 
-        "4": "Brazil", 
-        "5": "Chile",
-        "6": "Colombia",
-        "7": "Costa Rica",
-        "8": "Cuba",
-        "9": "Dominican Republic",
-        "10": "Ecuador",
-        "11": "El Salvador",
-        "12": "Guatemala",
-        "13": "Haití",
-        "14": "Honduras",
-        "15": "Jamaica",
-        "16": "Mexico",
-        "17": "Nicaragua",
-        "18": "Panama",
-        "19": "Paraguay",
-        "20": "Peru",
-        "21": "Spain",
-        "22": "Uruguay",
-        "23": "Venezuela"
+        "2": "Bolivia",  
+        "3": "Chile",
+        "4": "Colombia",
+        "5": "Ecuador",
+        "6": "España",
+        "7": "Paraguay",
+        "8": "Peru",
+        "9": "Spain",
+        "10": "Uruguay",
+        "11": "Venezuela"
      };
      var selectPosition = { 
         "1": "General Director", 
@@ -128,6 +116,10 @@ function validar() {
     var corporateEmailRegex = /^[a-zA-Z0-9._%+-]+@(?!gmail\.com|outlook\.com|yahoo\.com|hotmail\.com|vodafone\.com|movistar\.com|telefonica\.com|live\.com|msn\.com|google\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
    if(email == emailConfirm){
+    $('#strengthMessage').text("");
+    $('#strengthMessage').removeClass();
+    return true;
+    /*
     if (corporateEmailRegex.test(email)) {
         $('#strengthMessage').text("");
         $('#strengthMessage').removeClass();
@@ -137,6 +129,7 @@ function validar() {
         $('#strengthMessage').addClass('alert alert-danger');
         return false;
     }
+    */
     } else {
         $('#strengthMessage').removeClass();
         $('#strengthMessage').text("Los campos email deben coincidir");
