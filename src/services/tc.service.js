@@ -5,7 +5,7 @@ import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import { replaceSpecialChars } from '../config/specialChars.js';
 
-import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
+import { sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
 import { getSpAccessToken, createListItem } from '../config/sharepoint.js';
 
@@ -27,8 +27,7 @@ export const newTcRecord = async (req, res, next) => {
             {
                 await pool.query('INSERT INTO tc_request set ?', [newUser]);
                 console.log("Nuevo registro TC exitoso" + newUser.email);
-                //await sendEmailToUser(newUser);
-                //await sendInternalEmail(newUser);
+                await sendInternalEmail(newUser, "Formulario Trimble Connect");
 
                 switch(newUser.company_category){
                     case "Administración / Institución pública":

@@ -4,7 +4,7 @@ import fs from 'fs'
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import { replaceSpecialChars } from '../config/specialChars.js';
-import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
+import {sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
 import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
 
@@ -46,8 +46,6 @@ export const customerEnrollmentReq = async (req, res, next) => {
     const promoValue = optradio ?? "off";
     const newUser = {course_Id : course.courseId, firstname, lastname, company, activity, email, phone, position, promoValue};
     console.log(newUser);
-
-    
     var user = await pool.query(`SELECT * FROM customer_enrollment_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
     console.log(user.length);
         
@@ -55,8 +53,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
         {
           var userCreated = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
           console.log(userCreated);
-          //await sendEmailToUser(newUser);
-          //await sendInternalEmail(newUser);
+          await sendInternalEmail(newUser, "Formulario clientes Tekla");
           
 
           /* Se comenta esta parte hasta resolver problema con Sharepoint

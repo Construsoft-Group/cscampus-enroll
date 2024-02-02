@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export const sendEmailToUser = async (newUser) => {
+export const sendReceptionConfirmToUser = async (newUser) => {
     var htmlPath = path.resolve(__dirname, './email_templates/beca_mail_aspirante.html');
     
     const info = await transporter.sendMail({
@@ -28,9 +28,9 @@ export const sendEmailToUser = async (newUser) => {
     return info.messageId
 }
 
-export const sendInternalEmail = async (newUser) => {
+export async function sendInternalEmail(newUser, formName) {
     var contentHTML = `
-        <h1>Nuevo Registro de Beca</h1>
+        <h1>Nuevo Registro de ${formName}</h1>
         <ul>
             <li>Email: ${newUser.email}</li>
             <li>País: ${newUser.country}</li>
@@ -44,7 +44,7 @@ export const sendInternalEmail = async (newUser) => {
     const info = await transporter.sendMail({
         from: "'Campus Construsoft' <campus@construsoft.es>",
         to: ['vanessa.puentes@construsoft.com','marketing-es@construsoft.com', 'juan.diaz@construsoft.com'],
-        subject: 'Formulario becas',
+        subject: `Formulario ${formName}`,
         html: contentHTML
     });
     return info.messageId

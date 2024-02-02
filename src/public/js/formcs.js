@@ -80,9 +80,11 @@ $(document).ready(function () {
     $.each(selectCountries, function(key, value) {   
         $('#country').append($("<option></option>").attr("value", value).text(value)); 
     });
+    /*
     $.each(selectPosition, function(key, value) {   
         $('#position').append($("<option></option>").attr("value", value).text(value)); 
     });
+    */
     $.each(selectActivity, function(key, value) {   
         $('#activity').append($("<option></option>").attr("value", value).text(value)); 
     });

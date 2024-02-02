@@ -3,7 +3,7 @@ import formidable from "formidable";
 import fs from 'fs'
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
-import { sendEmailToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
+import { sendReceptionConfirmToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
 import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
 
@@ -34,8 +34,8 @@ export const newRecord = async (req, res, next) => {
         if(user.length == 0)
         {
             await pool.query('INSERT INTO beca_request set ?', [newUser]);
-            await sendEmailToUser(newUser);
-            await sendInternalEmail(newUser);
+            await sendReceptionConfirmToUser(newUser);
+            await sendInternalEmail(newUser, "Formulario de becas");
             /* Se comenta esta parte hasta resolver problema con Sharepoint
             let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
               "Title": filename,
