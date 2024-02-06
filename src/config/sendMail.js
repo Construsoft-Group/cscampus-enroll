@@ -32,14 +32,14 @@ export async function sendInternalEmail(newUser, formName) {
     var contentHTML = `
         <h1>Nuevo Registro de ${formName}</h1>
         <ul>
-            <li>Email: ${newUser.email}</li>
-            <li>País: ${newUser.country}</li>
-            <li>Role: ${newUser.role}</li>
-            <li>Curso: ${newUser.course}</li>
-            <li>Phone: ${newUser.phone}</li>
-            <li>Universidad: ${newUser.institution}</li>
+        `;
+        // Iterar sobre las propiedades del objeto newUser
+        Object.keys(newUser).forEach(key => {
+            contentHTML += `<li>${key}: ${newUser[key]}</li>`;
+        });
+        contentHTML += `
         </ul>
-    `;
+        `;
 
     const info = await transporter.sendMail({
         from: "'Campus Construsoft' <campus@construsoft.es>",
