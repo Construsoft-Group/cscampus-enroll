@@ -35,7 +35,8 @@ export async function sendInternalEmail(newUser, formName) {
         <ul>
         `;
         // Encontrar el nombre del curso basado en el courseId
-        const course = enrollmentGroups.find(course => course.courseId === newUser.course_Id);
+        //const course = enrollmentGroups.find(course => course.courseId === newUser.course_Id);
+        const course = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.course_Id));
         const courseName = course ? course.courseName : 'Curso Desconocido';
 
         // Iterar sobre las propiedades del objeto newUser
