@@ -2,6 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
+import enrollmentGroups from './courses';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,9 +34,17 @@ export async function sendInternalEmail(newUser, formName) {
         <h1>Nuevo Registro de ${formName}</h1>
         <ul>
         `;
+        // Encontrar el nombre del curso basado en el courseId
+        const course = enrollmentGroups.find(course => course.courseId === newUser.course_Id);
+        const courseName = course ? course.courseName : 'Curso Desconocido';
+
         // Iterar sobre las propiedades del objeto newUser
         Object.keys(newUser).forEach(key => {
-            contentHTML += `<li>${key}: ${newUser[key]}</li>`;
+            if (key === 'course_Id') {
+                contentHTML += `<li>Curso: ${courseName}</li>`;
+            } else {
+                contentHTML += `<li>${key}: ${newUser[key]}</li>`;
+            }
         });
         contentHTML += `
         </ul>
