@@ -2,7 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
-import enrollmentGroups from './courses';
+import enrollmentGroups from './courses.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
