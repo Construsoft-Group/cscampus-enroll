@@ -41,7 +41,7 @@ export const newTcRecord = async (req, res, next) => {
                         groupName = "23_CON"; 
                         break;
                 };
-                var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
+                var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect");
                 var iG = iC.groups.find(obj => obj.groupName === groupName);
                 //console.log(groupName);
                 //console.log(iG);

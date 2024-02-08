@@ -125,7 +125,7 @@ const enrollmentGroups = [
     },
     {
         "courseId": 81,
-        "courseName": "Common Data Environment con Trimble Connect",
+        "courseName": "Common Data Environment con Trimble Connect (antiguo)",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=81",
         "groups": [
             {
