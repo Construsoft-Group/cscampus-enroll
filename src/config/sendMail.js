@@ -31,7 +31,7 @@ export const sendReceptionConfirmToUser = async (newUser) => {
 
 export async function sendInternalEmail(newUser, formName) {
     var contentHTML = `
-        <h1>Nuevo Registro de ${formName}</h1>
+        <h1>Nuevo Registro del formulario ${formName}</h1>
         <ul>
         `;
         // Encontrar el nombre del curso basado en el courseId
