@@ -21,7 +21,7 @@ export async function getSpAccessToken() {
 }
 
 export async function sendFileToSp(file, filename, spAccessToken, sitename, folderPath) {
-    var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/GetFolderByServerRelativeURL('/sites/${sitename}/Shared Documents/${folderPath}/')/Files/add(url='${filename}',overwrite=true)`;
+    var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/GetFolderByServerRelativeURL('/sites/${sitename}/${folderPath}/')/Files/add(url='${filename}',overwrite=true)`;
     var config = {
         method: 'post',
         url: spurl,
@@ -39,7 +39,7 @@ export async function sendFileToSp(file, filename, spAccessToken, sitename, fold
 }
 
 export async function createListItem(spAccessToken, data, sitename, listname) {
-  var spurl = `https://construsoftgroup.sharepoint.com/sites/${sitename}/_api/web/lists/GetByTitle('${listname}')/items'`;
+  var spurl = `https://${process.env.SP_TENANT_NAME}.sharepoint.com/sites/${sitename}/_api/web/lists/GetByTitle('${listname}')/items'`;
   var config = {
       method: 'post',
       url: spurl,

@@ -12,8 +12,10 @@ export const newRecord = async (req, res, next) => {
   var mlSeconds = 24*60*60000;
   var newDateObj = new Date(fecha_now - mlSeconds);
 
-  var sitename =  'UNIVERSIDADES-ProyectoEducacional'; //nombre del sharepoint
-  var folderPath = 'General/7. Documentos aspirantes'; //ruta de archivo en el sharepoint 
+  //var sitename =  'UNIVERSIDADES-ProyectoEducacional'; //Comentado temporalmente
+  //var folderPath = 'Shared Documents/General/7. Documentos aspirantes'; //Comentado temporalmente
+  var sitename =  'Becas'; //nombre del sharepoint
+  var folderPath = 'Documentos%20compartidos/7. Documentos aspirantes'; //ruta de archivo en el sharepoint 
   var listname = 'Matriculaciones web'; //Nombre de la lista en SP
   
   var formData = new formidable.IncomingForm();
@@ -22,12 +24,12 @@ export const newRecord = async (req, res, next) => {
         var filename = email +"-"+ files.file.originalFilename;
         const file = files.file;
         const newUser = {firstname, lastname, institution, country, role, course, email, phone};
-        /*  Se comenta esta parte hasta resolver problema con Sharepoint
+        //  Se comenta esta parte hasta resolver problema con Sharepoint
         var spAccessToken = await getSpAccessToken();
         fs.readFile(file.filepath, async (err, data) => { //Se lee el archivo desde temp y se inserta el buffer como data en sharepoint.
             var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token, sitename, folderPath);
           });
-        */
+        
 
         //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
         var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
@@ -36,7 +38,8 @@ export const newRecord = async (req, res, next) => {
             await pool.query('INSERT INTO beca_request set ?', [newUser]);
             await sendReceptionConfirmToUser(newUser);
             await sendInternalEmail(newUser, "Formulario de becas");
-            /* Se comenta esta parte hasta resolver problema con Sharepoint
+            //Se comenta esta parte hasta resolver problema con Sharepoint
+            
             let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
               "Title": filename,
               "Nombres": newUser.firstname,
@@ -47,11 +50,11 @@ export const newRecord = async (req, res, next) => {
               "phone":newUser.phone,
               "email": newUser.email
             }
-
+            
             var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
             
             console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
-            */
+            
             console.log("Nuevo registro exitoso" + newUser.email );
             res.redirect('/beca/success');
             
@@ -150,7 +153,7 @@ export const enroller = async () => {
           var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
           var updateReqDb = await pool.query(`UPDATE beca_request SET status = "created + enrolled" WHERE email="${mUser.email}"`);
 
-          /*  Se comenta esta parte hasta resolver problema con Sharepoint
+          //Se comenta esta parte hasta resolver problema con Sharepoint
           var spAccessToken = await getSpAccessToken();
           let data = {
               "__metadata": {
@@ -166,7 +169,7 @@ export const enroller = async () => {
               "phone": mUser.phone
           }
           await createListItem(spAccessToken.data.access_token, data, sitename, listname);
-          */
+          
           sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
           return "usuario creado y matriculado " + mUser.email;
         }
