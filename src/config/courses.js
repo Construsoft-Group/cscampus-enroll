@@ -214,7 +214,7 @@ const enrollmentGroups = [
     {
         "courseId": 89,
         "courseName": "Componentes Personalizados en Tekla Structures",
-        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=89",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=89",
         "groups": [
             {
                 "groupId": 2572,
@@ -225,7 +225,7 @@ const enrollmentGroups = [
     {
         "courseId": 113,
         "courseName": "Editor de cuadros en Tekla Structures",
-        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=113",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=113",
         "groups": [
             {
                 "groupId": 2573,
@@ -236,7 +236,7 @@ const enrollmentGroups = [
     {
         "courseId": 114,
         "courseName": "Gestión de la numeración de Tekla Structures",
-        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=114",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=114",
         "groups": [
             {
                 "groupId": 2574,
@@ -247,7 +247,7 @@ const enrollmentGroups = [
     {
         "courseId": 115,
         "courseName": "Macros de Construsoft para Tekla Structures",
-        "courseLink" : "https://campus.construsoft.com/enrol/index.php?id=115",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=115",
         "groups": [
             {
                 "groupId": 2575,
