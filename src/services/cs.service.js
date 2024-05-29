@@ -173,7 +173,8 @@ export const customerEnrollmentReq = async (req, res, next) => {
 
               
               sendEnrollNotification(mUser, iC, 'gen_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
-              console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
+              //console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
+              console.log("usuario creado y matriculado " + mUser.email);
           }
             res.redirect('/cs/customer-enroll/success');  
         }else{
