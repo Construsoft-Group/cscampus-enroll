@@ -60,23 +60,15 @@ const enrollmentGroups = [
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=195",
         "groups": [
             {
-                "groupId": 1621,
-                "groupName": "PROGRAMA ESTUDIANTES 2023"
-            },
-            {
-                "groupId": 1620,
-                "groupName": "PROGRAMA PROFESORES 2023"
-            },
-            {
-                "groupId": 2570,
+                "groupId": 2576,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
             },
             {
-                "groupId": 2566,
+                "groupId": 2568,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
             },
             {
-                "groupId": 2582,
+                "groupId": 2840,
                 "groupName": "PROGRAMA PROFESORES 2024"
             }
         ]
