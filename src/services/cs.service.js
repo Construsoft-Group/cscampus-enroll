@@ -143,7 +143,15 @@ export const customerEnrollmentReq = async (req, res, next) => {
               var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
 
               var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
-              const mUserWithoutCompany = (({ company, ...rest }) => rest)(mUser); // Extraer el campo 'company' al crear un nuevo objeto sin ese campo
+              const mUserWithoutCompany =  { 
+                username: mUser.username, 
+                firstname: mUser.firstname, 
+                lastname: mUser.lastname,
+                email: mUser.email,
+                phone: mUser.phone,
+                course: iC.courseName,
+                campus_id: mUser.campus_id
+              };; // Extraer el campo 'company' al crear un nuevo objeto sin ese campo
               var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUserWithoutCompany]);
               
               /*  Se comenta esta parte hasta resolver problema con Sharepoint
