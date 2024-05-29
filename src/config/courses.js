@@ -29,8 +29,35 @@ const enrollmentGroups = [
     },
     {
         "courseId": 98,
-        "courseName": "Fundamentos Tekla Structures Hormigón",
+        "courseName": "Fundamentos Tekla Structures Hormigón (Antiguo)",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=98",
+        "groups": [
+            {
+                "groupId": 1621,
+                "groupName": "PROGRAMA ESTUDIANTES 2023"
+            },
+            {
+                "groupId": 1620,
+                "groupName": "PROGRAMA PROFESORES 2023"
+            },
+            {
+                "groupId": 2570,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 2566,
+                "groupName": "PROGRAMA ESTUDIANTES 2024"
+            },
+            {
+                "groupId": 2582,
+                "groupName": "PROGRAMA PROFESORES 2024"
+            }
+        ]
+    },
+    {
+        "courseId": 195,
+        "courseName": "Fundamentos Tekla Structures Hormigón",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=195",
         "groups": [
             {
                 "groupId": 1621,
