@@ -54,8 +54,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
           var userCreated = await pool.query('INSERT INTO customer_enrollment_request set ?', [newUser]);
           console.log(userCreated);
           await sendInternalEmail(newUser, "Formulario clientes Tekla");
-          
-
+      
           /* Se comenta esta parte hasta resolver problema con Sharepoint
           let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
             "Title": filename,
@@ -72,7 +71,6 @@ export const customerEnrollmentReq = async (req, res, next) => {
           
           console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           */
-          
           
           var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.course_Id));
           console.log(iC);
@@ -145,7 +143,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
               var addToGroup = await addUserToMoodleGroup(newUserRes[0].id, iG.groupId);
 
               var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
-              var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
+              // Extraer el campo 'company' al crear un nuevo objeto sin ese campo
+              
+              const mUserWithoutCompany = (({ company, ...rest }) => rest)(mUser);
+              var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUserWithoutCompany]);
               
               /*  Se comenta esta parte hasta resolver problema con Sharepoint
               var spAccessToken = await getSpAccessToken();
