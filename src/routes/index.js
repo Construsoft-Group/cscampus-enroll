@@ -16,8 +16,7 @@ function routerApi(app) {
     app.use('/beca', becaRouter);
     app.use('/cs', csRouter);
     app.use('/tc', tcRouter);
+    
 }
-
-
 
 export default routerApi;
