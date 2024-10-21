@@ -1,5 +1,5 @@
 import express from "express";
-import { /* newJobApplicant ,*/ eudeEnrollmentReq, /* renderCourseForm */ } from "../services/eude.service1.js";
+import { /* newJobApplicant ,*/ eudeEnrollmentReq, /* renderCourseForm */ } from "../services/eude.service.js";
 
 const router = express.Router();
 router.use(express.json());

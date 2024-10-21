@@ -73,25 +73,29 @@ const enrollmentGroups = [
             }
         ]
     },
-    /* {
+    {
         "courseId": 240,
         "courseName": "Fundamentos Tekla Structures Hormigón EUDE",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=240",
         "groups": [
             {
-                "groupId": 2576,
+                "groupId": 3245,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
             },
             {
-                "groupId": 2568,
+                "groupId": 3244,
                 "groupName": "PROGRAMA ESTUDIANTES 2024"
             },
             {
-                "groupId": 2840,
+                "groupId": 3247,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3480,
+                "groupName": "PROGRAMA EUDE 2024"
             }
         ]
-    }, */
+    }, 
     {
         "courseId":  76,
         "courseName": "Teoría y cálculo de uniones metálicas con IDEA STATICA",
