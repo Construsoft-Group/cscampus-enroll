@@ -3,6 +3,7 @@ import path from 'path';
 import becaRouter from "./beca.router.js";
 import csRouter from "./cs.router.js";
 import tcRouter from "./tc.router.js";
+import eudeRouter from "./eude.router.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +17,7 @@ function routerApi(app) {
     app.use('/beca', becaRouter);
     app.use('/cs', csRouter);
     app.use('/tc', tcRouter);
+    app.use('/eude', eudeRouter);
     
 }
 
