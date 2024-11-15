@@ -13,7 +13,7 @@ export const eudeEnrollmentReq = async (req, res, next) => {
     let fecha_now = new Date(); //Fecha Actual
     var mlSeconds = 24*60*60000;
     var newDateObj = new Date(fecha_now - mlSeconds);
-    var groupName = "PROGRAMA EUDE 2024";
+    var groupName = 3480;
     /* var sitename = '5TRIMBLECONNECT'; //nombre del sharepoint
     var listname = 'Matriculaciones web'; //Nombre de la lista en SP */
     var formData = new formidable.IncomingForm();
@@ -30,7 +30,7 @@ export const eudeEnrollmentReq = async (req, res, next) => {
                 await sendInternalEmail(newUser, "Solicitud Curso Modelado de Estructuras con Tekla Structures - EUDE");
 
                 var iC = enrollmentGroups.find(obj => obj.courseId === 240);
-                var iG = iC.groups.find(obj => obj.groupName === groupName);
+                var iG = iC.groups.find(obj => obj.id === groupName);
                 
                 var newEnrollment = {
                     course_id: iC.courseId,

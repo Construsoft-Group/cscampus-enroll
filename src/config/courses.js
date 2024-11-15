@@ -92,7 +92,7 @@ const enrollmentGroups = [
             },
             {
                 "groupId": 3480,
-                "groupName": "PROGRAMA EUDE 2024"
+                "groupName": "PROGRAMA EUDE 2025"
             }
         ]
     }, 
