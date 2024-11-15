@@ -75,7 +75,7 @@ const enrollmentGroups = [
     },
     {
         "courseId": 240,
-        "courseName": "Fundamentos Tekla Structures Hormigón EUDE",
+        "courseName": "Curso Modelado de Estructuras con Tekla Structures - EUDE",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=240",
         "groups": [
             {

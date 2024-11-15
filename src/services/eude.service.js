@@ -27,9 +27,9 @@ export const eudeEnrollmentReq = async (req, res, next) => {
             {
                 await pool.query('INSERT INTO eude_request set ?', [newUser]);
                 console.log("Nuevo registro Eude exitoso" + newUser.email);
-                await sendInternalEmail(newUser, "Solicitud Curso Fundamentos Tekla Structures Hormigón EUDE");
+                await sendInternalEmail(newUser, "Solicitud Curso Modelado de Estructuras con Tekla Structures - EUDE");
 
-                var iC = enrollmentGroups.find(obj => obj.courseName === "Fundamentos Tekla Structures Hormigón EUDE");
+                var iC = enrollmentGroups.find(obj => obj.courseId === 240);
                 var iG = iC.groups.find(obj => obj.groupName === groupName);
                 
                 var newEnrollment = {
