@@ -13,7 +13,7 @@ export const eudeEnrollmentReq = async (req, res, next) => {
     let fecha_now = new Date(); //Fecha Actual
     var mlSeconds = 24*60*60000;
     var newDateObj = new Date(fecha_now - mlSeconds);
-    var groupId = 3480;
+    var groupId = 3483;
     /* var sitename = '5TRIMBLECONNECT'; //nombre del sharepoint
     var listname = 'Matriculaciones web'; //Nombre de la lista en SP */
     var formData = new formidable.IncomingForm();
