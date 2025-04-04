@@ -24,6 +24,15 @@ const enrollmentGroups = [
             {
                 "groupId": 2581,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            ,
+            {
+                "groupId": 3785,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3786,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },

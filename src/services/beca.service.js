@@ -35,7 +35,7 @@ export const newRecord = async (req, res, next) => {
         var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
         if(user.length == 0)
         {
-            await pool.query('INSERT INTO beca_request set ?', [newUser]);
+            await pool.query('INSERT INTO beca_request set ?', [newUser]); //Se crea el resgistro en la tabla beca_request
             await sendReceptionConfirmToUser(newUser);
             await sendInternalEmail(newUser, "Formulario de becas");
             //Se comenta esta parte hasta resolver problema con Sharepoint
@@ -109,9 +109,9 @@ export const enroller = async () => {
         console.log(response);
         var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
         if(mUser.role == "Estudiante"){
-            groupName = "PROGRAMA ESTUDIANTES 2024";
+            groupName = "PROGRAMA ESTUDIANTES 2025";
         } else {
-            groupName = "PROGRAMA PROFESORES 2024";
+            groupName = "PROGRAMA PROFESORES 2025";
         }
         var iG = iC.groups.find(obj => obj.groupName === groupName);
         var newEnrollment = {
