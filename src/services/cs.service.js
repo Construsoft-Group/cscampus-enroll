@@ -75,7 +75,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
           var iC = enrollmentGroups.find(obj => obj.courseId === parseInt(newUser.course_Id));
           console.log(iC);
           //var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
-          var groupName =  "PROGRAMA CLIENTES TEKLA 2024";
+          var groupName =  "PROGRAMA CLIENTES TEKLA 2025";
           var iG = iC.groups.find(obj => obj.groupName === groupName);
           console.log(groupName);
 

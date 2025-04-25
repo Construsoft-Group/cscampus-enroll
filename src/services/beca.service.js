@@ -1,7 +1,7 @@
 import axios from 'axios';
 import formidable from "formidable";
 import fs from 'fs'
-import pool from "../database.js"
+import pool from "../database.js";
 import enrollmentGroups from '../config/courses.js';
 import { sendReceptionConfirmToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';

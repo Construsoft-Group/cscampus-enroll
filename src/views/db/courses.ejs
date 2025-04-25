@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Listado de Cursos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body class="p-4">
+  <h1 class="mb-4">Cursos</h1>
+
+  <div class="accordion" id="courseAccordion">
+    <% courses.forEach((course, index) => { %>
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header" id="heading-<%= index %>">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= index %>">
+            <%= course.courseName %>&nbsp;<span class="text-muted">(ID: <%= course.courseId %>)</span>
+          </button>
+        </h2>
+        <div id="collapse-<%= index %>" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+          <div class="accordion-body">
+            <p><strong>Link:</strong> <a href="<%= course.courseLink %>" target="_blank"><%= course.courseLink %></a></p>
+
+            <h5>Grupos Asociados</h5>
+            <ul class="list-group mb-3">
+              <% course.groups.forEach(group => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= group.groupName %>&nbsp;<span class="text-muted">(ID: <%= group.groupId %>)</span>
+                  <div>
+                    <a href="/db/courses/<%= course.courseId %>/groups/<%= group.groupId %>/edit" class="btn btn-sm btn-warning me-2">Editar</a>
+                    <form action="/db/courses/<%= course.courseId %>/groups/<%= group.groupId %>?_method=DELETE" method="POST" style="display:inline;">
+                      <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+                    </form>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+            <button onclick="openModal(<%= course.courseId %>)">+ Nuevo grupo</button>
+            <!-- <a href="/db/courses/<%= course.courseId %>/groups/new" class="btn btn-sm btn-primary">Agregar grupo</a> -->
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Modal -->
+  <!-- Modal Bootstrap -->
+<div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="groupForm" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="groupModalLabel">Agregar nuevo grupo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="courseId" id="modalCourseId" />
+
+          <!-- ID del grupo (ahora se solicita manualmente) -->
+          <div class="mb-3">
+            <label for="groupId" class="form-label">ID del grupo:</label>
+            <input type="text" class="form-control" name="groupId" required>
+          </div>
+
+          <!-- Nombre del grupo -->
+          <div class="mb-3">
+            <label for="groupName" class="form-label">Nombre del grupo:</label>
+            <input type="text" class="form-control" name="groupName" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function openModal(courseId) {
+      const modalEl = document.getElementById('groupModal');
+      const bsModal = new bootstrap.Modal(modalEl);
+      document.getElementById('modalCourseId').value = courseId;
+      document.getElementById('groupForm').action = `/courses/${courseId}/groups`;
+      bsModal.show();
+    }
+  </script>
+  
+</body>
+</html>

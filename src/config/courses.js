@@ -25,7 +25,6 @@ const enrollmentGroups = [
                 "groupId": 2581,
                 "groupName": "PROGRAMA PROFESORES 2024"
             },
-            ,
             {
                 "groupId": 3785,
                 "groupName": "PROGRAMA ESTUDIANTES 2025"
@@ -33,6 +32,10 @@ const enrollmentGroups = [
             {
                 "groupId": 3786,
                 "groupName": "PROGRAMA PROFESORES 2025"
+            },
+            {
+                "groupId": 3807,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -79,6 +82,18 @@ const enrollmentGroups = [
             {
                 "groupId": 2840,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3810,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3811,
+                "groupName": "PROGRAMA PROFESORES 2025"
+            },
+            {
+                "groupId": 3812,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -113,6 +128,14 @@ const enrollmentGroups = [
             {
                 "groupId": 2583,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3793,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3794,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },
@@ -136,6 +159,14 @@ const enrollmentGroups = [
             {
                 "groupId": 2584,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3805,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3806,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },
@@ -159,6 +190,14 @@ const enrollmentGroups = [
             {
                 "groupId": 2585,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3803,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3804,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },
@@ -205,6 +244,18 @@ const enrollmentGroups = [
             {
                 "groupId": 2587,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3796,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
+            },
+            {
+                "groupId": 3797,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3798,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },
@@ -236,6 +287,14 @@ const enrollmentGroups = [
             {
                 "groupId": 2586,
                 "groupName": "PROGRAMA PROFESORES 2024"
+            },
+            {
+                "groupId": 3808,
+                "groupName": "PROGRAMA ESTUDIANTES 2025"
+            },
+            {
+                "groupId": 3809,
+                "groupName": "PROGRAMA PROFESORES 2025"
             }
         ]
     },
@@ -247,6 +306,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2577,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 3802,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -258,6 +321,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2572,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 3795,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -269,6 +336,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2573,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 3799,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -280,6 +351,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2574,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 3800,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },
@@ -291,6 +366,10 @@ const enrollmentGroups = [
             {
                 "groupId": 2575,
                 "groupName": "PROGRAMA CLIENTES TEKLA 2024"
+            },
+            {
+                "groupId": 3801,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },

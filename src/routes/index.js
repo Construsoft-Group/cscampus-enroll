@@ -4,6 +4,7 @@ import becaRouter from "./beca.router.js";
 import csRouter from "./cs.router.js";
 import tcRouter from "./tc.router.js";
 import eudeRouter from "./eude.router.js";
+import dbRouter from "./db.router.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,7 @@ function routerApi(app) {
     app.use('/cs', csRouter);
     app.use('/tc', tcRouter);
     app.use('/eude', eudeRouter);
-    
+    app.use('/db', dbRouter);
 }
 
 export default routerApi;
