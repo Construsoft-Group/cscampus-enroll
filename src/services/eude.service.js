@@ -64,7 +64,7 @@ export const eudeEnrollmentReq = async (req, res, next) => {
                     var enrollment = await enrollMoodleuser(response.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
                     var addToGroup = await addUserToMoodleGroup(response.users[0].id, iG.groupId);
                     var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
-                    sendEnrollNotification(mUser, iC,  'eude_mail_enrolled.ejs');
+                    sendEnrollNotification(mUser, iC,  'gen_mail_enrolled.ejs');
                     console.log("usuario matriculado " + mUser.email );
                     //console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
 
@@ -79,7 +79,7 @@ export const eudeEnrollmentReq = async (req, res, next) => {
                     var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
                     var insertuserDb = await pool.query('INSERT INTO all_users set ?', [mUser]);
 
-                    sendEnrollNotification(mUser, iC, 'eude_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
+                    sendEnrollNotification(mUser, iC, 'gen_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
                     console.log("usuario creado y matriculado " + mUser.email );
                     //console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
                 } 

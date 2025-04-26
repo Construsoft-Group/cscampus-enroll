@@ -117,7 +117,7 @@ export const newTcRecord = async (req, res, next) => {
                     
                     var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     */
-                    sendEnrollNotification(mUser, iC,  'tc_mail_enrolled.ejs');
+                    sendEnrollNotification(mUser, iC,  'gen_mail_enrolled.ejs');
                     console.log("usuario matriculado " + mUser.email + " sp status " + listItemResult.status);
 
                 }else{ //Cuando el usuario no esta registrado entonces lo crea, lo matricula y lo agrega al grupo.
@@ -147,13 +147,36 @@ export const newTcRecord = async (req, res, next) => {
                     }
                     var listItemResult  = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
                     */
-                    sendEnrollNotification(mUser, iC, 'tc_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
+                    sendEnrollNotification(mUser, iC, 'gen_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
                     console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
                 }
-                
+                const dataResponse = {
+                    title:    '¡Registro exitoso!',
+                    message:  'Hemos recibido tu solicitud. Enseguida recibirás un correo instructivo para acceder al campus Construsoft y empezar a estudiar',
+                    // si no quieres mostrar enlace, deja link en null o undefined
+                    link: { 
+                      url:  'https://campus.construsoft.com/login/index.php',
+                      text: 'Ir al Campus'
+                    }
+                  };
+                  
+                  res.render('forms/form_response', dataResponse);
+
                 res.redirect('/tc/success');
             }else{
                 console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
+
+                const dataResponse = {
+                    title:    '¡Gracias!',
+                    message:  'Ya estás matriculado!',
+                    // si no quieres mostrar enlace, deja link en null o undefined
+                    link: { 
+                      url:  'https://campus.construsoft.com/login/index.php',
+                      text: 'Ir al Campus'
+                    }
+                  };
+                  
+                  res.render('forms/form_response', dataResponse);
                 res.redirect('/tc/not-success');
             }
         });

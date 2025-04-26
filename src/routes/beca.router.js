@@ -12,9 +12,6 @@ const router = express.Router();
 router.use(express.json());
 router.post('/', newRecord);
 router.get('/form', (req, res) => {res.render("forms/beca/beca_form")});
-router.get('/success', (req, res) => {res.render("forms/beca/beca_success")});
-router.get('/not-success', (req, res) => {res.render("forms/beca/beca_not-success")});
-
 
 /*Aquí algunas rutas de test */
 router.get('/formTest', (req, res) => {res.render("forms/beca/formTest")});

@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendReceptionConfirmToUser = async (newUser) => {
-    var htmlPath = path.resolve(__dirname, './email_templates/beca_mail_aspirante.html');
+    var htmlPath = path.resolve(__dirname, './email_templates/beca_mail_aspirante.ejs');
     
     const info = await transporter.sendMail({
         from: "'Campus Construsoft' <campus@construsoft.es>",

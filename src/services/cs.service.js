@@ -179,10 +179,35 @@ export const customerEnrollmentReq = async (req, res, next) => {
               //console.log("usuario creado y matriculado " + mUser.email + " spStatus " + listItemResult.status);
               console.log("usuario creado y matriculado " + mUser.email);
           }
-            res.redirect('/cs/customer-enroll/success');  
+          const dataResponse = {
+            title:    '¡Registro esitoso!',
+            message:  'Hemos recibido tu solicitud. Enseguida recibirás un correo instructivo para acceder al campus Construsoft y empezar a estudiar',
+            // si no quieres mostrar enlace, deja link en null o undefined
+            link: { 
+              url:  'https://campus.construsoft.com/login/index.php',
+              text: 'Ir al campus'
+            }
+          };
+          
+          res.render('forms/form_response', dataResponse);
+
+          //res.redirect('/cs/customer-enroll/success');  
         }else{
             console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
-            res.redirect('/cs/customer-enroll/not-success');
+
+            const dataResponse = {
+              title:    '¡Tienes una solicitud en curso!',
+              message:  'Debes esperar al menos 24 horas para enviar una nueva solicitud',
+              // si no quieres mostrar enlace, deja link en null o undefined
+              link: { 
+                url:  'https://www.construsoft.es/es/servicios/area-privada-tekla',
+                text: 'Volver al área de clientes'
+              }
+            };
+            
+            res.render('forms/form_response', dataResponse);
+
+            //res.redirect('/cs/customer-enroll/not-success');
         }
         
   })

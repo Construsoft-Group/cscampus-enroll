@@ -35,32 +35,58 @@ export const newRecord = async (req, res, next) => {
         var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
         if(user.length == 0)
         {
-            await pool.query('INSERT INTO beca_request set ?', [newUser]); //Se crea el resgistro en la tabla beca_request
-            await sendReceptionConfirmToUser(newUser);
-            await sendInternalEmail(newUser, "Formulario de becas");
-            //Se comenta esta parte hasta resolver problema con Sharepoint
-            
-            let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
-              "Title": filename,
-              "Nombres": newUser.firstname,
-              "Apellidos": newUser.lastname,
-              "Instituci_x00f3_n": newUser.institution,
-              "Pais": newUser.country,
-              "curso": newUser.course,
-              "phone":newUser.phone,
-              "email": newUser.email
+          await pool.query('INSERT INTO beca_request set ?', [newUser]); //Se crea el resgistro en la tabla beca_request
+          await sendReceptionConfirmToUser(newUser);
+
+          await sendInternalEmail(newUser, "Formulario de becas");
+          //Se comenta esta parte hasta resolver problema con Sharepoint
+          
+          let data = {"__metadata": {"type": "SP.Data.Matriculaciones_x0020_webListItem"},
+            "Title": filename,
+            "Nombres": newUser.firstname,
+            "Apellidos": newUser.lastname,
+            "Instituci_x00f3_n": newUser.institution,
+            "Pais": newUser.country,
+            "curso": newUser.course,
+            "phone":newUser.phone,
+            "email": newUser.email
+          }
+          
+          var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+          
+          console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
+          console.log("Nuevo registro exitoso" + newUser.email );
+
+          const dataResponse = {
+            title:    '¡Registro completo!',
+            message:  'Hemos recibido tu solicitud de beca y estamos evaluando tu candidatura. Te informaremos por correo electrónico si tu candidatura ha sido aprobada en un plazo de 15 días.',
+            // si no quieres mostrar enlace, deja link en null o undefined
+            link: { 
+              url:  '/beca/form',
+              text: 'Enviar otra respuesta'
             }
+          };
             
-            var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
-            
-            console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
-            
-            console.log("Nuevo registro exitoso" + newUser.email );
-            res.redirect('/beca/success');
+          res.render('forms/form_response', dataResponse);
+
+          //res.redirect('/beca/success');
             
         }else{
-            console.log("Debes esperar al menos 24 horas para enviar una nueva solicitud");
-            res.redirect('/beca/not-success');
+
+          const dataResponse = {
+            title:    '¡Agradecemos tu interés!',
+            message:  'Nuestro sistema registra ya una solicitud reciente, debes esperar al menos 24 horas para enviar una nueva solicitud.',
+            // si no quieres mostrar enlace, deja link en null o undefined
+            link: { 
+              url:  'https://www.construsoft.es/es/formacion-bim/curso-online/beca-estudiantes-y-profesores',
+              text: 'Dá un vistazo a los términos de la beca'
+            }
+          };
+          
+          res.render('forms/form_response', dataResponse);
+
+          console.log("Nuestro sistema registra ya una solicitud reciente, debes esperar al menos 24 horas para enviar una nueva solicitud");
+            //res.redirect('/beca/not-success');
         }
     });
 }
