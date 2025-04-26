@@ -1,5 +1,5 @@
 body{
-  background-color: #f8f8ff;
+  background-color: #ffff;
 }
 
 /* sucess view */
@@ -147,10 +147,10 @@ body{
   }
 
   .button{
-    background-color: #00a1e6;
+    background-color: #AFFF64;
     border: none;
     border-radius: 25px;
-    color:white;
+    color:black;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
