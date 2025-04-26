@@ -92,14 +92,24 @@ export const newRecord = async (req, res, next) => {
           var iC = enrollmentGroups.find(obj => obj.courseName === newUser.course);
           sendEnrollNotification(newUser, iC, 'beca_mail_not_approved.ejs');
 
+          const textoOriginal = [
+            'Tras revisar tu solicitud, hemos comprobado que ya te has matriculado a un curso gratuito en 2025 mediante la beca para estudiantes y profesores.',
+            'Esta beca permite un solo curso gratuito por persona al año, por lo que no ha sido posible tramitar gratuitamente tu inscripción al curso Fundamentos Tekla Structures Acero.',
+            'Como ya has aprovechado la beca este 2025 (que cubre un solo curso gratuito por persona), queremos ofrecerte una opción especial para seguir formándote.',
+            'Accede a cualquiera de los cursos de la beca por solo 97 €.',
+            '🔐 Código de descuento: FORMATE25',
+            '📅 Válido hasta el 31 de diciembre de 2025',
+            'Solo tienes que aplicar el código al adquirir el curso en nuestra tienda online. Este descuento es válido en cualquiera de los cursos disponibles en la beca.'
+          ].join('\n\n');
+          
+          // sustituimos dobles saltos por <br><br>, simples por <br>
+          const htmlConBreaks = textoOriginal
+            .replace(/\n\n/g, '<br><br>')
+            .replace(/\n/g, '<br>');
+
           const dataResponse = {
             title:    '¡Gracias por tu interés en la beca exclusiva para estudiantes y profesores!',
-            message:  [
-              'Ya hemos revisado tu solicitud.',
-              'Gracias por tu interés en seguir formándote con nosotros.',
-              'Tras revisar tu solicitud, hemos comprobado que ya te has matriculado a un curso gratuito en 2025 mediante la beca para estudiantes y profesores.',
-              'Esta beca permite un solo curso gratuito por persona al año, por lo que no ha sido posible tramitar gratuitamente tu inscripción al curso.'
-            ],
+            message:  htmlConBreaks,
             // si no quieres mostrar enlace, deja link en null o undefined
             link: { 
               url:  'https://www.construsoft.es/es/formacion-bim/curso-online/beca-estudiantes-y-profesores',
