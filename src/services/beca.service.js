@@ -12,6 +12,9 @@ export const newRecord = async (req, res, next) => {
   var mlSeconds = 24*60*60000;
   var newDateObj = new Date(fecha_now - mlSeconds);
 
+  // fecha de corte: 1 de enero de 2025 a las 00:00
+  const cutoffDate = new Date('2025-01-01T00:00:00Z');
+
   //var sitename =  'UNIVERSIDADES-ProyectoEducacional'; //Comentado temporalmente
   //var folderPath = 'Shared Documents/General/7. Documentos aspirantes'; //Comentado temporalmente
   var sitename =  'Becas'; //nombre del sharepoint
@@ -30,9 +33,24 @@ export const newRecord = async (req, res, next) => {
             var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token, sitename, folderPath);
           });
         
+          // 1) Buscamos en BD si hay algún registro desde el 01/01/2025
+        var user = await pool.query(
+          `SELECT 1 FROM beca_request 
+            WHERE submitted_at >= ? 
+            AND email = ? 
+          LIMIT 1`,
+          [cutoffDate.toISOString(), newUser.email]
+        );
 
+        /*
         //consultamos si existen solicitudes recientes en la base de datos, mínimo 24 hrs.
-        var user = await pool.query(`SELECT * FROM beca_request WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" AND "${fecha_now.toISOString()}" AND email = "${newUser.email}"`);
+        var user = await pool.query(
+          `SELECT * FROM beca_request 
+          WHERE submitted_at BETWEEN "${newDateObj.toISOString()}" 
+          AND "${fecha_now.toISOString()}" 
+          AND email = "${newUser.email}"`);
+        */
+
         if(user.length == 0)
         {
           await pool.query('INSERT INTO beca_request set ?', [newUser]); //Se crea el resgistro en la tabla beca_request
@@ -68,25 +86,30 @@ export const newRecord = async (req, res, next) => {
           };
             
           res.render('forms/form_response', dataResponse);
-
-          //res.redirect('/beca/success');
             
         }else{
 
+          var iC = enrollmentGroups.find(obj => obj.courseName === newUser.course);
+          sendEnrollNotification(newUser, iC, 'beca_mail_not_approved.ejs');
+
           const dataResponse = {
-            title:    '¡Agradecemos tu interés!',
-            message:  'Nuestro sistema registra ya una solicitud reciente, debes esperar al menos 24 horas para enviar una nueva solicitud.',
+            title:    '¡Gracias por tu interés en la beca exclusiva para estudiantes y profesores!',
+            message:  [
+              'Ya hemos revisado tu solicitud.',
+              'Gracias por tu interés en seguir formándote con nosotros.',
+              'Tras revisar tu solicitud, hemos comprobado que ya te has matriculado a un curso gratuito en 2025 mediante la beca para estudiantes y profesores.',
+              'Esta beca permite un solo curso gratuito por persona al año, por lo que no ha sido posible tramitar gratuitamente tu inscripción al curso.'
+            ],
             // si no quieres mostrar enlace, deja link en null o undefined
             link: { 
               url:  'https://www.construsoft.es/es/formacion-bim/curso-online/beca-estudiantes-y-profesores',
-              text: 'Dá un vistazo a los términos de la beca'
+              text: 'Accede a los cursos de la beca'
             }
           };
           
           res.render('forms/form_response', dataResponse);
+          console.log("Nuestro sistema registra ya una solicitud este año.");
 
-          console.log("Nuestro sistema registra ya una solicitud reciente, debes esperar al menos 24 horas para enviar una nueva solicitud");
-            //res.redirect('/beca/not-success');
         }
     });
 }
