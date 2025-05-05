@@ -295,6 +295,10 @@ const enrollmentGroups = [
             {
                 "groupId": 3809,
                 "groupName": "PROGRAMA PROFESORES 2025"
+            },
+            {
+                "groupId": 3813,
+                "groupName": "PROGRAMA CLIENTES TEKLA 2025"
             }
         ]
     },

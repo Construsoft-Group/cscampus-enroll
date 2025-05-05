@@ -74,7 +74,8 @@ $(document).ready(function () {
         "5": "Editor de cuadros en Tekla Structures",
         "6": "Gestión de la numeración de Tekla Structures",
         "7": "Macros de Construsoft para Tekla Structures",
-        "8": "Optimización de flujos BIM con Trimble Connect"
+        "8": "Common Data Environment con Trimble Connect",
+        "9": "Optimización de flujos BIM con Trimble Connect"
     }
 
     $.each(selectCountries, function(key, value) {   
