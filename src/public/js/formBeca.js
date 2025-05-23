@@ -51,7 +51,7 @@ $(document).ready(function () {
         "3": "Teoría y cálculo de uniones metálicas con IDEA STATICA", 
         "4": "Teoría y cálculo de elementos HA con IDEA STATICA", 
         "5": "Análisis y diseño de edificaciones con Tekla Structural Designer",
-        "6": "Common Data Environment con Trimble Connect",
+        "6": "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
         "7": "Optimización de flujos BIM con Trimble Connect"/* ,
         "8": "Strusite" */
      };

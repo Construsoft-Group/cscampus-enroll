@@ -261,7 +261,7 @@ const enrollmentGroups = [
     },
     {
         "courseId": 174,
-        "courseName": "Common Data Environment con Trimble Connect",
+        "courseName": "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=174",
         "groups": [
             {

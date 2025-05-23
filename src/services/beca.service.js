@@ -112,7 +112,7 @@ export const newRecord = async (req, res, next) => {
             message:  htmlConBreaks,
             // si no quieres mostrar enlace, deja link en null o undefined
             link: { 
-              url:  'https://www.construsoft.es/es/formacion-bim/curso-online/beca-estudiantes-y-profesores',
+              url:  'https://www.construsoft.es/es/formacion-bim/curso-online',
               text: 'Accede a los cursos de la beca'
             }
           };

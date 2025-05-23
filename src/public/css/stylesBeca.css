@@ -18,7 +18,7 @@ body{
   color: rgb(0, 0, 0);
   padding: 60px 40px 40px;
   min-height: 250px;
-  width: 600px;
+  width: 420px;
   display: flex;
   justify-content: space-around;
   flex-direction: column;
