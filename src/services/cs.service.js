@@ -76,8 +76,10 @@ export const customerEnrollmentReq = async (req, res, next) => {
           console.log(iC);
           //var iC = enrollmentGroups.find(obj => obj.courseName === "Common Data Environment con Trimble Connect NUEVO");
           var groupName =  "PROGRAMA CLIENTES TEKLA 2025";
+          
           var iG = iC.groups.find(obj => obj.groupName === groupName);
           console.log(groupName);
+
 
           var newEnrollment = {
             course_id: iC.courseId,
@@ -111,6 +113,14 @@ export const customerEnrollmentReq = async (req, res, next) => {
             var enrollment = await enrollMoodleuser(qUserData.users[0].id, iC.courseId, iniEnrollment, endEnrollment);
             var addToGroup = await addUserToMoodleGroup(qUserData.users[0].id, iG.groupId);
             var insertEnrollDb = await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
+
+
+            //Para el curso trimble connect se inclyuye tambien en el gruipo FULL
+            if( iC.courseName === "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect"){
+              var groupName2 =  "23_FULL";
+              var iFullG = iC.groups.find(obj => obj.groupName === groupName2);
+              var addToFullGroup = await addUserToMoodleGroup(qUserData.users[0].id, iFullG.groupId);
+            }
             
             /* Se comenta esta parte hasta resolver problema con Sharepoint
             var spAccessToken = await getSpAccessToken();
