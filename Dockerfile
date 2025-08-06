@@ -1,5 +1,5 @@
-# Dockerfile
-FROM node:14.16.1
+#FROM node:14.16.1
+FROM node:18
 
 WORKDIR /app
 

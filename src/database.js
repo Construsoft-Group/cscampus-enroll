@@ -1,4 +1,4 @@
-import mysql from "mysql";
+import mysql from "mysql2";
 import { database }  from './config.js';
 import { promisify } from 'util';
 
