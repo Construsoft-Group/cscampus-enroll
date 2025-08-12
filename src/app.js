@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import routerApi from "./routes/index.js";
 import cron from 'node-cron';
 import {job} from './job.js';
-
+import { setupSwagger } from '../swagger-setup.js';
 import { PORT } from "./config.js";
 
 //Initializations
@@ -17,7 +17,6 @@ cron.schedule('* * * * *', async () => {await job();});
 
 //settings
 app.set('port', PORT);
-const __filename = fileURLToPath(import.meta.url);
 
 //Middlewaress
 app.use(express.urlencoded({extended:false}));
@@ -36,5 +35,8 @@ app.use(expressLayouts)
 //app.set('layout', './layouts/layout')
 app.set('view engine', 'ejs')
 app.set("views", __dirname + '/views');
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 export default app;
