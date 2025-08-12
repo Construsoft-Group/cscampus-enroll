@@ -1,5 +1,5 @@
 import express from "express";
-import { extendEnrollmentByUser } from "../services/enrollment.service.js";
+import { extendUserEnrollment } from "./enrollment.service.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -9,13 +9,13 @@ router.post('/extend', async (req, res) => {
     const { userid, courseid, months } = req.body;
 
     if (!userid || !courseid || !months) {
-      return res.status(400).json({ error: 'userid, courseid, and months are required' });
+      return res.status(400).json({ error: 'Missing required fields: userid, courseid, months' });
     }
 
-    const result = await extendEnrollmentByUser({ userid, courseid, months });
+    const result = await extendUserEnrollment({ userid, courseid, months });
     res.status(200).json({ success: true, result });
   } catch (error) {
-    console.error('Error extending enrollment:', error.response?.data || error.message);
+    console.error('Enrollment extension error:', error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to extend enrollment' });
   }
 });
