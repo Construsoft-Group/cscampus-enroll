@@ -49,6 +49,46 @@ export const createMoodleUser = async (user) => {
     return res;
 }
 
+export const extendEnrollment = async ({ userid, courseid, timeend, roleid = 5 }) => {
+    const params = new URLSearchParams();
+    params.append('moodlewsrestformat', 'json');
+    params.append('wsfunction', 'enrol_manual_enrol_users');
+    params.append('wstoken', process.env.MDL_TOKEN);
+    params.append('enrolments[0][roleid]', roleid);
+    params.append('enrolments[0][userid]', userid);
+    params.append('enrolments[0][courseid]', courseid);
+    params.append('enrolments[0][timeend]', timeend);
+
+    const config = {
+        method: 'post',
+        url: WebServiceUrl,
+        headers: {},
+        params: params
+    };
+
+    const res = await axios(config);
+    return res;
+};
+
+export const getUsersInGroup = async (groupid) => {
+    const params = new URLSearchParams();
+    params.append('moodlewsrestformat', 'json');
+    params.append('wsfunction', 'core_group_get_group_members');
+    params.append('wstoken', process.env.MDL_TOKEN);
+    params.append('groupids[0]', groupid);
+
+    const config = {
+        method: 'get',
+        url: WebServiceUrl,
+        headers: {},
+        params: params
+    };
+
+    const res = await axios(config);
+    return res.data;
+};
+
+
 export const enrollMoodleuser = async (userId, courseId, timestart, timeend) => {
     const params = new URLSearchParams();
     params.append('moodlewsrestformat', 'json');

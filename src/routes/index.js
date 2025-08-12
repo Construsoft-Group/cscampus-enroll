@@ -4,6 +4,7 @@ import becaRouter from "./beca.router.js";
 import csRouter from "./cs.router.js";
 import tcRouter from "./tc.router.js";
 import eudeRouter from "./eude.router.js";
+import enrollmentRouter from './enrollment.route.js';
 import dbRouter from "./db.router.js";
 import { fileURLToPath } from 'url';
 
@@ -20,6 +21,7 @@ function routerApi(app) {
     app.use('/tc', tcRouter);
     app.use('/eude', eudeRouter);
     app.use('/db', dbRouter);
+    app.use('/enrollment', enrollmentRouter);
 }
 
 export default routerApi;
