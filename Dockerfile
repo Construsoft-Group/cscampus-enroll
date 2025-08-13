@@ -3,6 +3,9 @@ FROM node:18
 
 WORKDIR /app
 
+# Explicitly unset NODE_ENV to ensure devDependencies are installed
+ENV NODE_ENV=development
+
 COPY package*.json ./
 RUN npm install
 
