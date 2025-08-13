@@ -12,6 +12,7 @@ package-lock.json
 .env
 
 ## logs
+logs/enrollment_fallback.log
 logs
 
 ## dist
