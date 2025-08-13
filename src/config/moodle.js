@@ -49,25 +49,32 @@ export const createMoodleUser = async (user) => {
     return res;
 }
 
-export const extendEnrollment = async ({ userid, courseid, timeend, roleid = 5 }) => {
-    const params = new URLSearchParams();
-    params.append('moodlewsrestformat', 'json');
-    params.append('wsfunction', 'enrol_manual_enrol_users');
-    params.append('wstoken', process.env.MDL_TOKEN);
-    params.append('enrolments[0][roleid]', roleid);
-    params.append('enrolments[0][userid]', userid);
-    params.append('enrolments[0][courseid]', courseid);
-    params.append('enrolments[0][timeend]', timeend);
+export const extendEnrollment = async ({ userid, courseid, timeend }) => {
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'enrol_manual_enrol_users');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('enrolments[0][roleid]', 5);
+  params.append('enrolments[0][userid]', userid);
+  params.append('enrolments[0][courseid]', courseid);
+  params.append('enrolments[0][timestart]', Math.floor(Date.now() / 1000));
+  params.append('enrolments[0][timeend]', timeend);
 
-    const config = {
-        method: 'post',
-        url: WebServiceUrl,
-        headers: {},
-        params: params
-    };
+  try {
+    const res = await axios.post(WebServiceUrl, null, { params });
 
-    const res = await axios(config);
+    const data = res.data;
+
+    // Check for Moodle error structure
+    if (data && data.exception) {
+      throw new Error(`[MOODLE ERROR] ${data.message} (${data.errorcode})`);
+    }
+
     return res;
+  } catch (err) {
+    console.error('[MOODLE CALL FAILED]', err.message);
+    throw err;
+  }
 };
 
 

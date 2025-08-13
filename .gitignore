@@ -9,6 +9,10 @@ package-lock.json
 
 # environment variables
 .env.*
+.env
+
+## logs
+logs
 
 ## dist
 dist
