@@ -21,6 +21,23 @@ export const queryMoodleUser = async (email) => {
 
 }
 
+export const getCoursesByUser = async (userid) => {
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_enrol_get_users_courses');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('userid', userid);
+
+  const config = {
+    method: 'get',
+    url: process.env.MDL_DOMAIN + 'webservice/rest/server.php',
+    params
+  };
+
+  const res = await axios(config);
+  return res.data;
+};
+
 export const createMoodleUser = async (user) => {
     //console.log(user);
     const params = new URLSearchParams();
