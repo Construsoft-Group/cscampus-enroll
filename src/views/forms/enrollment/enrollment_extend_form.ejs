@@ -2,63 +2,107 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Extensión de Matrícula</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- reCAPTCHA v2 Invisible -->
+  <!-- BOOTSTRAP - CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+  <!-- ESTILOS DEL FORM (gemelo de beca) -->
+  <link rel="stylesheet" href="/css/extendedEnrollment.css">
+
+  <title>Extensión de Matrícula</title>
+
+  <!-- reCAPTCHA v2 Invisible (solo front) -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
-<body class="bg-light">
+<body>
+  <div class="form">
+    <div class="form__container">
+      <h3 id="titulo">Solicitud de Extensión de Matrícula</h3>
 
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <div class="card shadow">
-          <div class="card-body">
-            <h4 class="card-title text-center mb-4">Solicitud de Extensión de Matrícula</h4>
-
-            <form method="POST" action="/enrollment/extend-request" id="extendForm" autocomplete="off">
-              <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" name="email" id="email" required>
-              </div>
-
-              <div class="mb-3">
-                <label for="courseid" class="form-label">Curso</label>
-                <select class="form-select" name="courseid" id="courseid" required>
-                  <option disabled selected value="">Selecciona un curso</option>
-                  <option value="212">Fundamentos Tekla Structures Acero</option>
-                  <option value="213">Fundamentos Tekla Structures Hormigón</option>
-                  <option value="214">IDEA StatiCa: Uniones Metálicas</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="reason" class="form-label">Motivo de la solicitud</label>
-                <textarea class="form-control" name="reason" id="reason" rows="4" required></textarea>
-              </div>
-
-              <!-- reCAPTCHA Invisible (solo frontend) -->
-              <div class="g-recaptcha"
-                   data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
-                   data-callback="onCaptchaOk"
-                   data-expired-callback="onCaptchaExpired"
-                   data-error-callback="onCaptchaError"
-                   data-size="invisible">
-              </div>
-
-              <button type="submit" class="btn btn-primary w-100">Enviar solicitud</button>
-            </form>
-
-          </div>
+      <form class="form__container--form" method="POST" action="/enrollment/extend-request" id="extendForm" autocomplete="off">
+        <div class="form-group">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            placeholder="Email registrado en campus"
+            required
+          >
         </div>
-      </div>
+
+        <div class="form-group">
+          <label for="courseid" class="form-label">Curso</label>
+          <select class="form-control" name="courseid" id="courseid" required>
+            <option selected disabled value="">Selecciona un curso</option>
+            <option value="212">Fundamentos Tekla Structures Acero</option>
+            <option value="213">Fundamentos Tekla Structures Hormigón</option>
+            <option value="214">IDEA StatiCa: Uniones Metálicas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reason" class="form-label">Motivo de la solicitud</label>
+          <textarea
+            class="form-control textarea-large"
+            name="reason"
+            id="reason"
+            rows="6"
+            placeholder="Escribe el motivo de tu solicitud de extensión"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Checkbox: Política de Privacidad -->
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" id="privacy" name="privacy" required>
+            He leído y acepto la Política de Privacidad *
+            <a class="form-group-a"
+              href="https://campus.construsoft.com/local/staticpage/view.php?page=privacy"
+              target="_blank">
+              (Leer aquí)
+            </a>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" id="commitment" name="commitment" required>
+            Me comprometo a terminar el curso con la extensión proporcionada. *
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" id="newsletter" name="newsletter">
+            Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.
+          </label>
+        </div>
+
+          
+
+        <!-- reCAPTCHA Invisible -->
+        <div class="g-recaptcha"
+             data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
+             data-callback="submitExtensionForm"
+             data-size="invisible">
+        </div>
+
+        <button class="button" id="send" onclick="return validar()">Enviar solicitud</button>
+      </form>
     </div>
   </div>
 
-  <!-- JS del formulario (separado) -->
+  <!-- JS (igual patrón que beca: validar/submit y recaptcha.execute) -->
   <script src="/js/formExtension.js"></script>
+
+  <!-- Bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+          crossorigin="anonymous"></script>
 </body>
 </html>

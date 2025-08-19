@@ -1,0 +1,243 @@
+body {
+  background-color: #ffff;
+}
+
+/* vista de éxito */
+.success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0px 30px;
+  min-height: calc(100vh - 200px);
+}
+.success__container {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(56, 56, 56, 0.1);
+  border-radius: 40px;
+  color: rgb(0, 0, 0);
+  padding: 60px 40px 40px;
+  min-height: 250px;
+  width: 420px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.parrafo {
+  text-align: center;
+}
+.success__container > h3,
+.success__container > a {
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* formulario */
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0px 30px;
+  min-height: calc(100vh - 200px);
+}
+.form__container {
+  border: 2px solid rgba(56, 56, 56, 0.1);
+  border-radius: 40px;
+  color: rgb(0, 0, 0);
+  padding: 60px 40px 40px;
+  min-height: 600px;
+  width: 420px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.form__container > h3 {
+  text-align: center;
+}
+.form__container--form {
+  display: flex;
+  flex-direction: column;
+}
+.form__container--form > div > p {
+  font-size: 9px;
+  text-align: center;
+}
+#customFile {
+  font-size: 13px;
+}
+.form__container--form > label {
+  font-size: 11px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 5px;
+  justify-content: space-around;
+}
+.form-group > label {
+  width: 150px;
+  font-size: 14.5px;
+  align-items: center;
+}
+.form-group > textarea {
+  width: 185px;
+  font-size: 12px;
+  align-items: center;
+}
+.form-group > input {
+  width: 185px;
+  font-size: 12px;
+  align-items: center;
+  height: 25px;
+}
+.form-group > select {
+  width: 185px;
+  align-items: center;
+  height: 25px;
+  font-size: 12px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+option {
+  font-size: 12px;
+}
+#phone {
+  width: 185px;
+  height: 25px;
+}
+#radioOption {
+  width: 15px;
+  font-size: 9px;
+}
+#div1 {
+  display: flex;
+  flex-direction: column;
+}
+#strengthMessage {
+  text-align: center;
+  font-size: 12px;
+  padding: 5px;
+  margin: 0;
+}
+#customFile {
+  margin-bottom: 10px;
+}
+.form-group > div > p {
+  font-size: 7.5px;
+  padding-top: 2px;
+  margin-left: 3px;
+  margin-bottom: 3px;
+}
+.form-group-a {
+  font-size: 7.5px;
+  padding-top: 2px;
+  padding-left: 20px;
+  margin-left: 3px;
+  margin-bottom: 3px;
+}
+.form-group > div {
+  display: flex;
+  flex-direction: row;
+}
+.form-group > div > label {
+  padding-top: 5px;
+}
+.button {
+  background-color: #AFFF64;
+  border: none;
+  border-radius: 25px;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  height: 50px;
+  letter-spacing: 1px;
+  margin: 10px 0px;
+}
+.success__container > div > img {
+  width: 400px;
+  padding-bottom: 10px;
+  display: block;
+  margin: auto;
+}
+
+/* responsive */
+@media only screen and (max-width: 400px) {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .signup__container {
+    width: 370px;
+  }
+  .signup__container > div > img {
+    width: 200px;
+  }
+  .form-group > label {
+    width: 285px;
+  }
+  .form-group > input {
+    width: 285px;
+  }
+  .form-group > select {
+    width: 285px;
+    font-size: 12px;    
+  }
+  #phone {
+    width: 285px;
+  }
+}
+
+/* tamaño mayor para el motivo */
+.textarea-large {
+  min-height: 140px; /* sube a 160/180 si prefieres */
+  resize: vertical;  /* permite estirar */
+}
+
+/* Placeholder más pequeño y gris claro */
+::placeholder {
+  font-size: 12px;
+  color: #888;
+}
+
+/* ========================= */
+/*   Checkbox uniformes      */
+/* ========================= */
+/* Checkboxes con ancho uniforme como los inputs/selects */
+/* Checkboxes compactos y uniformes */
+/* Checkboxes compactos y uniformes */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 6px;
+  width: 15px;
+  height: 15px;
+}
+
+.checkbox-group label {
+  font-size: 7.5px;
+  line-height: 1.2;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.checkbox-group .form-group-a {
+  font-size: 7.5px;
+  font-weight: bold;
+  margin-left: 2px;
+  color: #007bff; /* azul link */
+  text-decoration: underline;
+}

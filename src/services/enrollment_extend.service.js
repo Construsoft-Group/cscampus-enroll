@@ -1,11 +1,10 @@
 // services/enrollment_extend.service.js
 import { queryMoodleUser, getCoursesByUser } from '../config/moodle.js';
 import { extendEnrollmentByUser } from './enrollment.service.js';
+import { getExtensionCount, decideExtensionAction } from '../helpers/enrollment_extension.helper.js';
 
 export const renderExtendForm = (req, res) => {
-  // Evita cacheos raros del navegador
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-  // Usa la ruta de vistas que tengas configurada con app.set('views', ...)
   res.render('forms/enrollment/enrollment_extend_form');
 };
 
@@ -13,7 +12,7 @@ export const handleExtendRequest = async (req, res) => {
   try {
     const { email, courseid: courseidRaw, reason } = req.body;
 
-    // Validaciones básicas
+    // 1) Validaciones básicas
     if (!email || !courseidRaw || !reason) {
       return res.status(400).render('forms/form_response', {
         title: 'Faltan datos',
@@ -22,7 +21,6 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // Normaliza courseid (string -> number) para comparar contra Moodle
     const courseid = Number.parseInt(courseidRaw, 10);
     if (!Number.isFinite(courseid)) {
       return res.status(400).render('forms/form_response', {
@@ -32,10 +30,9 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // Buscar usuario por email en Moodle
+    // 2) Buscar usuario por email en Moodle
     const moodleRes = await queryMoodleUser(email);
     const user = moodleRes?.data?.users?.[0];
-
     if (!user) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no encontrado',
@@ -44,10 +41,8 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // Cursos del usuario y verificación de matrícula
+    // 3) Confirmar matrícula en el curso
     const courses = await getCoursesByUser(user.id);
-
-    // Si Moodle devolvió un objeto de error: { exception, errorcode, message }
     if (courses && typeof courses === 'object' && !Array.isArray(courses) &&
         ('exception' in courses || 'errorcode' in courses)) {
       console.error('[MOODLE ERROR getCoursesByUser]', courses);
@@ -57,10 +52,8 @@ export const handleExtendRequest = async (req, res) => {
         link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
       });
     }
-
     const list = Array.isArray(courses) ? courses : [];
     const enrolled = list.some(c => Number(c.id) === courseid);
-
     if (!enrolled) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no matriculado en el curso',
@@ -69,7 +62,19 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // Ejecutar extensión de matrícula
+    // 4) Reglas de extensiones (conteo desde BD)
+    const currentCount = await getExtensionCount(user.id, courseid);
+    const { action, remaining } = decideExtensionAction(currentCount);
+
+    if (action === 'BLOCK') {
+      return res.status(409).render('forms/form_response', {
+        title: 'Límite de extensiones excedido',
+        message: 'Has excedido el número de extensiones permitidas (3). No es posible procesar una nueva solicitud.',
+        link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
+      });
+    }
+
+    // 5) Ejecutar extensión en Moodle y registrar en BD (lo hace enrollment.service.js)
     const months = 2; // período por defecto
     const result = await extendEnrollmentByUser({
       userid: user.id,
@@ -86,11 +91,17 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // OK
-    res.setHeader('Cache-Control', 'no-store');
+    // 6) Mensaje de éxito según las extensiones restantes
+    const msgMap = {
+      2: 'Extensión ejecutada correctamente. Te quedan máximo 2 extensiones.',
+      1: 'Extensión ejecutada correctamente. Te queda 1 extensión.',
+      0: 'Extensión ejecutada correctamente. No te quedan más extensiones.'
+    };
+    const message = msgMap[remaining] ?? 'Extensión ejecutada correctamente.';
+
     return res.render('forms/form_response', {
-      title: '¡Solicitud procesada!',
-      message: 'Tu matrícula ha sido extendida exitosamente.',
+      title: '¡Extensión aplicada!',
+      message,
       link: { url: '/enrollment/extend-form', text: 'Extender otra matrícula' }
     });
 
