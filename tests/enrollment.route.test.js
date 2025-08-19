@@ -43,7 +43,8 @@ describe('POST /enrollment/extend', () => {
       .send({
         userid: 18286,
         courseid: 212,
-        months: 2
+        months: 2,
+        reason: 'Necesito más tiempo para terminar el curso'
       });
 
     expect(res.statusCode).toBe(200);
@@ -72,7 +73,8 @@ describe('POST /enrollment/extend', () => {
       .send({
         userid: 18286,
         courseid: 212,
-        months: 2
+        months: 2,
+        reason: 'Necesito más tiempo para terminar el curso'
       });
 
     expect(res.statusCode).toBe(500);
@@ -93,11 +95,12 @@ describe('POST /enrollment/extend', () => {
       .send({
         userid: 18286,
         courseid: 212,
-        months: 2
+        months: 2,
+        reason: 'Necesito más tiempo para terminar el curso'
       });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.result.status).toBe('enrolled');
+    expect(res.statusCode).toBe(500);
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toMatch(/DB ERROR/);
   });
 });

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Extensión de Matrícula</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+          <div class="card-body">
+            <h4 class="card-title text-center mb-4">Solicitud de Extensión de Matrícula</h4>
+
+            <form method="POST" action="/enrollment/extend-request" id="extendForm">
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" name="email" id="email" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="courseid" class="form-label">Curso</label>
+                <select class="form-select" name="courseid" id="courseid" required>
+                  <option disabled selected value="">Selecciona un curso</option>
+                  <option value="212">Fundamentos Tekla Structures Acero</option>
+                  <option value="213">Fundamentos Tekla Structures Hormigón</option>
+                  <option value="214">IDEA StatiCa: Uniones Metálicas</option>
+                  <!-- Agrega más cursos si es necesario -->
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="reason" class="form-label">Motivo de la solicitud</label>
+                <textarea class="form-control" name="reason" id="reason" rows="4" required></textarea>
+              </div>
+
+              <div class="g-recaptcha"
+                data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
+                data-callback="submitForm"
+                data-size="invisible">
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">Enviar solicitud</button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('extendForm');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      grecaptcha.execute();
+    });
+
+    function submitForm() {
+      document.getElementById('extendForm').submit();
+    }
+  </script>
+
+</body>
+</html>

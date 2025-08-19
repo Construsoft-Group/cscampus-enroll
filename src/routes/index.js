@@ -5,6 +5,7 @@ import csRouter from "./cs.router.js";
 import tcRouter from "./tc.router.js";
 import eudeRouter from "./eude.router.js";
 import enrollmentRouter from './enrollment.route.js';
+import enrollmentExtendRouter from './enrollment_extend.route.js';
 import dbRouter from "./db.router.js";
 import { fileURLToPath } from 'url';
 
@@ -22,6 +23,7 @@ function routerApi(app) {
     app.use('/eude', eudeRouter);
     app.use('/db', dbRouter);
     app.use('/enrollment', enrollmentRouter);
+    app.use('/enrollment', enrollmentExtendRouter);
 }
 
 export default routerApi;
