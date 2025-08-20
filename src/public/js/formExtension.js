@@ -1,32 +1,54 @@
-// Validación solo en el front con reCAPTCHA invisible (como beca)
-(function () {
-  const form = document.getElementById('extendForm');
+// Debe existir global para el callback del captcha
+function submitExtensionForm() {
+  const form = document.getElementById("extendForm");
   if (!form) return;
+  // Usar requestSubmit para NO saltarse validaciones nativas si se dispara manualmente
+  if (typeof form.requestSubmit === "function") {
+    form.requestSubmit();
+  } else {
+    form.submit();
+  }
+}
 
-  // En cada submit: resetea y ejecuta para generar token fresco
-  form.addEventListener('submit', function (e) {
+function onCaptchaExpired() { try { grecaptcha.reset(); } catch (_) {} }
+function onCaptchaError()   { try { grecaptcha.reset(); } catch (_) {} }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("extendForm");
+  const sendBtn = document.getElementById("send");
+  if (!form || !sendBtn) return;
+
+  sendBtn.addEventListener("click", function (e) {
     e.preventDefault();
-    if (typeof grecaptcha !== 'undefined') {
-      try { grecaptcha.reset(); } catch (_) {}
-      grecaptcha.execute();
+
+    // ✅ Valida TODOS los required (incluye privacy y commitment)
+    if (!form.checkValidity()) {
+      // muestra los mensajes nativos del navegador
+      form.reportValidity?.();
+      return;
+    }
+
+    // Si pasa la validación, ejecuta reCAPTCHA Invisible
+    if (typeof grecaptcha !== "undefined" && grecaptcha.execute) {
+      try {
+        try { grecaptcha.reset(); } catch (_) {}
+        grecaptcha.execute();
+      } catch (err) {
+        console.error("[reCAPTCHA execute error]", err);
+        // Fallback si algo falla
+        if (typeof form.requestSubmit === "function") {
+          form.requestSubmit();
+        } else {
+          form.submit();
+        }
+      }
     } else {
-      form.submit(); // fallback
+      // Fallback si reCAPTCHA no cargó
+      if (typeof form.requestSubmit === "function") {
+        form.requestSubmit();
+      } else {
+        form.submit();
+      }
     }
   });
-
-  // Google llama este callback cuando el challenge fue OK y hay token
-  window.onCaptchaOk = function onCaptchaOk() {
-    // En este punto ya existe un g-recaptcha-response válido en el form
-    form.submit();
-  };
-
-  // Si expira mientras el usuario diligencia, regeneramos
-  window.onCaptchaExpired = function onCaptchaExpired() {
-    try { grecaptcha.reset(); grecaptcha.execute(); } catch (_) {}
-  };
-
-  // Ante error de red u otro, resetea para reintentar
-  window.onCaptchaError = function onCaptchaError() {
-    try { grecaptcha.reset(); } catch (_) {}
-  };
-})();
+});

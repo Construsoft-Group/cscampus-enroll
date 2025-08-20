@@ -125,13 +125,13 @@ option {
   margin-bottom: 10px;
 }
 .form-group > div > p {
-  font-size: 7.5px;
+  font-size: 9px;
   padding-top: 2px;
   margin-left: 3px;
   margin-bottom: 3px;
 }
 .form-group-a {
-  font-size: 7.5px;
+  font-size: 9px;
   padding-top: 2px;
   padding-left: 20px;
   margin-left: 3px;
@@ -224,7 +224,7 @@ option {
 }
 
 .checkbox-group label {
-  font-size: 7.5px;
+  font-size: 9px;
   line-height: 1.2;
   margin: 0;
   display: flex;
@@ -235,7 +235,7 @@ option {
 }
 
 .checkbox-group .form-group-a {
-  font-size: 7.5px;
+  font-size: 9px;
   font-weight: bold;
   margin-left: 2px;
   color: #007bff; /* azul link */

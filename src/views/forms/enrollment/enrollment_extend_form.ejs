@@ -85,14 +85,15 @@
 
           
 
-        <!-- reCAPTCHA Invisible -->
         <div class="g-recaptcha"
-             data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
-             data-callback="submitExtensionForm"
-             data-size="invisible">
+          data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
+          data-callback="submitExtensionForm"
+          data-expired-callback="onCaptchaExpired"
+          data-error-callback="onCaptchaError"
+          data-size="invisible">
         </div>
 
-        <button class="button" id="send" onclick="return validar()">Enviar solicitud</button>
+        <button class="button" id="send">Enviar solicitud</button>
       </form>
     </div>
   </div>
