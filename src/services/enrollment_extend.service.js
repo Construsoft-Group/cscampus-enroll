@@ -1,6 +1,7 @@
 // services/enrollment_extend.service.js
-import { queryMoodleUser, getCoursesByUser } from '../config/moodle.js';
+import { queryMoodleUser, isUserInCourseAnyStatus, getCourseNameById } from '../config/moodle.js';
 import { extendEnrollmentByUser } from './enrollment.service.js';
+import { sendExtensionAppliedNotification } from '../config/sendMail.js';
 import { getExtensionCount, decideExtensionAction } from '../helpers/enrollment_extension.helper.js';
 
 export const renderExtendForm = (req, res) => {
@@ -36,28 +37,17 @@ export const handleExtendRequest = async (req, res) => {
     if (!user) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no encontrado',
-        message: `No se encontró un usuario en Moodle con el correo ${email}.`,
+        message: `No se encontró un usuario en el Campus de Construsoft con el correo ${email}.`,
         link: { url: '/enrollment/extend-form', text: 'Intentar de nuevo' }
       });
     }
 
-    // 3) Confirmar matrícula en el curso
-    const courses = await getCoursesByUser(user.id);
-    if (courses && typeof courses === 'object' && !Array.isArray(courses) &&
-        ('exception' in courses || 'errorcode' in courses)) {
-      console.error('[MOODLE ERROR getCoursesByUser]', courses);
-      return res.status(401).render('forms/form_response', {
-        title: 'Error de acceso a Moodle',
-        message: `No fue posible consultar los cursos del usuario. Detalle: ${courses.message || 'Acceso denegado.'}`,
-        link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
-      });
-    }
-    const list = Array.isArray(courses) ? courses : [];
-    const enrolled = list.some(c => Number(c.id) === courseid);
-    if (!enrolled) {
+    // 3) Confirmar matrícula en el curso (activo o suspendido)
+    const inThisCourseAnyStatus = await isUserInCourseAnyStatus(user.id, courseid);
+    if (!inThisCourseAnyStatus) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no matriculado en el curso',
-        message: `El usuario no está matriculado en el curso con ID ${courseid}.`,
+        message: `El usuario no está matriculado (ni activo ni suspendido) en el curso con ID ${courseid}.`,
         link: { url: '/enrollment/extend-form', text: 'Intentar de nuevo' }
       });
     }
@@ -99,6 +89,20 @@ export const handleExtendRequest = async (req, res) => {
     };
     const message = msgMap[remaining] ?? 'Extensión ejecutada correctamente.';
 
+    // 7) Envío de correo
+    // Obtener el nombre real del curso desde Moodle
+    const courseName = await getCourseNameById(courseid);
+
+    sendExtensionAppliedNotification({
+      toEmail: email,
+      studentName: user.firstname || 'Estudiante',
+      courseName,
+      months,
+      remaining
+      // courseLink: (opcional, si lo tuvieras)
+    });
+
+    // 8) Respuesta HTML al usuario
     return res.render('forms/form_response', {
       title: '¡Extensión aplicada!',
       message,

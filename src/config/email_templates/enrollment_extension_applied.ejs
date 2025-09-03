@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Extensión aplicada</title>
+  <style>
+    body { margin:0; padding:0; background:#ffffff; font-family: Arial, Verdana, sans-serif; color:#000; }
+    .wrap { max-width:600px; margin:0 auto; }
+    .header { padding:16px 10px 25px; }
+    .logo-row { display:flex; justify-content:space-between; align-items:center; }
+    .card { background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:20px; }
+    h1 { font-size:22px; margin:0 0 10px 0; color:#111; }
+    h2 { font-size:18px; margin:0 0 8px 0; color:#333; }
+    p { margin:0 0 10px 0; line-height:1.5; }
+    .btnWrap { text-align:center; margin:20px 0; }
+    .btn {
+      display:inline-block; text-decoration:none; font-size:14px;
+      border-radius:20px; padding:11px 20px; color:#fff; background:#000;
+    }
+    .muted { color:#6b7280; font-size:12px; }
+    .brand-top {
+      background-image:url('https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/6dc42a6d-6ffb-ef11-bae2-000d3ac241ab?ts=638769609567926210');
+      background-repeat:no-repeat; background-position:50% 50%; background-size:cover; border-radius:10px;
+      padding:20px 10px;
+    }
+    .title { text-align:center; margin:0; font-size:20px; font-weight:bold; }
+    .emphasis { color:#5b1aa2; font-weight:bold; } /* tono morado similar al ejemplo */
+    /* badges / chips */
+    .chip {
+      display:inline-block; background:#ccff99; color:#111; border-radius:999px;
+      font-size:12px; padding:4px 10px; margin-left:6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-row">
+        <a href="https://www.construsoft.es/es" style="text-decoration:none;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/a1ad1fc7-98fd-ef11-bae3-7c1e5274d293?ts=638771986191717160"
+               alt="Construsoft" width="168" height="30" style="display:block;border:0;max-width:100%;">
+        </a>
+        <span class="chip">Let’s co</span>
+      </div>
+    </div>
+
+    <!-- Banda superior tipo “beca” -->
+    <div class="brand-top">
+      <p class="title">¡Extensión aplicada!</p>
+    </div>
+
+    <!-- Card contenido -->
+    <div class="card" style="margin-top:10px;">
+      <p>Hola <%= studentName %>,</p>
+
+      <p>
+        Tu extensión de matrícula para el curso
+        <strong class="emphasis"><%= courseName %></strong>
+        fue aplicada por <strong> <%= months %> mes(es)</strong>.
+      </p>
+
+      <p>
+        <strong>Estado de extensiones restantes:</strong>
+        <%= typeof remainingText !== 'undefined' ? remainingText : '' %>
+      </p>
+
+      <% if (typeof courseLink !== 'undefined' && courseLink) { %>
+        <div class="btnWrap">
+          <a class="btn" href="<%= courseLink %>">Accede ahora al curso</a>
+        </div>
+      <% } %>
+
+      <p>Gracias por tu paciencia.<br/>Equipo Campus Construsoft</p>
+    </div>
+
+        <!-- Footer con redes y aviso GDPR -->
+    <div style="padding:20px 10px; text-align:center;">
+      <p style="font-family:Trebuchet MS,Helvetica,sans-serif; font-size:14px; margin-bottom:10px;">
+        Síguenos en nuestras redes sociales:
+      </p>
+      <p style="margin:10px 0;">
+        <a href="https://www.linkedin.com/company/construsoft-latinoam-rica/posts/?feedView=all" style="margin:0 8px;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/b4d64920-86fe-ef11-bae3-000d3aa8cff6?ts=638773005585216391" width="19" height="19" alt="LinkedIn">
+        </a>
+        <a href="https://www.instagram.com/construsoft.es/" style="margin:0 8px;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/2eaa58a3-85fe-ef11-bae3-000d3aa8cff6?ts=638773003462785218" width="21" height="21" alt="Instagram">
+        </a>
+        <a href="https://www.facebook.com/Construsoft.es" style="margin:0 8px;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/c5f78ea9-85fe-ef11-bae3-000d3aa8cff6?ts=638773003605289726" width="19" height="19" alt="Facebook">
+        </a>
+        <a href="https://www.youtube.com/@ConstrusoftTekla" style="margin:0 8px;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/cc192f64-86fe-ef11-bae3-000d3aa8cff6?ts=638773006657750120" width="23" height="23" alt="YouTube">
+        </a>
+        <a href="https://x.com/Construsoft_es" style="margin:0 8px;">
+          <img src="https://assets-eur.mkt.dynamics.com/ac2dda46-7b93-42b9-b00d-f17d4ad07b14/digitalassets/images/54cb4b6c-86fe-ef11-bae3-000d3aa8cff6?ts=638773006858850320" width="19" height="19" alt="Twitter">
+        </a>
+      </p>
+
+      <hr style="border:0; border-top:1px solid #ddd; margin:20px 0;">
+
+      <p style="font-family:Trebuchet MS,Helvetica,sans-serif; font-size:12px; color:#7f7f7f; text-align:left;">
+        <strong>AVISO DE CONFIDENCIALIDAD:</strong> Este mensaje y sus archivos van dirigidos exclusivamente a su
+        destinatario, pudiendo contener información <strong>confidencial sometida a secreto profesional</strong>.
+        No está permitida su reproducción o distribución sin la autorización expresa de <strong>CONSTRUSOFTEXPORT, S.L.</strong>.
+        Si usted no es el destinatario final, por favor elimínelo e infórmenos por esta vía.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+

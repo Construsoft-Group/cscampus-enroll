@@ -241,3 +241,29 @@ option {
   color: #007bff; /* azul link */
   text-decoration: underline;
 }
+
+/* ========================= */
+/*Styles related to the popup*/
+/* --- Overlay de procesamiento --- */
+/* Botón deshabilitado con feedback */
+.button[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* Spinner pequeño dentro del botón */
+.button__spinner {
+  width: 16px; height: 16px;
+  border: 2px solid #e9f7dc;
+  border-top-color: #2e7d32; /* verde oscuro */
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+
