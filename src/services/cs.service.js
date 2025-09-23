@@ -234,11 +234,16 @@ export const hotmartTest = async (req, res, next) => {
 
     const webhookData = req.body;
 
-    // Validar que es un evento de compra aprobada
-    if (webhookData.event !== 'PURCHASE_APPROVED' || webhookData.data.purchase.status !== 'APPROVED') {
-      console.log('Webhook ignorado - no es una compra aprobada');
-      return res.status(200).json({message: "webhook processed - not a purchase"});
+    // Validar que es un evento de compra válido
+    const validEvents = ['PURCHASE_APPROVED', 'PURCHASE_COMPLETE'];
+    const validStatuses = ['APPROVED', 'COMPLETED'];
+
+    if (!validEvents.includes(webhookData.event) || !validStatuses.includes(webhookData.data.purchase.status)) {
+      console.log(`Webhook ignorado - Evento: ${webhookData.event}, Status: ${webhookData.data.purchase.status}`);
+      return res.status(200).json({message: "webhook processed - not a valid purchase"});
     }
+
+    console.log(`✅ Compra válida detectada - Evento: ${webhookData.event}, Status: ${webhookData.data.purchase.status}`);
 
     // Extraer datos del comprador
     const buyer = webhookData.data.buyer;

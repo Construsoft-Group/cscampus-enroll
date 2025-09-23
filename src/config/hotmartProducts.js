@@ -1,4 +1,14 @@
 const hotmartPacks = [{
+    "Produto test postback2": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Structures Acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=149",
+            "id": 149
+        }
+        ],
+        "matricula": 180
+    },
     "Teoría y Cálculo de Uniones Metálicas con IDEA StatiCa": {
         "courses": [
         {
