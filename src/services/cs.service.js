@@ -3,9 +3,10 @@ import formidable from "formidable";
 import fs from 'fs'
 import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
+import hotmartPacks from '../config/hotmartProducts.js';
 import { replaceSpecialChars } from '../config/specialChars.js';
 import {sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
-import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
+import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup, getHotmartGroupId } from '../config/moodle.js';
 import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
 
 export const newJobApplicant = async (req, res, next) => {
@@ -228,8 +229,216 @@ export const customerEnrollmentReq = async (req, res, next) => {
 }
 
 export const hotmartTest = async (req, res, next) => {
-  console.log(req.body);
-  res.status(200).json({message: "ok"});
+  try {
+    console.log('Webhook recibido de Hotmart:', req.body);
+
+    const webhookData = req.body;
+
+    // Validar que es un evento de compra aprobada
+    if (webhookData.event !== 'PURCHASE_APPROVED' || webhookData.data.purchase.status !== 'APPROVED') {
+      console.log('Webhook ignorado - no es una compra aprobada');
+      return res.status(200).json({message: "webhook processed - not a purchase"});
+    }
+
+    // Extraer datos del comprador
+    const buyer = webhookData.data.buyer;
+    const product = webhookData.data.product;
+    const purchase = webhookData.data.purchase;
+
+    const userData = {
+      email: buyer.email,
+      firstname: buyer.first_name,
+      lastname: buyer.last_name,
+      phone: buyer.checkout_phone || '',
+      company: 'Hotmart Customer',
+      activity: 'E-learning',
+      position: 'Student',
+      transaction_id: purchase.transaction
+    };
+
+    console.log('Datos del usuario extraídos:', userData);
+
+    // Buscar pack en la configuración de Hotmart (la estructura cambió a array)
+    const pack = hotmartPacks[0][product.name];
+    if (!pack) {
+      console.log(`Producto no mapeado: ${product.name}`);
+      return res.status(200).json({message: "product not mapped"});
+    }
+
+    console.log(`Pack encontrado: ${product.name} con ${pack.courses.length} cursos`);
+
+    // Verificar duplicados por transaction_id
+    const existingTransaction = await pool.query(
+      `SELECT * FROM hotmart_enrollments WHERE transaction_id = ?`,
+      [userData.transaction_id]
+    );
+
+    if (existingTransaction.length > 0) {
+      console.log(`Transacción duplicada: ${userData.transaction_id}`);
+      return res.status(200).json({message: "transaction already processed"});
+    }
+
+    // Configurar fechas de matriculación - usar "matricula" como días
+    const fecha_now = new Date();
+    const iniEnrollment = parseInt((fecha_now.getTime()/1000).toFixed(0));
+    const timeEnd = new Date();
+    timeEnd.setDate(fecha_now.getDate() + pack.matricula);
+    const endEnrollment = parseInt((timeEnd.getTime()/1000).toFixed(0));
+
+    console.log(`Matriculación por ${pack.matricula} días`);
+
+    // Verificar si el usuario existe en Moodle
+    const qUser = await queryMoodleUser(userData.email);
+    let qUserData = qUser.data;
+
+    const mUser = {
+      username: replaceSpecialChars(userData.firstname.substring(0,2) + userData.lastname.substring(0,2) + "-" + fecha_now.getTime().toString().substring(9,13)).toLowerCase(),
+      firstname: replaceSpecialChars(userData.firstname),
+      lastname: replaceSpecialChars(userData.lastname),
+      company: replaceSpecialChars(userData.company),
+      activity: replaceSpecialChars(userData.activity),
+      email: replaceSpecialChars(userData.email),
+      phone: replaceSpecialChars(userData.phone),
+      campus_id: 0
+    };
+
+    let enrolledCourses = [];
+    let enrollmentErrors = [];
+
+    // Determinar si el usuario existe o necesita ser creado
+    if (qUserData.users.length !== 0) {
+      mUser.campus_id = qUserData.users[0].id;
+      console.log(`Usuario existente encontrado: ${mUser.email} (ID: ${mUser.campus_id})`);
+    } else {
+      // Crear nuevo usuario
+      const mUserMoodle = await createMoodleUser(mUser);
+      let newUserRes = mUserMoodle.data;
+      mUser.campus_id = newUserRes[0].id;
+
+      // Insertar en tabla all_users
+      const mUserWithoutCompany = {
+        username: mUser.username,
+        firstname: mUser.firstname,
+        lastname: mUser.lastname,
+        institution: mUser.company,
+        country: "Online",
+        role: "Estudiante",
+        email: mUser.email,
+        phone: mUser.phone,
+        course: "Multiple Courses",
+        campus_id: mUser.campus_id
+      };
+      await pool.query('INSERT INTO all_users set ?', [mUserWithoutCompany]);
+      console.log(`Usuario nuevo creado: ${mUser.email} (ID: ${mUser.campus_id})`);
+    }
+
+    // Matricular en todos los cursos del pack
+    for (const packCourse of pack.courses) {
+      try {
+        // Buscar curso en enrollmentGroups por ID
+        const course = enrollmentGroups.find(obj => obj.courseId === packCourse.id);
+
+        if (!course) {
+          console.log(`Curso no encontrado en configuración: ${packCourse.name} (ID: ${packCourse.id})`);
+          enrollmentErrors.push(`Curso no encontrado: ${packCourse.name}`);
+          continue;
+        }
+
+        // Buscar el grupo "Hotmart" dinámicamente en el curso
+        const hotmartGroupId = await getHotmartGroupId(course.courseId);
+
+        if (!hotmartGroupId) {
+          console.log(`No se encontró grupo Hotmart para el curso: ${course.courseName}`);
+          enrollmentErrors.push(`Grupo Hotmart no encontrado en curso: ${course.courseName}`);
+          continue;
+        }
+
+        console.log(`Matriculando en: ${course.courseName}, grupo Hotmart (ID: ${hotmartGroupId})`);
+
+        // Matricular en el curso
+        const enrollment = await enrollMoodleuser(mUser.campus_id, course.courseId, iniEnrollment, endEnrollment);
+
+        // Agregar al grupo Hotmart
+        const addToGroup = await addUserToMoodleGroup(mUser.campus_id, hotmartGroupId);
+
+        // Registrar matriculación en base de datos
+        const newEnrollment = {
+          course_id: course.courseId,
+          user_email: userData.email,
+          role: "Estudiante",
+          course_group: hotmartGroupId
+        };
+        await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
+
+        // Lógica especial para Trimble Connect
+        if (course.courseName === "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect") {
+          const groupName2 = "23_FULL";
+          const iFullG = course.groups.find(obj => obj.groupName === groupName2);
+          if (iFullG) {
+            await addUserToMoodleGroup(mUser.campus_id, iFullG.groupId);
+            console.log(`Usuario agregado también al grupo FULL de Trimble Connect`);
+          }
+        }
+
+        // Enviar notificación por email para cada curso
+        mUser.course = course.courseName;
+        await sendEnrollNotification(mUser, course, 'gen_mail_enrolled.ejs');
+
+        enrolledCourses.push({
+          courseName: course.courseName,
+          courseId: course.courseId,
+          groupId: hotmartGroupId,
+          groupName: "Hotmart"
+        });
+
+        console.log(`✅ Matriculación exitosa en: ${course.courseName}`);
+
+      } catch (courseError) {
+        console.error(`Error matriculando en curso ${packCourse.name}:`, courseError);
+        enrollmentErrors.push(`Error en ${packCourse.name}: ${courseError.message}`);
+      }
+    }
+
+    // Registrar la transacción de Hotmart
+    const hotmartRecord = {
+      transaction_id: userData.transaction_id,
+      product_name: product.name,
+      buyer_email: userData.email,
+      enrolled_courses: JSON.stringify(enrolledCourses),
+      enrollment_errors: JSON.stringify(enrollmentErrors),
+      total_courses: pack.courses.length,
+      successful_enrollments: enrolledCourses.length,
+      processed_at: fecha_now
+    };
+
+    await pool.query('INSERT INTO hotmart_enrollments set ?', [hotmartRecord]);
+
+    // Enviar email interno de notificación
+    await sendInternalEmail({
+      ...userData,
+      pack: product.name,
+      enrolledCourses: enrolledCourses.length,
+      totalCourses: pack.courses.length,
+      source: 'Hotmart Webhook'
+    }, "Matriculación automática Hotmart - Pack múltiple");
+
+    console.log(`🎉 Proceso completado para ${userData.email}: ${enrolledCourses.length}/${pack.courses.length} cursos matriculados`);
+
+    res.status(200).json({
+      message: "enrollment process completed",
+      user_id: mUser.campus_id,
+      pack_name: product.name,
+      transaction_id: userData.transaction_id,
+      total_courses: pack.courses.length,
+      successful_enrollments: enrolledCourses.length,
+      enrolled_courses: enrolledCourses,
+      errors: enrollmentErrors
+    });
+
+  } catch (error) {
+    console.error('Error procesando webhook de Hotmart:', error);
+    res.status(500).json({error: "internal server error", details: error.message});
+  }
 }
 
 

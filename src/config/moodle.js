@@ -100,8 +100,63 @@ export const getCourseNameById = async (courseid) => {
   return course?.fullname || `Curso ${courseid}`;
 };
 
+// Obtiene todos los grupos de un curso específico
+export const getCourseGroups = async (courseid) => {
+  const cid = Number(courseid);
 
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_group_get_course_groups');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('courseid', cid);
 
+  const config = {
+    method: 'get',
+    url: WebServiceUrl,
+    params
+  };
+
+  try {
+    const res = await axios(config);
+    const payload = res.data;
+
+    if (payload && typeof payload === 'object' && !Array.isArray(payload) &&
+        ('exception' in payload || 'errorcode' in payload)) {
+      console.error('[MOODLE ERROR] core_group_get_course_groups:', payload.message, payload.errorcode);
+      return [];
+    }
+
+    if (!Array.isArray(payload)) return [];
+
+    return payload;
+  } catch (err) {
+    console.error('[HTTP ERROR] core_group_get_course_groups:', err?.message || err);
+    return [];
+  }
+};
+
+// Busca el ID del grupo "Hotmart" en un curso específico
+export const getHotmartGroupId = async (courseid) => {
+  try {
+    const groups = await getCourseGroups(courseid);
+
+    // Buscar grupo que contenga "hotmart" (case insensitive)
+    const hotmartGroup = groups.find(group =>
+      group.name && group.name.toLowerCase().includes('hotmart')
+    );
+
+    if (hotmartGroup) {
+      console.log(`Grupo Hotmart encontrado en curso ${courseid}: ${hotmartGroup.name} (ID: ${hotmartGroup.id})`);
+      return hotmartGroup.id;
+    } else {
+      console.log(`No se encontró grupo Hotmart en curso ${courseid}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error buscando grupo Hotmart en curso ${courseid}:`, error);
+    return null;
+  }
+};
 
 export const createMoodleUser = async (user) => {
     //console.log(user);
@@ -158,6 +213,8 @@ export const extendEnrollment = async ({ userid, courseid, timeend }) => {
     throw err;
   }
 };
+
+
 
 
 
