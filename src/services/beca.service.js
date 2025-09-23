@@ -265,8 +265,6 @@ export const fileTest = async(req, res, next) => {
       // Limpiar saltos de línea por si acaso
       fileContentBase64 = fileContentBase64.replace(/\r?\n|\r/g, "");
 
-      //console.log("Tamaño Base64:", fileContentBase64);
-
       // Esperar la respuesta de Power Automate
       const uploadedFile = await sendFilePAutomate(filepath, filename);
 

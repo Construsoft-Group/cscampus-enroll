@@ -37,6 +37,9 @@ export const customerEnrollmentReq = async (req, res, next) => {
   var mlSeconds = 24*60*60000;
   var newDateObj = new Date(fecha_now - mlSeconds);
   var formData = new formidable.IncomingForm();
+
+  //console.log(req.body);
+  
   formData.parse(req, async (error, fields, files) => {
     //console.log(fields);
     
@@ -221,8 +224,14 @@ export const customerEnrollmentReq = async (req, res, next) => {
         }
         
   })
-
+  
 }
+
+export const hotmartTest = async (req, res, next) => {
+  //console.log(req.body);
+  res.status(200).json({message: "ok"});
+}
+
 
 export const renderCourseForm = async (req, res, next) => {
   res.render("forms/cs/customer-enroll");
