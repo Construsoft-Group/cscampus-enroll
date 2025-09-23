@@ -21,6 +21,88 @@ export const queryMoodleUser = async (email) => {
 
 }
 
+// Valida si un usuario está en un curso (activo o suspendido)
+export const isUserInCourseAnyStatus = async (userid, courseid) => {
+  const uid = Number(userid);
+  const cid = Number(courseid);
+
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_enrol_get_enrolled_users');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('courseid', cid);
+  params.append('options[0][name]', 'onlyactive');
+  params.append('options[0][value]', 0);
+
+  const config = {
+    method: 'get',
+    url: WebServiceUrl,
+    params
+  };
+
+  try {
+    const res = await axios(config);
+    const payload = res.data;
+
+    if (payload && typeof payload === 'object' && !Array.isArray(payload) &&
+        ('exception' in payload || 'errorcode' in payload)) {
+      console.error('[MOODLE ERROR] core_enrol_get_enrolled_users:', payload.message, payload.errorcode);
+      return false;
+    }
+
+    if (!Array.isArray(payload)) return false;
+
+    return payload.some(u => Number(u.id) === uid);
+  } catch (err) {
+    console.error('[HTTP ERROR] core_enrol_get_enrolled_users:', err?.message || err);
+    return false;
+  }
+};
+
+// Obtiene la información completa del curso
+export const getCourseInfoById = async (courseid) => {
+  const cid = Number(courseid);
+
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_course_get_courses_by_field');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('field', 'id');
+  params.append('value', cid);
+
+  const config = {
+    method: 'get',
+    url: WebServiceUrl,
+    params
+  };
+
+  try {
+    const res = await axios(config);
+    const payload = res.data;
+
+    if (payload && typeof payload === 'object' &&
+        ('exception' in payload || 'errorcode' in payload)) {
+      console.error('[MOODLE ERROR] core_course_get_courses_by_field:', payload.message, payload.errorcode);
+      return null;
+    }
+
+    const course = Array.isArray(payload?.courses) ? payload.courses[0] : null;
+    return course || null;
+  } catch (err) {
+    console.error('[HTTP ERROR] core_course_get_courses_by_field:', err?.message || err);
+    return null;
+  }
+};
+
+// Devuelve solo el fullname del curso
+export const getCourseNameById = async (courseid) => {
+  const course = await getCourseInfoById(courseid);
+  return course?.fullname || `Curso ${courseid}`;
+};
+
+
+
+
 export const createMoodleUser = async (user) => {
     //console.log(user);
     const params = new URLSearchParams();
@@ -48,6 +130,36 @@ export const createMoodleUser = async (user) => {
     let res = await axios(config)
     return res;
 }
+
+export const extendEnrollment = async ({ userid, courseid, timeend }) => {
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'enrol_manual_enrol_users');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('enrolments[0][roleid]', 5);
+  params.append('enrolments[0][userid]', userid);
+  params.append('enrolments[0][courseid]', courseid);
+  params.append('enrolments[0][timestart]', Math.floor(Date.now() / 1000));
+  params.append('enrolments[0][timeend]', timeend);
+
+  try {
+    const res = await axios.post(WebServiceUrl, null, { params });
+
+    const data = res.data;
+
+    // Check for Moodle error structure
+    if (data && data.exception) {
+      throw new Error(`[MOODLE ERROR] ${data.message} (${data.errorcode})`);
+    }
+
+    return res;
+  } catch (err) {
+    console.error('[MOODLE CALL FAILED]', err.message);
+    throw err;
+  }
+};
+
+
 
 export const enrollMoodleuser = async (userId, courseId, timestart, timeend) => {
     const params = new URLSearchParams();
