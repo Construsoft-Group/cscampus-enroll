@@ -340,14 +340,14 @@ export const hotmartTest = async (req, res, next) => {
     // Matricular en todos los cursos del pack
     for (const packCourse of pack.courses) {
       try {
-        // Buscar curso en enrollmentGroups por ID
-        const course = enrollmentGroups.find(obj => obj.courseId === packCourse.id);
+        // Usar directamente la información de hotmartProducts
+        const course = {
+          courseId: packCourse.id,
+          courseName: packCourse.name,
+          courseLink: packCourse.url
+        };
 
-        if (!course) {
-          console.log(`Curso no encontrado en configuración: ${packCourse.name} (ID: ${packCourse.id})`);
-          enrollmentErrors.push(`Curso no encontrado: ${packCourse.name}`);
-          continue;
-        }
+        console.log(`Procesando curso: ${course.courseName} (ID: ${course.courseId})`);
 
         // Buscar el grupo "Hotmart" dinámicamente en el curso
         const hotmartGroupId = await getHotmartGroupId(course.courseId);
