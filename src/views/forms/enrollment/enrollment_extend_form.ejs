@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- BOOTSTRAP - CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+  <!-- ESTILOS (gemelo de beca) -->
+  <link rel="stylesheet" href="/css/extendedEnrollment.css">
+
+  <title>Extensión de Matrícula</title>
+
+  <!-- reCAPTCHA v2 Invisible (solo front) -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="form">
+    <div class="form__container">
+      <h3 id="titulo">Solicitud de Extensión de Matrícula</h3>
+
+      <form class="form__container--form" method="POST" action="/enrollment/extend-request" id="extendForm" autocomplete="off">
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            placeholder="correo registrado en el campus"
+            required
+          >
+        </div>
+
+        <!-- Curso (se llena por JS) -->
+        <div class="form-group">
+          <label for="courseid" class="form-label">Curso</label>
+          <select class="form-control" name="courseid" id="courseid" required>
+            <option selected disabled value="">Selecciona un curso</option>
+            <!-- Opciones inyectadas por /js/formExtension.js -->
+          </select>
+        </div>
+
+        <!-- Motivo -->
+        <div class="form-group">
+          <label for="reason" class="form-label">Motivo de la solicitud</label>
+          <textarea
+            class="form-control textarea-large"
+            name="reason"
+            id="reason"
+            rows="6"
+            placeholder="escribe el motivo de tu solicitud de extensión"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Checkboxes (alineados, 7.5px y a todo lo ancho) -->
+        <div class="form-group checkbox-group">
+          <label for="privacy">
+            <input type="checkbox" id="privacy" name="privacy" required>
+            He leído y acepto la Política de Privacidad
+            <a class="form-group-a"
+               href="https://campus.construsoft.com/local/staticpage/view.php?page=privacy"
+               target="_blank">
+               (leer aquí)
+            </a>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="commitment">
+            <input type="checkbox" id="commitment" name="commitment" required>
+            Me comprometo a terminar el curso con la extensión proporcionada.
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="newsletter">
+            <input type="checkbox" id="newsletter" name="newsletter">
+            Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.
+          </label>
+        </div>
+
+        <!-- reCAPTCHA Invisible -->
+        <div class="g-recaptcha"
+             data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
+             data-callback="submitExtensionForm"
+             data-expired-callback="onCaptchaExpired"
+             data-error-callback="onCaptchaError"
+             data-size="invisible">
+        </div>
+
+        <button class="button" id="send">Enviar solicitud</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS del formulario -->
+  <script src="/js/formExtension.js"></script>
+
+  <!-- Bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+          crossorigin="anonymous"></script>
+</body>
+</html>
