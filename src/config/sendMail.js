@@ -86,6 +86,37 @@ export const sendEnrollNotification = (newUser, course, emailTemplate) => {
     });
 }
 
+export const sendEnrollNotificationMultiple = (userData, enrolledCourses, packName, matriculaDias, emailTemplate = 'gen_mail_enrolled_multiple.ejs') => {
+    const studentName = userData.firstname;
+    const totalCourses = enrolledCourses.length;
+
+    ejs.renderFile(__dirname + `/email_templates/${emailTemplate}`, {
+        studentName,
+        enrolledCourses,
+        packName,
+        totalCourses,
+        matriculaDias
+    }, (err, data) => {
+        if (err) {
+            console.log('Error rendering multiple enrollment template:', err);
+        } else {
+            var mailOptions = {
+                from: "'Campus Construsoft' <campus@construsoft.es>",
+                to: userData.email,
+                subject: `Matriculación exitosa - ${packName}`,
+                html: data
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log('Error sending multiple enrollment email:', error);
+                }
+                console.log('Multiple enrollment message sent: %s', info.messageId);
+            });
+        }
+    });
+}
+
 // config/sendMail.js  (añadir al final del archivo)
 export const sendExtensionAppliedNotification = (payload) => {
   const {

@@ -1,11 +1,11 @@
 import express from "express";
-import { newJobApplicant, customerEnrollmentReq, renderCourseForm, hotmartTest } from "../services/cs.service.js";
+import { newJobApplicant, customerEnrollmentReq, renderCourseForm, hotmartEnrollment } from "../services/cs.service.js";
 
 const router = express.Router();
 router.use(express.json());
 /* Rutas de matriulaciones clientes */
 router.post('/customer-enroll', customerEnrollmentReq)
-router.post('/customer-enroll/hotmart', hotmartTest)
+router.post('/customer-enroll/hotmart', hotmartEnrollment)
 
 router.get('/customer-enroll/', renderCourseForm);
 router.get('/customer-enroll/success', (req, res) => {res.render("forms/cs/cs_success")});

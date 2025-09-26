@@ -5,7 +5,7 @@ import pool from "../database.js"
 import enrollmentGroups from '../config/courses.js';
 import hotmartPacks from '../config/hotmartProducts.js';
 import { replaceSpecialChars } from '../config/specialChars.js';
-import {sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
+import {sendInternalEmail, sendEnrollNotification, sendEnrollNotificationMultiple } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup, getHotmartGroupId } from '../config/moodle.js';
 import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
 
@@ -228,7 +228,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
   
 }
 
-export const hotmartTest = async (req, res, next) => {
+export const hotmartEnrollment = async (req, res, next) => {
   try {
     console.log('Webhook recibido de Hotmart:', req.body);
 
@@ -263,10 +263,44 @@ export const hotmartTest = async (req, res, next) => {
 
     console.log('Datos del usuario extraídos:', userData);
 
-    // Buscar pack en la configuración de Hotmart (la estructura cambió a array)
-    const pack = hotmartPacks[0][product.name];
+    // Función para normalizar strings (eliminar acentos, convertir a minúsculas, eliminar puntos)
+    const normalizeString = (str) => {
+      return str
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+        .replace(/[.,]/g, '') // Eliminar puntos y comas
+        .replace(/\s+/g, ' ') // Normalizar espacios
+        .trim();
+    };
+
+    // Buscar pack en la configuración de Hotmart con búsqueda flexible
+    const normalizedProductName = normalizeString(product.name);
+    console.log(`Producto normalizado del webhook: "${normalizedProductName}"`);
+
+    let pack = null;
+    let matchedProductName = null;
+
+    // Buscar con coincidencia exacta primero
+    if (hotmartPacks[0][product.name]) {
+      pack = hotmartPacks[0][product.name];
+      matchedProductName = product.name;
+      console.log(`✅ Coincidencia exacta encontrada: ${product.name}`);
+    } else {
+      // Buscar con coincidencia normalizada
+      for (const productKey in hotmartPacks[0]) {
+        if (normalizeString(productKey) === normalizedProductName) {
+          pack = hotmartPacks[0][productKey];
+          matchedProductName = productKey;
+          console.log(`✅ Coincidencia normalizada encontrada: "${product.name}" -> "${productKey}"`);
+          break;
+        }
+      }
+    }
+
     if (!pack) {
-      console.log(`Producto no mapeado: ${product.name}`);
+      console.log(`❌ Producto no mapeado: ${product.name}`);
+      console.log('Productos disponibles:', Object.keys(hotmartPacks[0]).map(key => `"${key}"`).join(', '));
       return res.status(200).json({message: "product not mapped"});
     }
 
@@ -385,13 +419,10 @@ export const hotmartTest = async (req, res, next) => {
           }
         }
 
-        // Enviar notificación por email para cada curso
-        mUser.course = course.courseName;
-        await sendEnrollNotification(mUser, course, 'gen_mail_enrolled.ejs');
-
         enrolledCourses.push({
           courseName: course.courseName,
           courseId: course.courseId,
+          courseLink: course.courseLink,
           groupId: hotmartGroupId,
           groupName: "Hotmart"
         });
@@ -417,6 +448,17 @@ export const hotmartTest = async (req, res, next) => {
     };
 
     await pool.query('INSERT INTO hotmart_enrollments set ?', [hotmartRecord]);
+
+    // Enviar un solo email con resumen de todos los cursos matriculados
+    if (enrolledCourses.length > 0) {
+      await sendEnrollNotificationMultiple(
+        userData,
+        enrolledCourses,
+        product.name,
+        pack.matricula
+      );
+      console.log(`📧 Email de resumen enviado con ${enrolledCourses.length} cursos`);
+    }
 
     // Enviar email interno de notificación
     await sendInternalEmail({

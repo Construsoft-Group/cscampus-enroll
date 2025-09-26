@@ -19,7 +19,27 @@ const hotmartPacks = [{
         ],
         "matricula": 60
     },
-    "Teoría y Cálculo de Elementos de HA con IDEA StatiCa": {
+    "Fundamentos Tekla Structures Acero": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Structures Acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=149",
+            "id": 149
+        }
+        ],
+        "matricula": 60
+    },
+    "Fundamentos Tekla Structures Hormigón": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Structures Hormigón",
+            "url": "https://campus.construsoft.com/course/view.php?id=195",
+            "id": 195
+        }
+        ],
+        "matricula": 60
+    },
+    "Teoría y Cálculo de Elementos de HA pretensado, postensado y regiones D con IDEA StatiCa": {
         "courses": [
         {
             "name": "Teoría y Cálculo de Elementos de HA con IDEA StatiCa",
@@ -29,7 +49,7 @@ const hotmartPacks = [{
         ],
         "matricula": 60
     },
-    "Pack VIP IDEA Statica": {
+    "Pack VIP IDEA StatiCa": {
         "courses": [
         {
             "name": "Teoría y Cálculo de Uniones Metálicas con IDEA StatiCa",
