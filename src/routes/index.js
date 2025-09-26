@@ -6,6 +6,7 @@ import tcRouter from "./tc.router.js";
 import eudeRouter from "./eude.router.js";
 import enrollmentRouter from './enrollment.route.js';
 import enrollmentExtendRouter from './enrollment_extend.route.js';
+import bimtcRouter from "./bimtc.router.js";
 import dbRouter from "./db.router.js";
 import { fileURLToPath } from 'url';
 
@@ -24,6 +25,7 @@ function routerApi(app) {
     app.use('/db', dbRouter);
     app.use('/enrollment', enrollmentRouter);
     app.use('/enrollment', enrollmentExtendRouter);
+    app.use('/bimtc', bimtcRouter);
 }
 
 export default routerApi;

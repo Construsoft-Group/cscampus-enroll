@@ -86,29 +86,21 @@ export const sendEnrollNotification = (newUser, course, emailTemplate) => {
     });
 }
 
-// config/sendMail.js  (añadir al final del archivo)
+// config/sendMail.js  (final section)
+
 export const sendExtensionAppliedNotification = (payload) => {
   const {
     toEmail,          // correo del usuario
     studentName,      // nombre del usuario
     courseName,       // nombre del curso
-    months,           // meses que se extendieron (ej: 2)
-    remaining,        // extensiones restantes (0,1,2)
+    months,           // meses que se extendieron
     courseLink,       // opcional
     template = 'enrollment_extension_applied.ejs', // nombre del .ejs
   } = payload;
 
-  const remainingText = (remaining === 2)
-    ? 'Te quedan máximo 2 extensiones.'
-    : (remaining === 1)
-      ? 'Te queda 1 extensión.'
-      : (remaining === 0)
-        ? 'No te quedan más extensiones.'
-        : '';
-
   ejs.renderFile(
     __dirname + `/email_templates/${template}`,
-    { studentName, courseName, months, remainingText, courseLink },
+    { studentName, courseName, months, courseLink },
     (err, html) => {
       if (err) {
         console.error('[MAIL][EXTENSION][TPL ERROR]', err);
@@ -130,3 +122,4 @@ export const sendExtensionAppliedNotification = (payload) => {
     }
   );
 };
+

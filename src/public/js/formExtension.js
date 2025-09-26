@@ -2,13 +2,18 @@
 //   Cursos disponibles (JS)
 // ==============================
 const cursos = {
-  "149": "Fundamentos Tekla Structures Acero",
-  "195": "Fundamentos Tekla Structures Hormigón",
-  "76":  "Teoría y cálculo de uniones metálicas con IDEA STATICA",
-  "141": "Teoría y cálculo de elementos HA con IDEA STATICA",
+  "76": "Teoría y cálculo de uniones metálicas con IDEA STATICA",
   "135": "Análisis y diseño de edificaciones con Tekla Structural Designer",
-  "96":  "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
-  "174": "Optimización de flujos BIM con Trimble Connect",
+  "141":  "Teoría y cálculo de elementos HA con IDEA STATICA",
+  "73": "Calculo de resistencia al fuego y protección pasiva",
+  "52": "Curso completo de cálculo de estructuras con Diamonds",
+  "53":  "Diseño avanzado de acero con consteel ",
+  "191": "Cálculo de estructuraas de acero conformado en frio y steelf raming",
+  "244": "Optimización y calculo de huella de carbono con TSD y One click",
+  "126": "Parametrización del cálculo de estructuras y modelos BIM",
+  "29": "Análisis y diseño sísmico de placas base según norma AISC",
+  "28": "Dimensionado y detallado de conexiones en acero para proyectistas según AISC",
+  "30": "Análisis y diseño de conexiones en pórticos a momentos según norma AISC",
   "212": "Dibujos Avanzados en Tekla Structures Acero"
 };
 

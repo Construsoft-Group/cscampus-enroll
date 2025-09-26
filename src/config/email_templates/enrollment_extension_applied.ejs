@@ -26,8 +26,7 @@
       padding:20px 10px;
     }
     .title { text-align:center; margin:0; font-size:20px; font-weight:bold; }
-    .emphasis { color:#5b1aa2; font-weight:bold; } /* tono morado similar al ejemplo */
-    /* badges / chips */
+    .emphasis { color:#5b1aa2; font-weight:bold; }
     .chip {
       display:inline-block; background:#ccff99; color:#111; border-radius:999px;
       font-size:12px; padding:4px 10px; margin-left:6px;
@@ -47,7 +46,7 @@
       </div>
     </div>
 
-    <!-- Banda superior tipo “beca” -->
+    <!-- Banda superior -->
     <div class="brand-top">
       <p class="title">¡Extensión aplicada!</p>
     </div>
@@ -59,12 +58,10 @@
       <p>
         Tu extensión de matrícula para el curso
         <strong class="emphasis"><%= courseName %></strong>
-        fue aplicada por <strong> <%= months %> mes(es)</strong>.
-      </p>
-
-      <p>
-        <strong>Estado de extensiones restantes:</strong>
-        <%= typeof remainingText !== 'undefined' ? remainingText : '' %>
+        fue aplicada por
+        <strong>
+          <% if (Number(months) === 1) { %>1 mes<% } else { %><%= months %> meses<% } %>
+        </strong>.
       </p>
 
       <% if (typeof courseLink !== 'undefined' && courseLink) { %>
@@ -76,7 +73,7 @@
       <p>Gracias por tu paciencia.<br/>Equipo Campus Construsoft</p>
     </div>
 
-        <!-- Footer con redes y aviso GDPR -->
+    <!-- Footer con redes y aviso GDPR -->
     <div style="padding:20px 10px; text-align:center;">
       <p style="font-family:Trebuchet MS,Helvetica,sans-serif; font-size:14px; margin-bottom:10px;">
         Síguenos en nuestras redes sociales:
@@ -111,4 +108,3 @@
   </div>
 </body>
 </html>
-
