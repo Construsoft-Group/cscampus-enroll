@@ -5,7 +5,7 @@ import pool from "../database.js";
 import enrollmentGroups from '../config/courses.js';
 import { sendReceptionConfirmToUser, sendInternalEmail, sendEnrollNotification } from '../config/sendMail.js';
 import { queryMoodleUser, createMoodleUser, enrollMoodleuser, addUserToMoodleGroup } from '../config/moodle.js';
-import { getSpAccessToken, sendFileToSp, createListItem } from '../config/sharepoint.js';
+import { getSpAccessToken, sendFileToSp, createListItem, sendFilePAutomate } from '../config/sharepoint.js';
 
 export const newRecord = async (req, res, next) => {
   let fecha_now = new Date(); //Fecha Actual
@@ -17,9 +17,9 @@ export const newRecord = async (req, res, next) => {
 
   //var sitename =  'UNIVERSIDADES-ProyectoEducacional'; //Comentado temporalmente
   //var folderPath = 'Shared Documents/General/7. Documentos aspirantes'; //Comentado temporalmente
-  var sitename =  'Becas'; //nombre del sharepoint
-  var folderPath = 'Documentos%20compartidos/7. Documentos aspirantes'; //ruta de archivo en el sharepoint 
-  var listname = 'Matriculaciones web'; //Nombre de la lista en SP
+  //var sitename =  'Becas'; //nombre del sharepoint
+  //var folderPath = 'Documentos%20compartidos/7. Documentos aspirantes'; //ruta de archivo en el sharepoint 
+  //var listname = 'Matriculaciones web'; //Nombre de la lista en SP
   
   var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
@@ -28,12 +28,20 @@ export const newRecord = async (req, res, next) => {
         const file = files.file;
         const newUser = {firstname, lastname, institution, country, role, course, email, phone};
         //  Se comenta esta parte hasta resolver problema con Sharepoint
-        var spAccessToken = await getSpAccessToken();
+        //var spAccessToken = await getSpAccessToken();
+        //console.log(file);
+
+        //const fileContentBase64 = fs.readFileSync(file.filepath, { encoding: 'base64' });
+        //var uploadedFile = sendFilePAutomate(fileContentBase64, filename);
+
         fs.readFile(file.filepath, async (err, data) => { //Se lee el archivo desde temp y se inserta el buffer como data en sharepoint.
-            var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token, sitename, folderPath);
+            //var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token, sitename, folderPath);
+            //const base64Content = Buffer.from(data).toString('base64');
+            //var uploadedFile = sendFilePAutomate(base64Content, filename);
+            //console.log(uploadedFile.body)
           });
         
-          // 1) Buscamos en BD si hay algún registro desde el 01/01/2025
+        // 1) Buscamos en BD si hay algún registro desde el 01/01/2025
         var user = await pool.query(
           `SELECT 1 FROM beca_request 
             WHERE submitted_at >= ? 
@@ -70,7 +78,7 @@ export const newRecord = async (req, res, next) => {
             "email": newUser.email
           }
           
-          var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+          //var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
           
           console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           console.log("Nuevo registro exitoso" + newUser.email );
@@ -227,7 +235,7 @@ export const enroller = async () => {
               "curso": mUser.course,
               "phone": mUser.phone
           }
-          await createListItem(spAccessToken.data.access_token, data, sitename, listname);
+          //await createListItem(spAccessToken.data.access_token, data, sitename, listname);
           
           sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs'); //Se envía correo de notificación con para acceder al curso
           return "usuario creado y matriculado " + mUser.email;
@@ -240,40 +248,34 @@ export const enroller = async () => {
 //A continuación son funciones de testing-->
 
 export const fileTest = async(req, res, next) => {
-  var mUser = { 
-      username: 'username', 
-      firstname: 'Camila', 
-      lastname: 'Ocampo', 
-      institution: 'userjd[0].institution', 
-      country: 'userjd[0].country',
-      role: 'userjd[0].role',
-      course: 'Análisis y diseño de edificaciones con Tekla Structural Designer', 
-      email: 'juan.diaz@construsoft.com', 
-      phone: 'userjd[0].phone',
-      campus_id: 0
-  };
-  var iC = enrollmentGroups.find(obj => obj.courseName === mUser.course);
-  
-  sendEnrollNotification(mUser, iC, 'beca_mail_enrolled.ejs');
   const form = new formidable.IncomingForm();
 
-  /* form.parse(req, (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     if (err) {
       console.error("aca el error");
       return;
     }
-    var filename = files.file.originalFilename;
-    const file = files.file;
-    fs.readFile(file.filepath, async (err, data) => {
-      if (err) {
-        console.error("aca el error");
-        return;
-      }
-      var spAccessToken = await getSpAccessToken();
-      var uploadSpFile = await sendFileToSp(data, filename, spAccessToken.data.access_token);
-      console.log(data);
-    });
-  }); */
+    try {
+      const filename = files.file.originalFilename;
+      const filepath = files.file.filepath;
+
+      // Leer el archivo en base64
+      let fileContentBase64 = fs.readFileSync(filepath, { encoding: 'base64' });
+
+      // Limpiar saltos de línea por si acaso
+      fileContentBase64 = fileContentBase64.replace(/\r?\n|\r/g, "");
+
+      // Esperar la respuesta de Power Automate
+      const uploadedFile = await sendFilePAutomate(filepath, filename);
+
+      console.log("Respuesta de Power Automate:", uploadedFile.status, uploadedFile.statusText);
+      res.send("Archivo enviado correctamente");
+    } catch (error) {
+      console.error("Error al enviar archivo a Power Automate:", error.message);
+      res.status(500).send("Error en envío");
+    }
+
+  });
 }
 
 export const queryUserdb = async (req, res, next) => {

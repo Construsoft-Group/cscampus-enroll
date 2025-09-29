@@ -1,4 +1,6 @@
 import axios from 'axios';
+import mime from 'mime-types';
+import fs from 'fs';
 
 export async function getSpAccessToken() {
     const formData = new URLSearchParams();
@@ -55,3 +57,47 @@ export async function createListItem(spAccessToken, data, sitename, listname) {
   let res = await axios(config)
   return res;
 }
+export async function sendFilePAutomate(filepath, fileName) {
+  // 1. Leer el archivo en Base64
+  const fileContentBase64 = fs.readFileSync(filepath, { encoding: 'base64' });
+
+  // 2. Determinar el tipo MIME del archivo
+  const mimeType = mime.lookup(filepath) || 'application/octet-stream';
+
+  // 3. Construir el Data URI completo
+  const dataUri = `data:${mimeType};base64,${fileContentBase64}`;
+
+  // 4. El payload ahora contiene el Data URI
+  const payload = {
+    fileName: fileName,
+    fileContent: dataUri // ¡Enviamos el Data URI!
+  };
+
+  const powerAutomateUrl = 'https://prod-160.westeurope.logic.azure.com:443/workflows/3c1d2de3f0b3427bb6435e6a89ece663/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=WbC3eev_TDqZWmaGO2C4LJzHHyqJYqeR-kVgUT95XMY';
+
+  const res = await axios.post(powerAutomateUrl, payload, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  return res;
+}
+
+
+/*
+export async function sendFilePAutomate(filepath, fileName){
+
+  return axios.post(
+    'https://prod-160.westeurope.logic.azure.com:443/workflows/3c1d2de3f0b3427bb6435e6a89ece663/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=WbC3eev_TDqZWmaGO2C4LJzHHyqJYqeR-kVgUT95XMY',
+    {
+      apiKey: "Wvoi81VtkgP5",
+      fileName: fileName,
+      fileContent: base64Content
+    },
+    {
+      headers: { 'Content-Type': 'application/json' },
+      maxBodyLength: Infinity
+    }
+  );
+
+}
+*/

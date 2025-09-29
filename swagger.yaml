@@ -1,0 +1,791 @@
+openapi: 3.0.3
+info:
+  title: Moodle Enrollment Management API
+  description: API para la gestión automatizada de matriculaciones en Moodle a través de formularios web
+  version: 1.0.0
+  contact:
+    name: Equipo de Desarrollo
+    email: desarrollo@ejemplo.com
+  license:
+    name: ISC
+    url: https://opensource.org/licenses/ISC
+
+servers:
+  - url: http://localhost:4000
+    description: Servidor de desarrollo
+  - url: https://api.campus.construsoft.com
+    description: Servidor de producción
+
+tags:
+  - name: Becas
+    description: Endpoints para el programa de becas estudiantiles
+  - name: CS (Customer Success)
+    description: Endpoints para clientes y postulaciones laborales
+  - name: Trimble Connect
+    description: Endpoints para el programa de Trimble Connect
+  - name: EUDE
+    description: Endpoints para el programa universitario EUDE
+  - name: Database Management
+    description: Endpoints para gestión de cursos y grupos
+
+paths:
+  # Root endpoint
+  /:
+    get:
+      summary: Endpoint de prueba
+      description: Retorna un mensaje simple de hello world
+      responses:
+        '200':
+          description: Mensaje exitoso
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "hello world"
+
+  # BECA ENDPOINTS
+  /beca:
+    post:
+      tags:
+        - Becas
+      summary: Crear solicitud de beca
+      description: Procesa una nueva solicitud de beca con archivo adjunto
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - firstname
+                - lastname
+                - institution
+                - country
+                - role
+                - course
+                - email
+                - phone
+                - file
+              properties:
+                firstname:
+                  type: string
+                  description: Nombre del solicitante
+                  example: "Juan"
+                lastname:
+                  type: string
+                  description: Apellido del solicitante
+                  example: "Pérez"
+                institution:
+                  type: string
+                  description: Institución educativa
+                  example: "Universidad Nacional"
+                country:
+                  type: string
+                  description: País de residencia
+                  example: "Colombia"
+                role:
+                  type: string
+                  enum: [student, professor]
+                  description: Rol del solicitante
+                course:
+                  type: string
+                  description: Nombre del curso solicitado
+                  example: "Fundamentos Tekla Structures Acero"
+                email:
+                  type: string
+                  format: email
+                  description: Correo electrónico
+                  example: "juan.perez@universidad.edu"
+                phone:
+                  type: string
+                  description: Número de teléfono
+                  example: "+57 300 123 4567"
+                file:
+                  type: string
+                  format: binary
+                  description: Documento de respaldo (PDF, DOC, etc.)
+      responses:
+        '200':
+          description: Solicitud procesada exitosamente
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Error en los datos enviados
+        '409':
+          description: Ya existe una solicitud reciente para este email
+
+  /beca/form:
+    get:
+      tags:
+        - Becas
+      summary: Mostrar formulario de beca
+      description: Renderiza el formulario web para solicitud de beca
+      responses:
+        '200':
+          description: Formulario HTML renderizado
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /beca/list:
+    get:
+      tags:
+        - Becas
+      summary: Listar solicitudes de beca
+      description: Obtiene lista de solicitudes de beca registradas
+      responses:
+        '200':
+          description: Lista de solicitudes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BecaRequest'
+
+  /beca/formTest:
+    get:
+      tags:
+        - Becas
+      summary: Formulario de prueba
+      description: Formulario de prueba para desarrollo
+      responses:
+        '200':
+          description: Formulario de prueba
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /beca/upload:
+    post:
+      tags:
+        - Becas
+      summary: Test de subida de archivos
+      description: Endpoint de prueba para subida de archivos
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Archivo subido exitosamente
+
+  # CS (CUSTOMER SUCCESS) ENDPOINTS
+  /cs/customer-enroll:
+    get:
+      tags:
+        - CS (Customer Success)
+      summary: Mostrar formulario de matrícula para clientes
+      description: Renderiza formulario de matrícula para clientes existentes
+      responses:
+        '200':
+          description: Formulario de matrícula
+          content:
+            text/html:
+              schema:
+                type: string
+
+    post:
+      tags:
+        - CS (Customer Success)
+      summary: Procesar matrícula de cliente
+      description: Procesa solicitud de matrícula de un cliente
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - courseName
+                - firstname
+                - lastname
+                - company
+                - activity
+                - email
+                - phone
+                - position
+              properties:
+                courseName:
+                  type: string
+                  description: Nombre del curso
+                  example: "Fundamentos Tekla Structures Acero"
+                firstname:
+                  type: string
+                  description: Nombre
+                  example: "María"
+                lastname:
+                  type: string
+                  description: Apellido
+                  example: "García"
+                company:
+                  type: string
+                  description: Empresa
+                  example: "Construsoft SA"
+                activity:
+                  type: string
+                  description: Actividad de la empresa
+                  example: "Ingeniería y construcción"
+                email:
+                  type: string
+                  format: email
+                  description: Correo electrónico
+                phone:
+                  type: string
+                  description: Teléfono
+                position:
+                  type: string
+                  description: Cargo en la empresa
+                  example: "Ingeniero BIM"
+                optradio:
+                  type: string
+                  description: Opción promocional
+                  enum: ["on", "off"]
+      responses:
+        '200':
+          description: Matrícula procesada
+        '302':
+          description: Redirección a página de éxito o error
+
+  /cs/customer-enroll/success:
+    get:
+      tags:
+        - CS (Customer Success)
+      summary: Página de éxito para matrícula de cliente
+      responses:
+        '200':
+          description: Página de éxito
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /cs/customer-enroll/not-success:
+    get:
+      tags:
+        - CS (Customer Success)
+      summary: Página de error para matrícula de cliente
+      responses:
+        '200':
+          description: Página de error
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /cs/applyCsJob:
+    get:
+      tags:
+        - CS (Customer Success)
+      summary: Formulario de postulación laboral
+      description: Muestra formulario para postularse a trabajos en CS
+      responses:
+        '200':
+          description: Formulario de postulación
+          content:
+            text/html:
+              schema:
+                type: string
+
+    post:
+      tags:
+        - CS (Customer Success)
+      summary: Procesar postulación laboral
+      description: Procesa una nueva postulación laboral
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - firstname
+                - lastname
+                - email
+                - phone
+                - interest
+                - country
+                - office
+                - privacidad
+                - promo
+                - file
+              properties:
+                firstname:
+                  type: string
+                  description: Nombre
+                lastname:
+                  type: string
+                  description: Apellido
+                email:
+                  type: string
+                  format: email
+                  description: Correo electrónico
+                phone:
+                  type: string
+                  description: Teléfono
+                interest:
+                  type: string
+                  description: Área de interés
+                country:
+                  type: string
+                  description: País
+                office:
+                  type: string
+                  description: Oficina preferida
+                privacidad:
+                  type: string
+                  description: Aceptación de privacidad
+                promo:
+                  type: string
+                  description: Aceptación promocional
+                file:
+                  type: string
+                  format: binary
+                  description: CV o documento de respaldo
+      responses:
+        '302':
+          description: Redirección según el resultado del procesamiento
+
+  # TRIMBLE CONNECT ENDPOINTS
+  /tc:
+    post:
+      tags:
+        - Trimble Connect
+      summary: Crear solicitud Trimble Connect
+      description: Procesa nueva solicitud para curso de Trimble Connect
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - firstname
+                - lastname
+                - email
+                - country
+                - phone
+                - company
+                - company_category
+                - company_activity
+                - position
+              properties:
+                firstname:
+                  type: string
+                  description: Nombre
+                lastname:
+                  type: string
+                  description: Apellido
+                email:
+                  type: string
+                  format: email
+                  description: Correo electrónico
+                country:
+                  type: string
+                  description: País
+                phone:
+                  type: string
+                  description: Teléfono
+                company:
+                  type: string
+                  description: Empresa
+                company_category:
+                  type: string
+                  enum: 
+                    - "Administración / Institución pública"
+                    - "Promotor / Dueño de proyecto"
+                    - "Constructora / Ingenieria"
+                    - "Otro"
+                  description: Categoría de empresa
+                company_activity:
+                  type: string
+                  description: Actividad de la empresa
+                position:
+                  type: string
+                  description: Cargo
+                promo:
+                  type: string
+                  description: Aceptación promocional
+                  enum: ["on", "off"]
+      responses:
+        '302':
+          description: Redirección a página de éxito o error
+
+  /tc/form:
+    get:
+      tags:
+        - Trimble Connect
+      summary: Formulario Trimble Connect
+      responses:
+        '200':
+          description: Formulario HTML
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /tc/success:
+    get:
+      tags:
+        - Trimble Connect
+      summary: Página de éxito TC
+      responses:
+        '200':
+          description: Página de éxito
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /tc/not-success:
+    get:
+      tags:
+        - Trimble Connect
+      summary: Página de error TC
+      responses:
+        '200':
+          description: Página de error
+          content:
+            text/html:
+              schema:
+                type: string
+
+  # EUDE ENDPOINTS
+  /eude/form:
+    get:
+      tags:
+        - EUDE
+      summary: Formulario EUDE
+      description: Muestra formulario para programa universitario EUDE
+      responses:
+        '200':
+          description: Formulario EUDE
+          content:
+            text/html:
+              schema:
+                type: string
+
+    post:
+      tags:
+        - EUDE
+      summary: Procesar solicitud EUDE
+      description: Procesa solicitud de matrícula para programa EUDE
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              # Se requiere análisis adicional del servicio EUDE para completar schema
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '302':
+          description: Redirección según resultado
+
+  /eude/success:
+    get:
+      tags:
+        - EUDE
+      summary: Página de éxito EUDE
+      responses:
+        '200':
+          description: Página de éxito
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /eude/not-success:
+    get:
+      tags:
+        - EUDE
+      summary: Página de error EUDE
+      responses:
+        '200':
+          description: Página de error
+          content:
+            text/html:
+              schema:
+                type: string
+
+  # DATABASE MANAGEMENT ENDPOINTS
+  /db/courses:
+    get:
+      tags:
+        - Database Management
+      summary: Listar cursos disponibles
+      description: Obtiene lista de cursos configurados en el sistema
+      responses:
+        '200':
+          description: Lista de cursos
+          content:
+            text/html:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+
+  /db/courses/{courseId}/groups/new:
+    get:
+      tags:
+        - Database Management
+      summary: Formulario nuevo grupo
+      description: Muestra formulario para crear nuevo grupo en un curso
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: integer
+            example: 149
+      responses:
+        '200':
+          description: Formulario de nuevo grupo
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /db/courses/{courseId}/groups:
+    post:
+      tags:
+        - Database Management
+      summary: Crear nuevo grupo
+      description: Crea un nuevo grupo en el curso especificado
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - groupName
+                - groupId
+              properties:
+                groupName:
+                  type: string
+                  description: Nombre del grupo
+                  example: "PROGRAMA ESTUDIANTES 2025"
+                groupId:
+                  type: integer
+                  description: ID del grupo en Moodle
+                  example: 3785
+      responses:
+        '201':
+          description: Grupo creado exitosamente
+        '400':
+          description: Error en los datos enviados
+
+components:
+  schemas:
+    BecaRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la solicitud
+        firstname:
+          type: string
+          description: Nombre del solicitante
+        lastname:
+          type: string
+          description: Apellido del solicitante
+        institution:
+          type: string
+          description: Institución educativa
+        country:
+          type: string
+          description: País
+        role:
+          type: string
+          enum: [student, professor]
+          description: Rol del solicitante
+        course:
+          type: string
+          description: Curso solicitado
+        email:
+          type: string
+          format: email
+          description: Correo electrónico
+        phone:
+          type: string
+          description: Teléfono
+        submitted_at:
+          type: string
+          format: date-time
+          description: Fecha de envío
+        status:
+          type: string
+          enum: [pending, approved, rejected, enrolled]
+          description: Estado de la solicitud
+
+    Course:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          description: ID del curso en Moodle
+          example: 149
+        courseName:
+          type: string
+          description: Nombre del curso
+          example: "Fundamentos Tekla Structures Acero"
+        courseLink:
+          type: string
+          format: uri
+          description: Enlace al curso
+          example: "https://campus.construsoft.com/course/view.php?id=149"
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+
+    Group:
+      type: object
+      properties:
+        groupId:
+          type: integer
+          description: ID del grupo en Moodle
+          example: 1618
+        groupName:
+          type: string
+          description: Nombre del grupo
+          example: "PROGRAMA ESTUDIANTES 2023"
+
+    CustomerEnrollmentRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        course_Id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        company:
+          type: string
+        activity:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        position:
+          type: string
+        promoValue:
+          type: string
+          enum: ["on", "off"]
+        submitted_at:
+          type: string
+          format: date-time
+
+    TrimbleConnectRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        country:
+          type: string
+        phone:
+          type: string
+        company:
+          type: string
+        company_category:
+          type: string
+        company_activity:
+          type: string
+        position:
+          type: string
+        promoValue:
+          type: string
+          enum: ["on", "off"]
+        submitted_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensaje de error
+          example: "Ya existe una solicitud reciente para este email"
+        code:
+          type: integer
+          description: Código de error
+          example: 409
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp del error
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key para autenticación (si se implementa en el futuro)
+
+# Ejemplos de respuestas comunes
+  responses:
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    BadRequest:
+      description: Solicitud incorrecta
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Conflict:
+      description: Conflicto - ya existe el recurso
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+# Aplicar seguridad globalmente si se implementa
+# security:
+#   - ApiKeyAuth: []
