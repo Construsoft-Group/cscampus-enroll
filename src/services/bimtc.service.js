@@ -110,13 +110,6 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
     await enrollMoodleuser(userId, COURSE_ID, startTs, endTs);
     await addUserToMoodleGroup(userId, GROUP_ID);
 
-    // (Igual que en CS) añadir también al grupo "23_FULL" cuando aplique
-    const courseCfg = enrollmentGroups.find(obj => obj.courseId === COURSE_ID);
-    const fullGroup = courseCfg?.groups?.find(g => g.groupName === '23_FULL');
-    if (fullGroup?.groupId) {
-      await addUserToMoodleGroup(userId, fullGroup.groupId);
-    }
-
     // Registrar matrícula
     const newEnrollment = {
       course_id: COURSE_ID,
