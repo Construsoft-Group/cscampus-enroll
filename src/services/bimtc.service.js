@@ -126,7 +126,7 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
     const dataResponse = {
       title: '¡Registro exitoso!',
       message: 'Hemos recibido tu solicitud. Enseguida recibirás un correo instructivo para acceder al campus Construsoft y empezar a estudiar',
-      link: { url: 'https://campus.construsoft.com/login/index.php', text: 'Ir al campus' }
+      link: { url: 'https://www.construsoft.es/es/curso-gratis-cde/gracias-por-tu-solicitud', text: 'Siguientes pasos' }
     };
     res.render('forms/form_response', dataResponse);
   });
