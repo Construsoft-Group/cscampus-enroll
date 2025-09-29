@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+  <link rel="stylesheet" href="/css/stylescs.css">
+  <title>Inscripción Curso Gratis | Gestión y coordinación de proyectos BIM con Trimble Connect</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script>
+    function onSubmit(token) { document.getElementById("newStudent").submit(); }
+  </script>
+</head>
+<body>
+  <div class="form">
+    <div class="form__container">
+      <h1 style="text-align:center; margin-bottom: 16px;">Inscripción Curso Gratis</h1>
+      <h4 style="text-align:center; margin-bottom: 16px;">Gestión y coordinación de proyectos BIM con Trimble Connect</h4>
+
+      <form class="form__container--form" action="/bimtc/customer-enroll" method="POST" enctype="multipart/form-data" id="newStudent">
+        <div class="form-group">
+          <div class="form-group_row">
+            <label>Nombre *</label>
+            <input id="firstname" type="text" class="form-control" name="firstname" required>
+          </div>
+          <div class="form-group_row">
+            <label>Apellidos *</label>
+            <input id="lastname" type="text" class="form-control" name="lastname" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group_row">
+            <label>Empresa *</label>
+            <input id="company" type="text" class="form-control" name="company" required>
+          </div>
+          <div class="form-group_row">
+            <label>Actividad empresa *</label>
+            <select id="activity" class="form-control" name="activity" required>
+              <option selected></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group_row">
+            <label>Email corporativo *</label>
+            <input id="email" type="email" class="form-control" name="email" required>
+          </div>
+          <div class="form-group_row">
+            <label>Confirma tu email corporativo *</label>
+            <input id="emailConfirm" type="email" class="form-control" name="emailConfirm" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group_row">
+            <label>Telefono *</label>
+            <div id="div1">
+              <input type="tel" class="form-control" id="phone" name="phone" required>
+              <div class="alert alert-info" style="display: none;"></div>
+            </div>
+          </div>
+          <div class="form-group_row">
+            <label>Cargo *</label>
+            <input id="position" type="text" class="form-control" name="position" required>
+          </div>
+        </div>
+
+        <div class="form-group_check">
+          <input type="checkbox" id="radioOption" name="optradio" required>
+          <p>He leído y acepto la Política de Privacidad *</p>
+          <a class="form-group-a" href="https://www.construsoft.es/es/politica-privacidad">Haz clic aquí para leer la Política de Privacidad</a>
+        </div>
+
+        <div class="form-group_check">
+          <input type="checkbox" id="radioOption" name="promo">
+          <p>Acepto recibir noticias, artículos, promociones, ofertas, invitaciones y newsletter de CONSTRUSOFTEXPORT, S.L.</p>
+        </div>
+
+        <div id="strengthMessage"></div>
+
+        <div class="g-recaptcha"
+             data-sitekey="6Le89r8kAAAAAJAW1GFBbz3OY8y6awnNYmlOHh00"
+             data-callback="submitStudentForm"
+             data-size="invisible"></div>
+
+        <div class="form-group_button">
+          <button class="button" id="send" onclick="return validar()">Enviar solicitud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+  <script src="/js/formcs.js"></script>
+</body>
+</html>

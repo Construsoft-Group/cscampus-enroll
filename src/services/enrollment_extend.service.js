@@ -1,5 +1,10 @@
 // services/enrollment_extend.service.js
-import { queryMoodleUser, isUserInCourseAnyStatus, getCourseNameById } from '../config/moodle.js';
+import {
+  queryMoodleUser,
+  isUserInCourseAnyStatus,
+  getCourseNameById,
+  getUserGroupNamesInCourse
+} from '../config/moodle.js';
 import { extendEnrollmentByUser } from './enrollment.service.js';
 import { sendExtensionAppliedNotification } from '../config/sendMail.js';
 import { getExtensionCount, decideExtensionAction } from '../helpers/enrollment_extension.helper.js';
@@ -11,7 +16,7 @@ export const renderExtendForm = (req, res) => {
 
 export const handleExtendRequest = async (req, res) => {
   try {
-    const { email, courseid: courseidRaw, reason } = req.body;
+    const { email, courseid: courseidRaw, reason, newsletter } = req.body;
 
     // 1) Validaciones básicas
     if (!email || !courseidRaw || !reason) {
@@ -47,66 +52,72 @@ export const handleExtendRequest = async (req, res) => {
     if (!inThisCourseAnyStatus) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no matriculado en el curso',
-        message: `El usuario no está matriculado (ni activo ni suspendido) en el curso con ID ${courseid}.`,
+        message: 'El usuario no está matriculado (ni activo, ni suspendido) en el curso solicitado.',
         link: { url: '/enrollment/extend-form', text: 'Intentar de nuevo' }
       });
     }
 
-    // 4) Reglas de extensiones (conteo desde BD)
-    const currentCount = await getExtensionCount(user.id, courseid);
-    const { action, remaining } = decideExtensionAction(currentCount);
-
-    if (action === 'BLOCK') {
-      return res.status(409).render('forms/form_response', {
-        title: 'Límite de extensiones excedido',
-        message: 'Has excedido el número de extensiones permitidas (3). No es posible procesar una nueva solicitud.',
+    // 3.1) Regla de grupos no elegibles
+    const groupNames = await getUserGroupNamesInCourse(user.id, courseid);
+    const forbidden = (name) => {
+      if (!name) return false;
+      const n = String(name).toLowerCase().trim();
+      return n === 'fundae';
+    };
+    if (groupNames.some(forbidden)) {
+      return res.status(403).render('forms/form_response', {
+        title: 'Extensión no permitida',
+        message: 'No es posible extender la matrícula porque tu usuario pertenece a un grupo no elegible. Si crees que es un error, por favor contáctanos a soporte.tekla@construsoft.com.',
         link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
       });
     }
 
-    // 5) Ejecutar extensión en Moodle y registrar en BD (lo hace enrollment.service.js)
-    const months = 2; // período por defecto
+    // 4) Reglas de extensiones
+    const currentCount = await getExtensionCount(user.id, courseid);
+    const { action } = decideExtensionAction(currentCount);
+
+    if (action === 'BLOCK') {
+      return res.status(409).render('forms/form_response', {
+        title: 'Límite de extensiones excedido',
+        message: 'Has excedido el número de extensiones permitidas. No es posible procesar una nueva solicitud.',
+        link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
+      });
+    }
+    // 5) Ejecutar extensión en Moodle y registrar en BD
+    const months = 1; // período por defecto
     const result = await extendEnrollmentByUser({
       userid: user.id,
       courseid,
       reason,
-      months
+      months,
+      promoValue: newsletter,
     });
 
     if (result?.success === false || result?.status !== 'enrolled') {
       return res.status(500).render('forms/form_response', {
         title: 'Error al extender la matrícula',
-        message: `Detalles: ${result?.error || 'No se pudo completar la operación.'}`,
+        message: `Detalles: ${result?.error || 'No se pudo completar la operación, vuelve a intentarlo.'}`,
         link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
       });
     }
 
-    // 6) Mensaje de éxito según las extensiones restantes
-    const msgMap = {
-      2: 'Extensión ejecutada correctamente. Te quedan máximo 2 extensiones.',
-      1: 'Extensión ejecutada correctamente. Te queda 1 extensión.',
-      0: 'Extensión ejecutada correctamente. No te quedan más extensiones.'
-    };
-    const message = msgMap[remaining] ?? 'Extensión ejecutada correctamente.';
+    // 6) Mensaje de éxito
+    const message = 'Por favor verifica el acceso a tu curso.';
 
     // 7) Envío de correo
-    // Obtener el nombre real del curso desde Moodle
     const courseName = await getCourseNameById(courseid);
-
     sendExtensionAppliedNotification({
       toEmail: email,
       studentName: user.firstname || 'Estudiante',
       courseName,
-      months,
-      remaining
-      // courseLink: (opcional, si lo tuvieras)
+      months
     });
 
     // 8) Respuesta HTML al usuario
     return res.render('forms/form_response', {
       title: '¡Extensión aplicada!',
       message,
-      link: { url: '/enrollment/extend-form', text: 'Extender otra matrícula' }
+      link: { url: 'https://campus.construsoft.com/login/index.php', text: 'Ir al campus' }
     });
 
   } catch (err) {

@@ -9,11 +9,12 @@ const LOG_FILE = path.resolve('logs/enrollment_fallback.log');
  * Extiende la matrícula de un usuario en un curso de Moodle y registra la operación en la base de datos.
  * @param {number} userid - ID del usuario en Moodle
  * @param {number} courseid - ID del curso en Moodle
- * @param {number} months - Número de meses de extensión
- * @param {string} reason - Razón proporcionada por el usuario (opcional)
+ * @param {number} months - Número de meses de extensión (el servicio llamante usa 1 por defecto)
+ * @param {string} reason - Razón proporcionada por el usuario
+ * @param {string} promoValue - Valor del código promocional (opcional)
  * @returns {{ success: boolean, status?: string, error?: string }}
  */
-export async function extendEnrollmentByUser({ userid, courseid, months, reason }) {
+export async function extendEnrollmentByUser({ userid, courseid, months, reason, promoValue }) {
   const now = new Date();
   const endDate = new Date(now);
   endDate.setMonth(now.getMonth() + parseInt(months));
@@ -32,9 +33,9 @@ export async function extendEnrollmentByUser({ userid, courseid, months, reason 
 
     try {
       await pool.query(
-        `INSERT INTO enrollment_extension (user_id, course_id, extended_by, created_at, reason)
-         VALUES (?, ?, ?, NOW(), ?)`,
-        [userid, courseid, months, reason || null]
+        `INSERT INTO enrollment_extension (user_id, course_id, extended_by, created_at, reason, promo_value)
+         VALUES (?, ?, ?, NOW(), ?, ?)`,
+        [userid, courseid, months, reason, promoValue || "off"]
       );
     } catch (dbError) {
       const logLine = `[${new Date().toISOString()}] user_id=${userid}, course_id=${courseid}, months=${months}, error="${dbError.message}"\n`;
