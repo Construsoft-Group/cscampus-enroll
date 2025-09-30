@@ -13,8 +13,6 @@ const COURSE_LINK = `https://campus.construsoft.com/course/view.php?id=${COURSE_
 
 export const customerEnrollmentReq_BIMTC = async (req, res) => {
   const now = new Date();
-  const windowMs = 24 * 60 * 60_000; // 24h
-  const since = new Date(now - windowMs);
 
   const formData = new formidable.IncomingForm();
   formData.parse(req, async (error, fields) => {
@@ -39,18 +37,18 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
       promoValue,
     };
 
-    // Bloqueo 24h por email
+    // Bloqueo por solicitud registrada previamente
     const recent = await pool.query(
       `SELECT * FROM customer_enrollment_request
-       WHERE submitted_at BETWEEN ? AND ? AND email = ?`,
-      [since.toISOString(), now.toISOString(), newUser.email]
+       WHERE course_id = ? AND email = ?`,
+      [COURSE_ID, newUser.email]
     );
 
     if (recent.length > 0) {
       const dataResponse = {
-        title: '¡Tienes una solicitud en curso!',
-        message: 'Debes esperar al menos 24 horas para enviar una nueva solicitud',
-        link: { url: 'https://www.construsoft.es/es/servicios/area-privada-tekla', text: 'Volver al área de clientes' }
+        title: '¡Ya habías solicitado acceso al curso anteriormente!',
+        message: 'Revisa tu correo electrónico para acceder al Campus Construsoft.',
+        link: { url: 'https://campus.construsoft.com/course/view.php?id=251', text: 'Accede al Campus' }
       };
       return res.render('forms/form_response', dataResponse);
     }
@@ -125,8 +123,8 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
     // Respuesta tipo CS
     const dataResponse = {
       title: '¡Registro exitoso!',
-      message: 'Hemos recibido tu solicitud. Enseguida recibirás un correo instructivo para acceder al campus Construsoft y empezar a estudiar',
-      link: { url: 'https://www.construsoft.es/es/curso-gratis-cde/gracias-por-tu-solicitud', text: 'Siguientes pasos' }
+      message: '',
+      link: { url: 'https://www.construsoft.es/es/curso-gratis-cde/gracias-por-tu-solicitud', text: 'Finalizar solicitud' }
     };
     res.render('forms/form_response', dataResponse);
   });
