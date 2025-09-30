@@ -50,7 +50,7 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
         message: 'Revisa tu correo electrónico para acceder al Campus Construsoft.',
         link: { url: 'https://campus.construsoft.com/course/view.php?id=251', text: 'Accede al Campus' }
       };
-      return res.render('forms/form_response', dataResponse);
+      return res.render('forms/form_response_redirect', dataResponse);
     }
 
     // Registrar solicitud
@@ -126,7 +126,7 @@ export const customerEnrollmentReq_BIMTC = async (req, res) => {
       message: '',
       link: { url: 'https://www.construsoft.es/es/curso-gratis-cde/gracias-por-tu-solicitud', text: 'Finalizar solicitud' }
     };
-    res.render('forms/form_response', dataResponse);
+    res.render('forms/form_response_redirect', dataResponse);
   });
 };
 
