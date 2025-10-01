@@ -4,20 +4,15 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <!-- BOOTSTRAP, FONT AWESOME, etc. -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/stylesBeca.css">
   <title><%= title %></title>
 </head>
-<body style="background-color: #F8F5EE;">
+<body style="background-color: #f4f4f4;">
   <div class="success">
     <div class="success__container text-center">
-      <img
-        src="https://campus.construsoft.com/pluginfile.php/1/core_admin/logo/0x200/1742552546/Construsoft%20logo.png"
-        alt="CampusCS"
-        class="mb-4"
-      >
+      <img src="https://campus.construsoft.com/pluginfile.php/1/core_admin/logo/0x200/1742552546/Construsoft%20logo.png" alt="CampusCS" class="mb-4">
 
       <h3 id="titulo"><%= title %></h3>
       <br>
@@ -26,7 +21,7 @@
       </div>
 
       <% if (link && link.url && link.text) { %>
-        <a href="<%= link.url %>" target="_blank" rel="noopener" class="button">
+        <a href="<%= link.url %>" target="_blank" class="button">
           <%= link.text %>
         </a>
       <% } %>
@@ -36,33 +31,5 @@
   <!-- Scripts Bootstrap, jQuery, etc. -->
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-  (function () {
-    // Prefer 'success'; fall back to legacy 'autoOpen' if present
-    const success = <%= (typeof success !== 'undefined')
-        ? JSON.stringify(success)
-        : (typeof autoOpen !== 'undefined' ? JSON.stringify(autoOpen) : 'false') %>;
-    const link = <%- JSON.stringify(link || {}) %>;
-
-    // Parent origin (host page)
-    const PARENT_ORIGIN = 'https://www.construsoft.es';
-
-    try {
-      if (success && link && link.url) {
-        window.parent.postMessage({ type: 'BIMTC_ENROLL_OK', url: link.url }, PARENT_ORIGIN);
-      } else {
-        window.parent.postMessage({ type: 'BIMTC_ENROLL_ERROR' }, PARENT_ORIGIN);
-      }
-    } catch (e) {
-      console.warn('postMessage to parent failed:', e);
-    }
-
-    // Optional best-effort fallback if not sandboxed:
-    if (success && link && link.url) {
-      try { (window.top || window).open(link.url, '_blank', 'noopener,noreferrer'); } catch (_) {}
-    }
-  })();
-  </script>
 </body>
 </html>
