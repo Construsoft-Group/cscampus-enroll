@@ -2,19 +2,32 @@
 //   Cursos disponibles (JS)
 // ==============================
 const cursos = {
-  "76": "Teoría y cálculo de uniones metálicas con IDEA STATICA",
+  "81": "Common Data Environment con Trimble Connect (antiguo)",
+  "89": "Componentes Personalizados en Tekla Structures",
+  "96": "Optimización de flujos BIM con Trimble Connect",
+  "98": "Fundamentos Tekla Structures Hormigón (Antiguo)",
+  "113": "Editor de cuadros en Tekla Structures",
+  "114": "Gestión de la numeración de Tekla Structures",
+  "115": "Macros de Construsoft para Tekla Structures",
+  "116": "Detallado de Elementos Prefabricados en Tekla Structures",
   "135": "Análisis y diseño de edificaciones con Tekla Structural Designer",
-  "141":  "Teoría y cálculo de elementos HA con IDEA STATICA",
+  "141": "Teoría y cálculo de elementos HA con IDEA STATICA",
+  "149": "Fundamentos Tekla Structures Acero",
+  "174": "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
+  "195": "Fundamentos Tekla Structures Hormigón",
+  "240": "Curso Modelado de Estructuras con Tekla Structures - EUDE",
+  "212": "Dibujos Avanzados en Tekla Structures Acero",
+  "161": "Dibujos Avanzados en Tekla Structures Hormigón",
+  "144": "Interoperabilidad con Tekla Structures",
   "73": "Calculo de resistencia al fuego y protección pasiva",
   "52": "Curso completo de cálculo de estructuras con Diamonds",
-  "53":  "Diseño avanzado de acero con consteel ",
+  "53": "Diseño avanzado de acero con consteel ",
   "191": "Cálculo de estructuraas de acero conformado en frio y steelf raming",
   "244": "Optimización y calculo de huella de carbono con TSD y One click",
   "126": "Parametrización del cálculo de estructuras y modelos BIM",
   "29": "Análisis y diseño sísmico de placas base según norma AISC",
-  "28": "Dimensionado y detallado de conexiones en acero para proyectistas según AISC",
-  "30": "Análisis y diseño de conexiones en pórticos a momentos según norma AISC",
-  "212": "Dibujos Avanzados en Tekla Structures Acero"
+  "28": "Dimensionado y detalladode conexiones en acero para proyectistas según AISC",
+  "30": "Análisis y diseño de conexiones en porticos a momentosegú norma AISC"
 };
 
 // ==============================
