@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- BOOTSTRAP - CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Choices.js (searchable <select>) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
   <!-- ESTILOS (gemelo de beca) -->
   <link rel="stylesheet" href="/css/extendedEnrollment.css">
@@ -19,6 +22,8 @@
 <body>
   <div class="form">
     <div class="form__container">
+      <img src="/img/Logo_Construsoft_black_RGB 5.png" alt="Construsoft Logo">
+      <br />
       <h3 id="titulo">Solicitud de Extensión de Matrícula</h3>
 
       <form class="form__container--form" method="POST" action="/enrollment/extend-request" id="extendForm" autocomplete="off">
@@ -30,7 +35,7 @@
             class="form-control"
             name="email"
             id="email"
-            placeholder="correo registrado en el campus"
+            placeholder="Correo registrado en el campus"
             required
           >
         </div>
@@ -38,7 +43,8 @@
         <!-- Curso (se llena por JS) -->
         <div class="form-group">
           <label for="courseid" class="form-label">Curso</label>
-          <select class="form-control" name="courseid" id="courseid" required>
+          <!-- Bootstrap 5 usa 'form-select' para selects -->
+          <select class="form-select" name="courseid" id="courseid" required>
             <option selected disabled value="">Selecciona un curso</option>
             <!-- Opciones inyectadas por /js/formExtension.js -->
           </select>
@@ -52,12 +58,12 @@
             name="reason"
             id="reason"
             rows="6"
-            placeholder="escribe el motivo de tu solicitud de extensión"
+            placeholder="Escribe el motivo de tu solicitud de extensión"
             required
           ></textarea>
         </div>
 
-        <!-- Checkboxes (alineados, 7.5px y a todo lo ancho) -->
+        <!-- Checkboxes -->
         <div class="form-group checkbox-group">
           <label for="privacy">
             <input type="checkbox" id="privacy" name="privacy" required>
@@ -101,9 +107,10 @@
   <!-- JS del formulario -->
   <script src="/js/formExtension.js"></script>
 
+  <!-- Choices.js script -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
   <!-- Bootstrap bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

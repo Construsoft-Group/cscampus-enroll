@@ -92,14 +92,6 @@ body {
   align-items: center;
   height: 25px;
 }
-.form-group > select {
-  width: 185px;
-  align-items: center;
-  height: 25px;
-  font-size: 12px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
 option {
   font-size: 12px;
 }
@@ -266,4 +258,62 @@ option {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 
+
+/* CLAVE: permitir que el bloque del select pueda encogerse y envolver */
+.form-group .choices {
+  flex: 1 1 auto;
+  min-width: 0;            /* sin esto, el texto no rompe línea en flexbox */
+  width: auto !important;
+  max-width: 100%;
+  font-size: 12px;
+}
+
+/* El “campo visible” del select */
+.form-group .choices__inner {
+  background-color: #fff !important;
+  display: block;          /* mejor para envolver que 'flex' aquí */
+  min-height: 44px;
+  height: auto;
+  padding: 8px 12px;
+  border-radius: 0.375rem;
+  overflow: visible;       /* no recortar texto envuelto */
+  font-size: 12px;
+}
+
+/* Forzar el wrap del texto seleccionado (estado cerrado) */
+.form-group .choices__list--single {
+  display: block;
+  white-space: normal;     /* permitir múltiples líneas */
+  font-size: 12px;
+}
+.form-group .choices__list--single .choices__item {
+  white-space: normal !important;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.25;
+  word-break: break-word;  /* rompe palabras largas si hace falta */
+  overflow-wrap: anywhere; /* aún más agresivo para cortar */
+  font-size: 12px;
+}
+
+/* En el desplegable también debe envolver */
+.form-group .choices__list--dropdown,
+.form-group .choices__list[aria-expanded] {
+  background-color: #fff !important;
+  font-size: 12px;
+}
+.form-group .choices__list--dropdown .choices__item--selectable {
+  white-space: normal;
+  line-height: 1.25;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+/* (Opcional) el buscador dentro del dropdown a una altura cómoda */
+.form-group .choices__list--dropdown .choices__input {
+  background-color: #fff;
+  height: 28px;
+  font-size: 12px;
+}
 
