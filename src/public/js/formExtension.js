@@ -2,10 +2,8 @@
 //   Cursos disponibles (JS)
 // ==============================
 const cursos = {
-  "81": "Common Data Environment con Trimble Connect (antiguo)",
   "89": "Componentes Personalizados en Tekla Structures",
   "96": "Optimización de flujos BIM con Trimble Connect",
-  "98": "Fundamentos Tekla Structures Hormigón (Antiguo)",
   "113": "Editor de cuadros en Tekla Structures",
   "114": "Gestión de la numeración de Tekla Structures",
   "115": "Macros de Construsoft para Tekla Structures",
@@ -19,15 +17,15 @@ const cursos = {
   "212": "Dibujos Avanzados en Tekla Structures Acero",
   "161": "Dibujos Avanzados en Tekla Structures Hormigón",
   "144": "Interoperabilidad con Tekla Structures",
-  "73": "Calculo de resistencia al fuego y protección pasiva",
+  "73": "Cálculo de resistencia al fuego y protección pasiva",
   "52": "Curso completo de cálculo de estructuras con Diamonds",
   "53": "Diseño avanzado de acero con consteel ",
-  "191": "Cálculo de estructuraas de acero conformado en frio y steelf raming",
+  "191": "Cálculo de estructuras de acero conformado en frio y steel raming",
   "244": "Optimización y calculo de huella de carbono con TSD y One click",
   "126": "Parametrización del cálculo de estructuras y modelos BIM",
   "29": "Análisis y diseño sísmico de placas base según norma AISC",
-  "28": "Dimensionado y detalladode conexiones en acero para proyectistas según AISC",
-  "30": "Análisis y diseño de conexiones en porticos a momentosegú norma AISC"
+  "28": "Dimensionado y detallado de conexiones en acero para proyectistas según AISC",
+  "30": "Análisis y diseño de conexiones en porticos a momento según norma AISC"
 };
 
 // ==============================
@@ -37,7 +35,6 @@ function disableSendBtn() {
   const btn = document.getElementById("send");
   if (!btn) return;
   btn.disabled = true;
-  // agrega spinner si no existe
   if (!btn.querySelector(".button__spinner")) {
     const sp = document.createElement("span");
     sp.className = "button__spinner";
@@ -58,21 +55,10 @@ function enableSendBtn() {
 function submitExtensionForm() {
   const form = document.getElementById("extendForm");
   if (!form) return;
-
-  // Enviar (ya está bloqueado el botón)
   try { form.submit(); } catch (e) { console.error(e); enableSendBtn(); }
 }
-
-function onCaptchaExpired() {
-  // Si el captcha expira, reactivar botón
-  enableSendBtn();
-  try { grecaptcha.reset(); } catch (_) {}
-}
-function onCaptchaError() {
-  // Si el captcha falla, reactivar botón
-  enableSendBtn();
-  try { grecaptcha.reset(); } catch (_) {}
-}
+function onCaptchaExpired() { enableSendBtn(); try { grecaptcha.reset(); } catch (_) {} }
+function onCaptchaError()   { enableSendBtn(); try { grecaptcha.reset(); } catch (_) {} }
 
 // Si el usuario vuelve con back/forward, asegura estado limpio
 window.addEventListener("pageshow", () => enableSendBtn());
@@ -93,6 +79,18 @@ document.addEventListener("DOMContentLoaded", function () {
       opt.textContent = nombre;
       selectCursos.appendChild(opt);
     });
+
+    // Activar búsqueda con Choices.js (si está cargado)
+    if (window.Choices) {
+      new Choices(selectCursos, {
+        searchEnabled: true,
+        searchPlaceholderValue: 'Buscar curso…',
+        shouldSort: false,
+        itemSelectText: '',
+        allowHTML: false,
+        removeItemButton: false
+      });
+    }
   }
 
   if (!form || !sendBtn) return;
@@ -100,27 +98,23 @@ document.addEventListener("DOMContentLoaded", function () {
   sendBtn.addEventListener("click", function (e) {
     e.preventDefault();
 
-    // Validación nativa (incluye checkboxes required)
     if (!form.checkValidity()) {
       form.reportValidity?.();
       return;
     }
 
-    // Bloquear botón y mostrar spinner ANTES del captcha
     disableSendBtn();
 
-    // Ejecutar reCAPTCHA Invisible
     if (typeof grecaptcha !== "undefined" && grecaptcha.execute) {
       try {
         try { grecaptcha.reset(); } catch (_) {}
         grecaptcha.execute();
       } catch (err) {
         console.error("[reCAPTCHA execute error]", err);
-        enableSendBtn(); // si falla el execute, reactivamos
-        form.submit();   // fallback
+        enableSendBtn();
+        form.submit();   // fallback si reCAPTCHA no ejecuta
       }
     } else {
-      // Si el script de Google no cargó, enviar directo
       form.submit();
     }
 
