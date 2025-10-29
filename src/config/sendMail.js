@@ -104,6 +104,7 @@ export const sendEnrollNotificationMultiple = (userData, enrolledCourses, packNa
             var mailOptions = {
                 from: "'Campus Construsoft' <campus@construsoft.es>",
                 to: userData.email,
+                bcc: ['marketing-es@construsoft.com', 'juan.diaz@construsoft.com'],
                 subject: `Matriculación exitosa - ${packName}`,
                 html: data
             };

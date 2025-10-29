@@ -1,14 +1,4 @@
 const hotmartPacks = [{
-    "Produto test postback2": {
-        "courses": [
-        {
-            "name": "Fundamentos Tekla Structures Acero",
-            "url": "https://campus.construsoft.com/course/view.php?id=149",
-            "id": 149
-        }
-        ],
-        "matricula": 180
-    },
     "Teoría y Cálculo de Uniones Metálicas con IDEA StatiCa": {
         "courses": [
         {
@@ -344,6 +334,31 @@ const hotmartPacks = [{
         ],
         "matricula": 600
     },
+    "Pack BIM | Modela, detalla y colabora": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=149",
+            "id": 149
+        },
+        {
+            "name": "Fundamentos Tekla Structures Hormigón",
+            "url": "https://campus.construsoft.com/course/view.php?id=195",
+            "id": 195
+        },
+        {
+            "name": "Interoperabilidad con Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=144",
+            "id": 144
+        },
+        {
+            "name": "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
+            "url": "https://campus.construsoft.com/course/view.php?id=174",
+            "id": 174
+        }
+        ],
+        "matricula": 300
+    },
     "Pack BIM | Total Acero": {
         "courses": [
         {
@@ -403,6 +418,56 @@ const hotmartPacks = [{
         }
         ],
         "matricula": 400
+    },
+    "Pack BIM | Maestro Tekla Structures": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Structures Acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=149",
+            "id": 149
+        },
+        {
+            "name": "Fundamentos Tekla Hormigón",
+            "url": "https://campus.construsoft.com/course/view.php?id=195",
+            "id": 195
+        },
+        {
+            "name": "Detallado de Elementos Prefabricados en Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=116",
+            "id": 116
+        },
+        {
+            "name": "Componentes Personalizados en Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=89",
+            "id": 89
+        },
+        {
+            "name": "Editor de Cuadros en Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=113",
+            "id": 113
+        },
+        {
+            "name": "Gestión de la Numeración de Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=114",
+            "id": 114
+        },
+        {
+            "name": "Interoperabilidad con Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=144",
+            "id": 144
+        },
+        {
+            "name": "Dibujos avanzados en Tekla Structures acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=212",
+            "id": 212
+        },
+        {
+            "name": "Dibujos avanzados en Tekla Structures Hormigón",
+            "url": "https://campus.construsoft.com/course/view.php?id=161",
+            "id": 161
+        }
+        ],
+        "matricula": 500
     }
 }];
 
