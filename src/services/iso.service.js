@@ -128,7 +128,7 @@ export const customerEnrollmentReq_ISO = async (req, res) => {
       title: '¡Gracias por registrarte!',
       message: 'Estás a un paso de dominar ISO 19650 con Trimble Connect.',
       link: {
-        url: 'https://www.construsoft.es/es/curso-gratis-cde/gracias-por-tu-solicitud',
+        url: 'https://www.construsoft.es/es/curso-gratis-iso-19650/gracias-por-tu-solicitud',
         text: 'Accede ahora al curso'
       }
     };
