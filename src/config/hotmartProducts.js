@@ -468,6 +468,206 @@ const hotmartPacks = [{
         }
         ],
         "matricula": 500
+    },
+    "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect": {
+        "courses": [
+        {
+            "name": "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect",
+            "url": "https://campus.construsoft.com/course/view.php?id=174",
+            "id": 174
+        }
+        ],
+        "matricula": 60
+    },
+    "Diseño Avanzado de Acero con Consteel": {
+        "courses": [
+        {
+            "name": "Diseño Avanzado de Acero con Consteel",
+            "url": "https://campus.construsoft.com/course/view.php?id=53",
+            "id": 53
+        }
+        ],
+        "matricula": 60
+    },
+    "Cálculo de Estructuras de Acero Conformado en Frío y Steel Framing": {
+        "courses": [
+        {
+            "name": "Cálculo de Estructuras de Acero Conformado en Frío y Steel Framing",
+            "url": "https://campus.construsoft.com/course/view.php?id=191",
+            "id": 191
+        }
+        ],
+        "matricula": 60
+    },
+    "Cálculo de Estructuras con Diamonds": {
+        "courses": [
+        {
+            "name": "Cálculo de Estructuras con Diamonds",
+            "url": "https://campus.construsoft.com/course/view.php?id=52",
+            "id": 52
+        }
+        ],
+        "matricula": 60
+    },
+    "Cálculo de Resistencia al Fuego en Estructuras y Protección Pasiva": {
+        "courses": [
+        {
+            "name": "Cálculo de Resistencia al Fuego en Estructuras y Protección Pasiva",
+            "url": "https://campus.construsoft.com/course/view.php?id=73",
+            "id": 73
+        }
+        ],
+        "matricula": 60
+    },
+    "Análisis y Diseño de Edificaciones con Tekla Structural Designer": {
+        "courses": [
+        {
+            "name": "Análisis y Diseño de Edificaciones con Tekla Structural Designer",
+            "url": "https://campus.construsoft.com/course/view.php?id=135",
+            "id": 135
+        }
+        ],
+        "matricula": 60
+    },
+    "Optimización y Cálculo de Carbono Embebido con Tekla Structural Designer y One Click LCA": {
+        "courses": [
+        {
+            "name": "Optimización y Cálculo de Carbono Embebido con Tekla Structural Designer y One Click LCA",
+            "url": "https://campus.construsoft.com/course/view.php?id=244",
+            "id": 244
+        }
+        ],
+        "matricula": 60
+    },
+    "Dimensionamiento y detallado de conexiones en acero para proyectistas según norma AISC": {
+        "courses": [
+        {
+            "name": "Dimensionamiento y detallado de conexiones en acero para proyectistas según norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=28",
+            "id": 28
+        }
+        ],
+        "matricula": 60
+    },
+    "Análisis y diseño de placas base según norma AISC": {
+        "courses": [
+        {
+            "name": "Análisis y diseño de placas base según norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=29",
+            "id": 29
+        }
+        ],
+        "matricula": 60
+    },
+    "Análisis y diseño de conexiones en pórticos a momento según norma AISC": {
+        "courses": [
+        {
+            "name": "Análisis y diseño de conexiones en pórticos a momento según norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=30",
+            "id": 30
+        }
+        ],
+        "matricula": 60
+    },
+    "Parametrización del Cálculo de Estructuras y Modelos BIM": {
+        "courses": [
+        {
+            "name": "Parametrización del Cálculo de Estructuras y Modelos BIM",
+            "url": "https://campus.construsoft.com/course/view.php?id=126",
+            "id": 126
+        }
+        ],
+        "matricula": 60
+    },
+    "Pack Estructural Total": {
+        "courses": [
+        {
+            "name": "Fundamentos Tekla Acero",
+            "url": "https://campus.construsoft.com/course/view.php?id=149",
+            "id": 149
+        },
+        {
+            "name": "Fundamentos Tekla Hormigón",
+            "url": "https://campus.construsoft.com/course/view.php?id=195",
+            "id": 195
+        },
+        {
+            "name": "Detallado de Elementos Prefabricados en Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=116",
+            "id": 116
+        },
+        {
+            "name": "Análisis y diseño de edificaciones con TSD",
+            "url": "https://campus.construsoft.com/course/view.php?id=135",
+            "id": 135
+        },
+        {
+            "name": "Cálculo de Estructuras con Diamonds",
+            "url": "https://campus.construsoft.com/course/view.php?id=52",
+            "id": 52
+        },
+        {
+            "name": "Diseño Avanzado de Acero con ConSteel (Eurocódigo)",
+            "url": "https://campus.construsoft.com/course/view.php?id=53",
+            "id": 53
+        },
+        {
+            "name": "Teoría y Cálculo de Uniones Metálicas con IDEA StatiCa",
+            "url": "https://campus.construsoft.com/course/view.php?id=76",
+            "id": 76
+        },
+        {
+            "name": "Teoría y Cálculo de Elementos de HA con IDEA StatiCa",
+            "url": "https://campus.construsoft.com/course/view.php?id=141",
+            "id": 141
+        },
+        {
+            "name": "Cálculo de Resistencia al Fuego en Estructuras y Protección Pasiva",
+            "url": "https://campus.construsoft.com/course/view.php?id=73",
+            "id": 73
+        },
+        {
+            "name": "Interoperabilidad con Tekla Structures",
+            "url": "https://campus.construsoft.com/course/view.php?id=144",
+            "id": 144
+        },
+        {
+            "name": "Interoperabilidad y optimización de flujos de trabajo con BIM Expert",
+            "url": "https://campus.construsoft.com/course/view.php?id=125",
+            "id": 125
+        },
+        {
+            "name": "Dimensionamiento y Detallado de Conexiones en Acero para Proyectistas según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=28",
+            "id": 28
+        },
+        {
+            "name": "Análisis y Diseño de Placas Base según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=29",
+            "id": 29
+        },
+        {
+            "name": "Análisis y Diseño de Conexiones en Pórticos a Momento según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=30",
+            "id": 30
+        },
+        {
+            "name": "Gestión y coordinación de proyectos BIM con Trimble Connect",
+            "url": "https://campus.construsoft.com/course/view.php?id=174",
+            "id": 174
+        },
+        {
+            "name": "Optimización y Cálculo de Carbono Embebido con Tekla Structural Designer y One Click LCA",
+            "url": "https://campus.construsoft.com/course/view.php?id=244",
+            "id": 244
+        },
+        {
+            "name": "Optimización de flujos BIM mediante Trimble Connect",
+            "url": "https://campus.construsoft.com/course/view.php?id=96",
+            "id": 96
+        }
+        ],
+        "matricula": 800
     }
 }];
 
