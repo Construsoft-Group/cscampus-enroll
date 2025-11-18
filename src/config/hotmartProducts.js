@@ -122,7 +122,37 @@ const hotmartPacks = [{
             "id": 141
         }
         ],
-        "matricula": 120
+        "matricula": 150
+    },
+    "Pack Completo IDEA Statica AISC": {
+        "courses": [
+        {
+            "name": "Teoría y Cálculo de Uniones Metálicas con IDEA StatiCa",
+            "url": "https://campus.construsoft.com/course/view.php?id=76",
+            "id": 76
+        },
+        {
+            "name": "Teoría y Cálculo de Elementos de HA con IDEA StatiCa",
+            "url": "https://campus.construsoft.com/course/view.php?id=141",
+            "id": 141
+        },
+        {
+            "name": "Dimensionamiento y Detallado de Conexiones en Acero para Proyectistas según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=28",
+            "id": 28
+        },
+        {
+            "name": "Análisis y Diseño de Placas Base según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=29",
+            "id": 29
+        },
+        {
+            "name": "Análisis y Diseño de Conexiones en Pórticos a Momento según Norma AISC",
+            "url": "https://campus.construsoft.com/course/view.php?id=30",
+            "id": 30
+        }
+        ],
+        "matricula": 300
     },
     "Pack Maestro Calculista": {
         "courses": [
@@ -387,7 +417,7 @@ const hotmartPacks = [{
             "id": 174
         }
         ],
-        "matricula": 400
+        "matricula": 600
     },
     "Pack BIM | Total Hormigón": {
         "courses": [
@@ -417,7 +447,7 @@ const hotmartPacks = [{
             "id": 174
         }
         ],
-        "matricula": 400
+        "matricula": 600
     },
     "Pack BIM | Maestro Tekla Structures": {
         "courses": [
