@@ -194,7 +194,7 @@ export const customerEnrollmentReq = async (req, res, next) => {
               console.log("usuario creado y matriculado " + mUser.email);
           }
           const dataResponse = {
-            title:    '¡Registro esitoso!',
+            title:    '¡Registro exitoso!',
             message:  'Hemos recibido tu solicitud. Enseguida recibirás un correo instructivo para acceder al campus Construsoft y empezar a estudiar',
             // si no quieres mostrar enlace, deja link en null o undefined
             link: { 

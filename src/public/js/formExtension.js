@@ -25,7 +25,8 @@ const cursos = {
   "126": "Parametrización del cálculo de estructuras y modelos BIM",
   "29": "Análisis y diseño sísmico de placas base según norma AISC",
   "28": "Dimensionado y detallado de conexiones en acero para proyectistas según AISC",
-  "30": "Análisis y diseño de conexiones en porticos a momento según norma AISC"
+  "30": "Análisis y diseño de conexiones en porticos a momento según norma AISC",
+  "76": "Teoría y cálculo de uniones metálicas con IDEA STATICA"
 };
 
 // ==============================
