@@ -698,6 +698,16 @@ const hotmartPacks = [{
         }
         ],
         "matricula": 800
+    },
+    "Interoperabilidad y optimización de flujos de trabajo con BIM Expert": {
+        "courses": [
+        {
+            "name": "Interoperabilidad y optimización de flujos de trabajo con BIM Expert",
+            "url": "https://campus.construsoft.com/course/view.php?id=125",
+            "id": 125
+        }
+        ], 
+        "matricula": 60
     }
 }];
 
