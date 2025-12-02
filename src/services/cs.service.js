@@ -410,11 +410,18 @@ export const hotmartEnrollment = async (req, res, next) => {
         await pool.query('INSERT INTO all_enrollments set ?', [newEnrollment]);
 
         // Lógica especial para Trimble Connect
-        
+
         if (course.courseName === "CDE | Gestión y coordinación de proyectos BIM con Trimble Connect") {
           const groupId = 2519;
           await addUserToMoodleGroup(mUser.campus_id, groupId);
             console.log(`Usuario agregado también al grupo FULL de Trimble Connect`);
+        }
+
+        // Lógica especial para curso con ID 174
+        if (course.courseId === 174) {
+          const groupId = 2519;
+          await addUserToMoodleGroup(mUser.campus_id, groupId);
+          console.log(`Usuario agregado también al grupo 2519 para el curso ID 174`);
         }
 
         enrolledCourses.push({

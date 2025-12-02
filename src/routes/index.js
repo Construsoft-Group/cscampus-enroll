@@ -8,6 +8,7 @@ import enrollmentRouter from './enrollment.route.js';
 import enrollmentExtendRouter from './enrollment_extend.route.js';
 import bimtcRouter from "./bimtc.router.js";
 import isoRouter from "./iso.router.js";
+import tcCertificationRouter from "./tc-certification.router.js";
 import dbRouter from "./db.router.js";
 import { fileURLToPath } from 'url';
 
@@ -28,6 +29,7 @@ function routerApi(app) {
     app.use('/enrollment', enrollmentExtendRouter);
     app.use('/bimtc', bimtcRouter);
     app.use('/iso', isoRouter);
+    app.use('/tc-certification', tcCertificationRouter);
 }
 
 export default routerApi;
