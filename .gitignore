@@ -5,7 +5,7 @@ node_modules
 recycle
 
 # npm
-package-lock.json
+#package-lock.json
 
 # environment variables
 .env.*
