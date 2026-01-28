@@ -2,7 +2,7 @@
   "name": "enrol_management",
   "version": "1.0.0",
   "engines": {
-    "node": "18x"
+    "node": "18.x"
   },
   "description": "This application allow us to set customized flows to create and enroll users in moodle",
   "main": "app.js",
