@@ -1,143 +1,123 @@
 // config/moodle.js
 import axios from 'axios';
+import https from 'https';
 
-const WebServiceUrl = process.env.MDL_DOMAIN + "webservice/rest/server.php";
+const WebServiceUrl = process.env.MDL_DOMAIN.replace(/\/+$/, '') + "/webservice/rest/server.php";
+const TIMEOUT_MS = Number(process.env.MDL_TIMEOUT_MS || 20000);
 
-export const queryMoodleUser = async (email) => {
+/**
+ * Axios instance for Moodle
+ * - Avoid brotli (br) because it can trigger Z_BUF_ERROR on truncated streams in Heroku
+ * - Add timeout to avoid hanging near router 30s
+ * - KeepAlive improves stability for repeated calls
+ */
+const moodleHttp = axios.create({
+  timeout: TIMEOUT_MS,
+  httpsAgent: new https.Agent({ keepAlive: true }),
+  headers: {
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate', // 🚫 no br
+    'User-Agent': 'cscampus-enroll/1.0 (moodle client)'
+  },
+  validateStatus: (s) => s >= 200 && s < 300
+});
+
+function isMoodleException(payload) {
+  return (
+    payload &&
+    typeof payload === 'object' &&
+    !Array.isArray(payload) &&
+    (('exception' in payload) || ('errorcode' in payload))
+  );
+}
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+/**
+ * Transport/system errors (Heroku/Moodle network cut, brotli decode issues, etc.)
+ */
+function isTransientTransportError(err) {
+  const code = err?.code;
+  const msg = String(err?.message || '');
+  return (
+    code === 'Z_BUF_ERROR' ||
+    code === 'ECONNRESET' ||
+    code === 'ETIMEDOUT' ||
+    code === 'EPIPE' ||
+    msg.includes('unexpected end of file') ||
+    msg.includes('socket hang up') ||
+    msg.includes('read ECONNRESET')
+  );
+}
+
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+/**
+ * Retry wrapper (use for GETs only)
+ */
+async function withRetry(fn, { retries = 2, baseDelayMs = 350, label = 'moodle-call' } = {}) {
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const transient = isTransientTransportError(err);
+      const last = attempt === retries;
+
+      console.error(`[MOODLE][${label}] failed attempt=${attempt + 1}/${retries + 1}`, {
+        code: err?.code,
+        message: err?.message,
+        status: err?.response?.status
+      });
+
+      if (!transient || last) break;
+      await sleep(baseDelayMs * (attempt + 1));
+    }
+  }
+  throw lastErr;
+}
+
+function logOk(label, startedAt, res) {
+  const ms = Date.now() - startedAt;
+  const enc = res?.headers?.['content-encoding'];
+  const len = res?.headers?.['content-length'];
+  console.log(`[MOODLE][${label}] ok ms=${ms} status=${res.status} enc=${enc} len=${len}`);
+}
+
+/* ======================================================================
+   1) USERS
+   ====================================================================== */
+
+export const queryMoodleUser = async (emailRaw) => {
+  const email = normalizeEmail(emailRaw);
+
   const params = new URLSearchParams();
   params.append('moodlewsrestformat', 'json');
   params.append('wsfunction', 'core_user_get_users');
   params.append('wstoken', process.env.MDL_TOKEN);
   params.append('criteria[0][key]', 'email');
   params.append('criteria[0][value]', email);
-  const config = { method: 'get', url: WebServiceUrl, headers: {}, params };
-  const res = await axios(config);
-  return res;
-};
 
-// ¿Usuario está en el curso? (activo o suspendido)
-export const isUserInCourseAnyStatus = async (userid, courseid) => {
-  const uid = Number(userid);
-  const cid = Number(courseid);
+  const startedAt = Date.now();
+  // GET → safe to retry
+  const res = await withRetry(
+    () => moodleHttp.get(WebServiceUrl, { params }),
+    { retries: 2, label: 'core_user_get_users' }
+  );
+  logOk('core_user_get_users', startedAt, res);
 
-  const params = new URLSearchParams();
-  params.append('moodlewsrestformat', 'json');
-  params.append('wsfunction', 'core_enrol_get_enrolled_users');
-  params.append('wstoken', process.env.MDL_TOKEN);
-  params.append('courseid', cid);
-  params.append('options[0][name]', 'onlyactive');
-  params.append('options[0][value]', 0);
-
-  const config = { method: 'get', url: WebServiceUrl, params };
-
-  try {
-    const res = await axios(config);
-    const payload = res.data;
-
-    if (payload && typeof payload === 'object' && !Array.isArray(payload) &&
-        ('exception' in payload || 'errorcode' in payload)) {
-      return false;
-    }
-    if (!Array.isArray(payload)) return false;
-
-    return payload.some(u => Number(u.id) === uid);
-  } catch {
-    return false;
+  const payload = res.data;
+  if (!payload || typeof payload !== 'object' || !('users' in payload)) {
+    // If Moodle returned something unexpected, treat as error (don’t pretend empty)
+    throw new Error('Invalid Moodle response for core_user_get_users');
   }
+  return res; // keep your original behavior (return full axios response)
 };
-
-// Info completa del curso
-export const getCourseInfoById = async (courseid) => {
-  const cid = Number(courseid);
-
-  const params = new URLSearchParams();
-  params.append('moodlewsrestformat', 'json');
-  params.append('wsfunction', 'core_course_get_courses_by_field');
-  params.append('wstoken', process.env.MDL_TOKEN);
-  params.append('field', 'id');
-  params.append('value', cid);
-
-  const config = { method: 'get', url: WebServiceUrl, params };
-
-  try {
-    const res = await axios(config);
-    const payload = res.data;
-
-    if (payload && typeof payload === 'object' &&
-        ('exception' in payload || 'errorcode' in payload)) {
-      return null;
-    }
-    const course = Array.isArray(payload?.courses) ? payload.courses[0] : null;
-    return course || null;
-  } catch {
-    return null;
-  }
-};
-
-// Solo el nombre del curso
-export const getCourseNameById = async (courseid) => {
-  const course = await getCourseInfoById(courseid);
-  return course?.fullname || `Curso ${courseid}`;
-};
-
-// Obtiene todos los grupos de un curso específico
-export const getCourseGroups = async (courseid) => {
-  const cid = Number(courseid);
-
-  const params = new URLSearchParams();
-  params.append('moodlewsrestformat', 'json');
-  params.append('wsfunction', 'core_group_get_course_groups');
-  params.append('wstoken', process.env.MDL_TOKEN);
-  params.append('courseid', cid);
-
-  const config = {
-    method: 'get',
-    url: WebServiceUrl,
-    params
-  };
-
-  try {
-    const res = await axios(config);
-    const payload = res.data;
-
-    if (payload && typeof payload === 'object' && !Array.isArray(payload) &&
-        ('exception' in payload || 'errorcode' in payload)) {
-      console.error('[MOODLE ERROR] core_group_get_course_groups:', payload.message, payload.errorcode);
-      return [];
-    }
-
-    if (!Array.isArray(payload)) return [];
-
-    return payload;
-  } catch (err) {
-    console.error('[HTTP ERROR] core_group_get_course_groups:', err?.message || err);
-    return [];
-  }
-};
-
-// Busca el ID del grupo "Hotmart" en un curso específico
-export const getHotmartGroupId = async (courseid) => {
-  try {
-    const groups = await getCourseGroups(courseid);
-
-    // Buscar grupo que contenga "hotmart" (case insensitive)
-    const hotmartGroup = groups.find(group =>
-      group.name && group.name.toLowerCase().includes('hotmart')
-    );
-
-    if (hotmartGroup) {
-      console.log(`Grupo Hotmart encontrado en curso ${courseid}: ${hotmartGroup.name} (ID: ${hotmartGroup.id})`);
-      return hotmartGroup.id;
-    } else {
-      console.log(`No se encontró grupo Hotmart en curso ${courseid}`);
-      return null;
-    }
-  } catch (error) {
-    console.error(`Error buscando grupo Hotmart en curso ${courseid}:`, error);
-    return null;
-  }
-};
-
 
 export const createMoodleUser = async (user) => {
   const params = new URLSearchParams();
@@ -151,13 +131,62 @@ export const createMoodleUser = async (user) => {
   params.append('users[0][institution]', user.institution);
   params.append('users[0][country]', user.country);
   params.append('users[0][phone1]', user.phone);
-  params.append('users[0][email]', user.email);
+  params.append('users[0][email]', normalizeEmail(user.email));
   params.append('users[0][idnumber]', 'AUTOGENERATEDID002');
   params.append('users[0][description]', 'auto-generated');
   params.append('users[0][lang]', 'en');
-  const config = { method: 'post', url: WebServiceUrl, headers: {}, params };
-  const res = await axios(config);
+
+  // POST → no retry by default (avoid duplicates)
+  const startedAt = Date.now();
+  const res = await moodleHttp.post(WebServiceUrl, null, { params });
+  logOk('core_user_create_users', startedAt, res);
+
+  if (isMoodleException(res.data)) {
+    throw new Error(`[MOODLE ERROR] ${res.data.message} (${res.data.errorcode})`);
+  }
   return res;
+};
+
+/* ======================================================================
+   2) ENROLLMENT / EXTEND
+   ====================================================================== */
+
+// ¿Usuario está en el curso? (activo o suspendido)
+// IMPORTANT CHANGE: do NOT convert transport errors into "false" silently
+export const isUserInCourseAnyStatus = async (userid, courseid) => {
+  const uid = Number(userid);
+  const cid = Number(courseid);
+
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_enrol_get_enrolled_users');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('courseid', cid);
+  params.append('options[0][name]', 'onlyactive');
+  params.append('options[0][value]', 0);
+
+  const startedAt = Date.now();
+  try {
+    const res = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params }),
+      { retries: 2, label: 'core_enrol_get_enrolled_users' }
+    );
+    logOk('core_enrol_get_enrolled_users', startedAt, res);
+
+    const payload = res.data;
+
+    if (isMoodleException(payload)) {
+      console.error('[MOODLE ERROR] core_enrol_get_enrolled_users:', payload.message, payload.errorcode);
+      return false;
+    }
+    if (!Array.isArray(payload)) {
+      throw new Error('Invalid enrollment payload from Moodle (expected array)');
+    }
+    return payload.some(u => Number(u.id) === uid);
+  } catch (err) {
+    console.error('[HTTP ERROR] core_enrol_get_enrolled_users:', err?.message || err);
+    throw err;
+  }
 };
 
 export const extendEnrollment = async ({ userid, courseid, timeend }) => {
@@ -171,9 +200,12 @@ export const extendEnrollment = async ({ userid, courseid, timeend }) => {
   params.append('enrolments[0][timestart]', Math.floor(Date.now() / 1000));
   params.append('enrolments[0][timeend]', timeend);
 
-  const res = await axios.post(WebServiceUrl, null, { params });
+  const startedAt = Date.now();
+  const res = await moodleHttp.post(WebServiceUrl, null, { params });
+  logOk('enrol_manual_enrol_users (extendEnrollment)', startedAt, res);
+
   const data = res.data;
-  if (data && data.exception) {
+  if (isMoodleException(data)) {
     throw new Error(`[MOODLE ERROR] ${data.message} (${data.errorcode})`);
   }
   return res;
@@ -190,9 +222,100 @@ export const enrollMoodleuser = async (userId, courseId, timestart, timeend) => 
   params.append('enrolments[0][timestart]', timestart);
   params.append('enrolments[0][timeend]', timeend);
   params.append('enrolments[0][suspend]', '0');
-  const config = { method: 'post', url: WebServiceUrl, headers: {}, params };
-  const res = await axios(config);
+
+  const startedAt = Date.now();
+  const res = await moodleHttp.post(WebServiceUrl, null, { params });
+  logOk('enrol_manual_enrol_users (enrollMoodleuser)', startedAt, res);
+
+  if (isMoodleException(res.data)) {
+    throw new Error(`[MOODLE ERROR] ${res.data.message} (${res.data.errorcode})`);
+  }
   return res;
+};
+
+/* ======================================================================
+   3) COURSES
+   ====================================================================== */
+
+export const getCourseInfoById = async (courseid) => {
+  const cid = Number(courseid);
+
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_course_get_courses_by_field');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('field', 'id');
+  params.append('value', cid);
+
+  const startedAt = Date.now();
+  try {
+    const res = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params }),
+      { retries: 2, label: 'core_course_get_courses_by_field' }
+    );
+    logOk('core_course_get_courses_by_field', startedAt, res);
+
+    const payload = res.data;
+    if (isMoodleException(payload)) return null;
+    const course = Array.isArray(payload?.courses) ? payload.courses[0] : null;
+    return course || null;
+  } catch (err) {
+    console.error('[HTTP ERROR] core_course_get_courses_by_field:', err?.message || err);
+    return null;
+  }
+};
+
+export const getCourseNameById = async (courseid) => {
+  const course = await getCourseInfoById(courseid);
+  return course?.fullname || `Curso ${courseid}`;
+};
+
+/* ======================================================================
+   4) GROUPS
+   ====================================================================== */
+
+export const getCourseGroups = async (courseid) => {
+  const cid = Number(courseid);
+
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'core_group_get_course_groups');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('courseid', cid);
+
+  const startedAt = Date.now();
+  try {
+    const res = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params }),
+      { retries: 2, label: 'core_group_get_course_groups' }
+    );
+    logOk('core_group_get_course_groups', startedAt, res);
+
+    const payload = res.data;
+
+    if (isMoodleException(payload)) {
+      console.error('[MOODLE ERROR] core_group_get_course_groups:', payload.message, payload.errorcode);
+      return [];
+    }
+    if (!Array.isArray(payload)) return [];
+    return payload;
+  } catch (err) {
+    console.error('[HTTP ERROR] core_group_get_course_groups:', err?.message || err);
+    return [];
+  }
+};
+
+export const getHotmartGroupId = async (courseid) => {
+  try {
+    const groups = await getCourseGroups(courseid);
+    const hotmartGroup = groups.find(group =>
+      group.name && group.name.toLowerCase().includes('hotmart')
+    );
+    return hotmartGroup ? hotmartGroup.id : null;
+  } catch (error) {
+    console.error(`Error buscando grupo Hotmart en curso ${courseid}:`, error);
+    return null;
+  }
 };
 
 export const addUserToMoodleGroup = async (userId, groupid) => {
@@ -202,14 +325,16 @@ export const addUserToMoodleGroup = async (userId, groupid) => {
   params.append('wstoken', process.env.MDL_TOKEN);
   params.append('members[0][groupid]', groupid);
   params.append('members[0][userid]', userId);
-  const config = { method: 'post', url: WebServiceUrl, headers: {}, params };
-  const res = await axios(config);
+
+  const startedAt = Date.now();
+  const res = await moodleHttp.post(WebServiceUrl, null, { params });
+  logOk('core_group_add_group_members', startedAt, res);
+
+  if (isMoodleException(res.data)) {
+    throw new Error(`[MOODLE ERROR] ${res.data.message} (${res.data.errorcode})`);
+  }
   return res;
 };
-
-/* ============================================
-   GRUPOS DEL USUARIO (robusto, con fallback)
-   ============================================ */
 
 // Método principal (2 llamadas): ids → nombres
 async function _getGroupNames_viaGroupsAPI(userid, courseid) {
@@ -221,10 +346,12 @@ async function _getGroupNames_viaGroupsAPI(userid, courseid) {
   params.append('courseid', Number(courseid));
 
   try {
-    const res = await axios.get(WebServiceUrl, { params });
+    const res = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params }),
+      { retries: 2, label: 'core_group_get_course_user_groups' }
+    );
     const payload = res.data;
-
-    if (payload && (payload.exception || payload.errorcode)) return [];
+    if (isMoodleException(payload)) return [];
 
     const groupIds = Array.isArray(payload?.groups) ? payload.groups.map(g => g.id) : [];
     if (!groupIds.length) return [];
@@ -235,9 +362,12 @@ async function _getGroupNames_viaGroupsAPI(userid, courseid) {
     params2.append('wstoken', process.env.MDL_TOKEN);
     groupIds.forEach((gid, idx) => params2.append(`groupids[${idx}]`, gid));
 
-    const res2 = await axios.get(WebServiceUrl, { params: params2 });
+    const res2 = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params: params2 }),
+      { retries: 2, label: 'core_group_get_groups' }
+    );
     const payload2 = res2.data;
-    if (payload2 && (payload2.exception || payload2.errorcode)) return [];
+    if (isMoodleException(payload2)) return [];
 
     const names = Array.isArray(payload2?.groups)
       ? payload2.groups.map(g => (g?.name ?? '')).filter(Boolean)
@@ -261,22 +391,22 @@ async function _getGroupNames_viaEnrolAPI(userid, courseid) {
   params.append('options[0][name]', 'onlyactive');
   params.append('options[0][value]', 0);
 
-
   try {
-    const res = await axios.get(WebServiceUrl, { params });
+    const res = await withRetry(
+      () => moodleHttp.get(WebServiceUrl, { params }),
+      { retries: 2, label: 'core_enrol_get_enrolled_users (groups fallback)' }
+    );
     const payload = res.data;
     if (!Array.isArray(payload)) return [];
 
     const me = payload.find(u => Number(u.id) === uid);
     const groups = Array.isArray(me?.groups) ? me.groups : [];
-    const names = groups.map(g => (g?.name ?? '')).filter(Boolean);
-    return names;
+    return groups.map(g => (g?.name ?? '')).filter(Boolean);
   } catch {
     return [];
   }
 }
 
-// API pública: intenta principal y luego fallback
 export const getUserGroupNamesInCourse = async (userid, courseid) => {
   let names = await _getGroupNames_viaGroupsAPI(userid, courseid);
   if (!names.length) {

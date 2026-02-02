@@ -5,6 +5,7 @@ import {
   getCourseNameById,
   getUserGroupNamesInCourse
 } from '../config/moodle.js';
+
 import { extendEnrollmentByUser } from './enrollment.service.js';
 import { sendExtensionAppliedNotification } from '../config/sendMail.js';
 import { getExtensionCount, decideExtensionAction } from '../helpers/enrollment_extension.helper.js';
@@ -14,9 +15,20 @@ export const renderExtendForm = (req, res) => {
   res.render('forms/enrollment/enrollment_extend_form');
 };
 
+function renderMoodleTempError(res, which = 'validar') {
+  return res.status(503).render('forms/form_response', {
+    title: 'Error temporal',
+    message:
+      `No fue posible ${which} tu información en el Campus en este momento. ` +
+      'Por favor intenta nuevamente en unos minutos.',
+    link: { url: '/enrollment/extend-form', text: 'Reintentar' }
+  });
+}
+
 export const handleExtendRequest = async (req, res) => {
   try {
-    const { email, courseid: courseidRaw, reason, newsletter } = req.body;
+    const { email: emailRaw, courseid: courseidRaw, reason, newsletter } = req.body;
+    const email = String(emailRaw || '').trim().toLowerCase();
 
     // 1) Validaciones básicas
     if (!email || !courseidRaw || !reason) {
@@ -36,8 +48,15 @@ export const handleExtendRequest = async (req, res) => {
       });
     }
 
-    // 2) Buscar usuario por email en Moodle
-    const moodleRes = await queryMoodleUser(email);
+    // 2) Buscar usuario por email en Moodle (separa error de transporte vs "no existe")
+    let moodleRes;
+    try {
+      moodleRes = await queryMoodleUser(email);
+    } catch (err) {
+      console.error('[EXTEND] queryMoodleUser failed', { message: err?.message, code: err?.code });
+      return renderMoodleTempError(res, 'validar tu usuario');
+    }
+
     const user = moodleRes?.data?.users?.[0];
     if (!user) {
       return res.status(404).render('forms/form_response', {
@@ -48,7 +67,14 @@ export const handleExtendRequest = async (req, res) => {
     }
 
     // 3) Confirmar matrícula en el curso (activo o suspendido)
-    const inThisCourseAnyStatus = await isUserInCourseAnyStatus(user.id, courseid);
+    let inThisCourseAnyStatus;
+    try {
+      inThisCourseAnyStatus = await isUserInCourseAnyStatus(user.id, courseid);
+    } catch (err) {
+      console.error('[EXTEND] isUserInCourseAnyStatus failed', { message: err?.message, code: err?.code });
+      return renderMoodleTempError(res, 'validar tu matrícula');
+    }
+
     if (!inThisCourseAnyStatus) {
       return res.status(404).render('forms/form_response', {
         title: 'Usuario no matriculado en el curso',
@@ -58,16 +84,29 @@ export const handleExtendRequest = async (req, res) => {
     }
 
     // 3.1) Regla de grupos no elegibles
-    const groupNames = await getUserGroupNamesInCourse(user.id, courseid);
+    // NOTE: your getUserGroupNamesInCourse never throws (returns [] on errors),
+    // but we still guard just in case.
+    let groupNames = [];
+    try {
+      groupNames = await getUserGroupNamesInCourse(user.id, courseid);
+    } catch (err) {
+      console.error('[EXTEND] getUserGroupNamesInCourse failed', { message: err?.message, code: err?.code });
+      // Soft-fail: continue without blocking by groups
+      groupNames = [];
+    }
+
     const forbidden = (name) => {
       if (!name) return false;
       const n = String(name).toLowerCase().trim();
       return n === 'fundae';
     };
+
     if (groupNames.some(forbidden)) {
       return res.status(403).render('forms/form_response', {
         title: 'Extensión no permitida',
-        message: 'No es posible extender la matrícula porque tu usuario pertenece a un grupo no elegible. Si crees que es un error, por favor contáctanos a soporte.tekla@construsoft.com.',
+        message:
+          'No es posible extender la matrícula porque tu usuario pertenece a un grupo no elegible. ' +
+          'Si crees que es un error, por favor contáctanos a soporte.tekla@construsoft.com.',
         link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
       });
     }
@@ -83,8 +122,9 @@ export const handleExtendRequest = async (req, res) => {
         link: { url: '/enrollment/extend-form', text: 'Volver al formulario' }
       });
     }
+
     // 5) Ejecutar extensión en Moodle y registrar en BD
-    const months = 1; // período por defecto
+    const months = 1;
     const result = await extendEnrollmentByUser({
       userid: user.id,
       courseid,
@@ -104,14 +144,18 @@ export const handleExtendRequest = async (req, res) => {
     // 6) Mensaje de éxito
     const message = 'Por favor verifica el acceso a tu curso.';
 
-    // 7) Envío de correo
-    const courseName = await getCourseNameById(courseid);
-    sendExtensionAppliedNotification({
-      toEmail: email,
-      studentName: user.firstname || 'Estudiante',
-      courseName,
-      months
-    });
+    // 7) Envío de correo (no bloquea la respuesta si falla)
+    try {
+      const courseName = await getCourseNameById(courseid);
+      await sendExtensionAppliedNotification({
+        toEmail: email,
+        studentName: user.firstname || 'Estudiante',
+        courseName,
+        months
+      });
+    } catch (err) {
+      console.error('[EXTEND] sendExtensionAppliedNotification failed', { message: err?.message, code: err?.code });
+    }
 
     // 8) Respuesta HTML al usuario
     return res.render('forms/form_response', {
@@ -121,7 +165,8 @@ export const handleExtendRequest = async (req, res) => {
     });
 
   } catch (err) {
-    console.error('[EXTEND ERROR]', err);
+    console.error('[EXTEND ERROR]', { message: err?.message, code: err?.code });
+
     return res.status(500).render('forms/form_response', {
       title: 'Error del servidor',
       message: 'Ocurrió un problema al procesar tu solicitud. Intenta más tarde.',
