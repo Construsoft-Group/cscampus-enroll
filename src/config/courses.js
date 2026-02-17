@@ -1,6 +1,17 @@
 
 const enrollmentGroups = [
     {
+        "courseId": 259,
+        "courseName": "Cómo cumplir la norma ISO 19650 con Trimble Connect",
+        "courseLink" : "https://campus.construsoft.com/course/view.php?id=259",
+        "groups": [
+            {
+                "groupId": 3987,
+                "groupName": "FULL25"
+            }
+        ]
+    },
+    {
         "courseId": 149,
         "courseName": "Fundamentos Tekla Structures Acero",
         "courseLink" : "https://campus.construsoft.com/course/view.php?id=149",

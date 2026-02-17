@@ -53,7 +53,7 @@ export async function sendInternalEmail(newUser, formName) {
 
     const info = await transporter.sendMail({
         from: "'Campus Construsoft' <campus@construsoft.es>",
-        to: ['vanessa.puentes@construsoft.com','marketing-es@construsoft.com', 'juan.diaz@construsoft.com'],
+        to: ['marketing-es@construsoft.com', 'camilo.rocha@construsoft.com', 'juan.diaz@construsoft.com', 'samantha.Nieto@construsoft.com', 'felipe.chavez@construsoft.com'],
         subject: `Formulario ${formName}`,
         html: contentHTML
     });
