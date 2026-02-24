@@ -189,7 +189,38 @@ export const isUserInCourseAnyStatus = async (userid, courseid) => {
   }
 };
 
-export const extendEnrollment = async ({ userid, courseid, timeend }) => {
+/**
+ * Extend via custom local_cscampus plugin.
+ * Edits the oldest enrollment regardless of enrollment method.
+ */
+async function _extendViaPlugin(userid, courseid, timeend) {
+  const params = new URLSearchParams();
+  params.append('moodlewsrestformat', 'json');
+  params.append('wsfunction', 'local_cscampus_extend_enrollment');
+  params.append('wstoken', process.env.MDL_TOKEN);
+  params.append('userid', userid);
+  params.append('courseid', courseid);
+  params.append('timeend', timeend);
+
+  const startedAt = Date.now();
+  const res = await moodleHttp.post(WebServiceUrl, null, { params });
+  logOk('local_cscampus_extend_enrollment', startedAt, res);
+
+  const data = res.data;
+  if (isMoodleException(data)) {
+    throw new Error(`[MOODLE ERROR] ${data.message} (${data.errorcode})`);
+  }
+  if (data && data.success === false) {
+    throw new Error(`[PLUGIN ERROR] ${data.message}`);
+  }
+  return res;
+}
+
+/**
+ * Fallback: extend via enrol_manual_enrol_users.
+ * Only updates existing manual enrollments; creates a new one otherwise.
+ */
+async function _extendViaManualEnrol(userid, courseid, timeend) {
   const params = new URLSearchParams();
   params.append('moodlewsrestformat', 'json');
   params.append('wsfunction', 'enrol_manual_enrol_users');
@@ -202,13 +233,24 @@ export const extendEnrollment = async ({ userid, courseid, timeend }) => {
 
   const startedAt = Date.now();
   const res = await moodleHttp.post(WebServiceUrl, null, { params });
-  logOk('enrol_manual_enrol_users (extendEnrollment)', startedAt, res);
+  logOk('enrol_manual_enrol_users (extendEnrollment fallback)', startedAt, res);
 
   const data = res.data;
   if (isMoodleException(data)) {
     throw new Error(`[MOODLE ERROR] ${data.message} (${data.errorcode})`);
   }
   return res;
+}
+
+export const extendEnrollment = async ({ userid, courseid, timeend }) => {
+  // Try the custom plugin first (edits the oldest enrollment, any method)
+  try {
+    return await _extendViaPlugin(userid, courseid, timeend);
+  } catch (err) {
+    console.warn('[MOODLE] Plugin extend failed, falling back to enrol_manual_enrol_users:', err?.message);
+  }
+  // Fallback: standard manual enrol API
+  return _extendViaManualEnrol(userid, courseid, timeend);
 };
 
 export const enrollMoodleuser = async (userId, courseId, timestart, timeend) => {
