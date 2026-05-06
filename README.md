@@ -1,225 +1,236 @@
 # Moodle Enrollment Management System
 
-Sistema automatizado para la gestión de matriculaciones en Moodle a través de formularios web. Permite crear flujos personalizados para la creación y matriculación de usuarios en diferentes cursos de la plataforma educativa.
+Automated system for managing Moodle enrollments through web forms. Enables customized flows for user creation and enrollment across different courses on the educational platform.
 
-## 📋 Descripción
+## Description
 
-Esta aplicación Node.js automatiza el proceso de matriculación en Moodle mediante formularios web especializados. El sistema maneja diferentes tipos de programas educativos (becas, programas técnicos, universidades) e integra servicios externos como SharePoint para el almacenamiento de documentos y envío de notificaciones por correo electrónico.
+This Node.js application automates the Moodle enrollment process through specialized web forms. The system handles different types of educational programs (scholarships, technical programs, university partnerships) and integrates external services such as SharePoint for document storage and email notifications.
 
-## 🚀 Características
+## Features
 
-- **Formularios web personalizados** para diferentes programas educativos
-- **Integración con Moodle API** para creación y matriculación automática de usuarios
-- **Gestión de grupos** y asignación automática según el programa
-- **Integración con SharePoint** para almacenamiento de documentos
-- **Sistema de notificaciones por email** con plantillas personalizadas
-- **Validación de solicitudes** para prevenir duplicados
-- **Procesamiento automático** mediante tareas programadas (cron jobs)
-- **Base de datos MySQL** para almacenamiento de solicitudes
+- **Customized web forms** for different educational programs
+- **Moodle API integration** for automatic user creation and enrollment
+- **Group management** and automatic assignment based on program
+- **SharePoint integration** for document storage
+- **Email notification system** with custom templates
+- **Duplicate request validation** to prevent repeated submissions
+- **Automatic processing** via scheduled cron jobs
+- **MySQL database** for request storage and tracking
 
-## 🏗️ Arquitectura del Proyecto
+## Project Architecture
 
 ```
 enrol_management/
 ├── src/
-│   ├── app.js                # Configuración principal de Express
-│   ├── index.js              # Punto de entrada de la aplicación
-│   ├── config.js             # Configuración de base de datos y puerto
-│   ├── database.js           # Pool de conexiones MySQL
-│   ├── job.js                # Tareas programadas
+│   ├── app.js                # Main Express configuration
+│   ├── index.js              # Application entry point
+│   ├── config.js             # Database and port configuration
+│   ├── database.js           # MySQL connection pool
+│   ├── job.js                # Scheduled tasks
 │   ├── config/
-│   │   ├── courses.js        # Configuración de cursos y grupos
-│   │   ├── moodle.js         # Integración con Moodle API
-│   │   ├── sendMail.js       # Servicio de envío de emails
-│   │   ├── sharepoint.js     # Integración con SharePoint
-│   │   └── email_templates/  # Plantillas de correo electrónico
+│   │   ├── courses.js        # Course and group configuration
+│   │   ├── moodle.js         # Moodle API integration
+│   │   ├── sendMail.js       # Email service
+│   │   ├── sharepoint.js     # SharePoint integration
+│   │   └── email_templates/  # Email templates
 │   ├── routes/
-│   │   ├── index.js          # Enrutador principal
-│   │   ├── beca.router.js    # Rutas para programa de becas
-│   │   ├── cs.router.js      # Rutas para programa CS
-│   │   ├── tc.router.js      # Rutas para Trimble Connect
-│   │   ├── eude.router.js    # Rutas para programa EUDE
-│   │   └── db.router.js      # Rutas para gestión de BD
+│   │   ├── index.js          # Main router
+│   │   ├── beca.router.js    # Scholarship program routes
+│   │   ├── cs.router.js      # CS program routes
+│   │   ├── tc.router.js      # Trimble Connect routes
+│   │   ├── eude.router.js    # EUDE program routes
+│   │   └── db.router.js      # Database management routes
 │   ├── services/
-│   │   ├── beca.service.js   # Lógica de negocio para becas
-│   │   ├── cs.service.js     # Lógica de negocio para CS
-│   │   ├── tc.service.js     # Lógica de negocio para TC
-│   │   ├── eude.service.js   # Lógica de negocio para EUDE
-│   │   └── db.service.js     # Servicios de base de datos
-│   ├── views/               # Plantillas EJS
-│   └── public/             # Archivos estáticos (CSS, JS)
+│   │   ├── beca.service.js   # Scholarship business logic
+│   │   ├── cs.service.js     # CS business logic
+│   │   ├── tc.service.js     # TC business logic
+│   │   ├── eude.service.js   # EUDE business logic
+│   │   └── db.service.js     # Database services
+│   ├── views/               # EJS templates
+│   └── public/             # Static files (CSS, JS)
+├── docs/
+│   ├── enrollment-flows.md  # Detailed enrollment flow documentation
+│   ├── beca-flow.md         # Scholarship program flow
+│   ├── cs-flow.md           # CS program flow (Customer + Hotmart)
+│   ├── tc-flow.md           # Trimble Connect program flow
+│   └── eude-flow.md         # EUDE program flow
 ├── package.json
 └── README.md
 ```
 
-## 📦 Instalación
+## Installation
 
-### Prerrequisitos
-- Node.js 14.16.1 o superior
+### Prerequisites
+- Node.js 18.x or higher
 - MySQL
-- Acceso a Moodle API
-- Configuración de SharePoint (opcional)
-- Servidor SMTP para envío de correos
+- Moodle API access
+- SharePoint configuration (optional)
+- SMTP server for email delivery
 
-### Pasos de instalación
+### Setup Steps
 
-1. **Clonar el repositorio**
+1. **Clone the repository**
 ```bash
 git clone <repository-url>
 cd enrol_management
 ```
 
-2. **Instalar dependencias**
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-3. **Configurar variables de entorno**
-Crear un archivo `.env` en la raíz del proyecto:
+3. **Configure environment variables**
+
+Create a `.env` file in the project root:
 ```env
-# Base de datos
+# Database
 DB_HOST=db_server
 DB_NAME=db_name
 DB_USER=db_user
 DB_PASS=db_password
 
-# Correo electrónico SMPT
-MAIL_ACCOUNT=correo
-MAIL_PASS=password
+# Email (SMTP)
+MAIL_ACCOUNT=email_address
+MAIL_PASS=email_password
 
 # Moodle
-MDL_DOMAIN=dominio_moodle
-MDL_TOKEN=token_moodle
+MDL_DOMAIN=moodle_domain
+MDL_TOKEN=moodle_token
 
-# Sharepoint
+# SharePoint
+SP_CLIENT_ID=sharepoint_client_id
+SP_CLIENT_SECRET=client_secret
+SP_TENANT_ID=tenant_id
+SP_TENANT_NAME=tenant_name
+SP_REFRESHTOKEN=refresh_token
 
-SP_CLIENT_ID=Sharepoint_id
-SP_CLIENT_SECRET=client_sk
-SP_TENANT_ID=Tenant_id
-SP_TENANT_NAME=Tenant_name
-SP_REFRESHTOKEN=Refresh_tk
-
-# Puerto de la aplicación
+# Application port
 PORT=4000
+```
 
+4. **Configure the database**
+- Create the MySQL database
+- Run the required table creation scripts
 
-4. **Configurar base de datos**
-- Crear la base de datos MySQL
-- Ejecutar los scripts de creación de tablas necesarias
-
-5. **Iniciar la aplicación**
+5. **Start the application**
 ```bash
-# Modo desarrollo
+# Development mode
 npm run dev
 
-# Modo producción
+# Production mode
 npm start
 ```
 
-## 🔧 Configuración
+## Configuration
 
-### Cursos y Grupos
-El archivo `src/config/courses.js` contiene la configuración de cursos disponibles y sus respectivos grupos. Cada curso incluye:
-- ID del curso en Moodle
-- Nombre del curso
-- Enlace al curso
-- Grupos disponibles con sus IDs y nombres
+### Courses and Groups
+The file `src/config/courses.js` contains the configuration for all available courses and their groups. Each course includes:
+- Moodle course ID
+- Course name
+- Course URL
+- Available groups with their IDs and names
 
-### Plantillas de Email
-Las plantillas de correo se encuentran en `src/config/email_templates/` y están organizadas por tipo de programa. Utilizan el motor de plantillas EJS.
+### Email Templates
+Email templates are located in `src/config/email_templates/` and are organized by program type. They use the EJS template engine.
 
-## 🌐 Endpoints Principales
+## Main Endpoints
 
-### Programa de Becas
-- `GET /beca/form` - Formulario de solicitud de beca
-- `POST /beca` - Procesamiento de solicitud de beca
+### Scholarship Program (Beca)
+- `GET /beca/form` — Scholarship request form
+- `POST /beca` — Process scholarship request
 
-### Programa CS (Customer Success)
-- `GET /cs/form` - Formulario para clientes
-- `POST /cs` - Procesamiento de solicitud de cliente
+### CS Program (Customer Success)
+- `GET /cs/form` — Customer enrollment form
+- `POST /cs` — Process customer request
+- `POST /cs/hotmart` — Hotmart webhook for automatic enrollment
 
-### Programa Trimble Connect
-- `GET /tc/form` - Formulario para Trimble Connect
-- `POST /tc` - Procesamiento de solicitud TC
+### Trimble Connect Program
+- `GET /tc/form` — Trimble Connect form
+- `POST /tc` — Process TC request
 
-### Programa EUDE
-- `GET /eude/form` - Formulario para programa EUDE
-- `POST /eude` - Procesamiento de solicitud EUDE
+### EUDE Program
+- `GET /eude/form` — EUDE program form
+- `POST /eude` — Process EUDE request
 
-### Gestión de Base de Datos
-- `GET /db/courses` - Visualización de cursos disponibles
-- Otros endpoints para administración
+### Database Management
+- `GET /db/courses` — View available courses
+- Other administration endpoints
 
-## 🔄 Proceso de Matriculación
+## Enrollment Process (Overview)
 
-1. **Usuario completa formulario** web específico del programa
-2. **Validación de datos** y verificación de duplicados
-3. **Subida de documentos** a SharePoint (si aplica)
-4. **Creación de usuario** en Moodle (si no existe)
-5. **Matriculación en curso** y asignación a grupo correspondiente
-6. **Envío de notificaciones** por correo electrónico
-7. **Almacenamiento en BD** para seguimiento
+1. **User completes** the program-specific web form
+2. **Data validation** and duplicate check
+3. **Document upload** to SharePoint (if applicable)
+4. **User creation** in Moodle (if not already registered)
+5. **Course enrollment** and assignment to the corresponding group
+6. **Email notifications** sent to user and administrators
+7. **Database record** stored for tracking
 
-## ⏰ Tareas Programadas
+For detailed flow documentation per program, see the [docs/](docs/) folder.
 
-El sistema ejecuta tareas automáticas cada minuto mediante cron jobs:
-- Procesamiento de solicitudes pendientes
-- Matriculaciones automáticas
-- Limpieza de registros temporales
+## Scheduled Tasks
 
-## 🛠️ Tecnologías Utilizadas
+The system runs automatic tasks via cron jobs:
+- Processing pending scholarship (Beca) requests
+- Automatic enrollments
+- Temporary record cleanup
 
-- **Backend**: Node.js con Express.js
-- **Base de datos**: MySQL
-- **Motor de plantillas**: EJS
-- **Integración APIs**: Axios
-- **Subida de archivos**: Formidable
-- **Tareas programadas**: node-cron
-- **Envío de emails**: Nodemailer
-- **Gestión de formularios**: Form-data
+> **Note:** CS, TC, and EUDE programs process enrollments immediately on form submission. Only the Beca program uses an asynchronous cron-based flow.
 
-## 📧 Sistema de Notificaciones
+## Technologies Used
 
-El sistema envía diferentes tipos de correos electrónicos:
-- Confirmación de recepción de solicitud
-- Notificación de matriculación exitosa
-- Notificación de rechazo (para becas)
-- Correos internos para administradores
+- **Backend**: Node.js with Express.js
+- **Database**: MySQL
+- **Template engine**: EJS
+- **API integration**: Axios
+- **File uploads**: Formidable
+- **Scheduled tasks**: node-cron
+- **Email delivery**: Nodemailer
+- **Form data**: Form-data
 
-## 🔐 Seguridad
+## Notification System
 
-- Validación de datos de entrada
-- Prevención de solicitudes duplicadas
-- Gestión segura de archivos subidos
-- Variables de entorno para credenciales
+The system sends different types of email notifications:
+- Request reception confirmation
+- Successful enrollment notification
+- Rejection notification (for scholarships)
+- Internal admin notifications
 
-## 🚀 Despliegue
+## Security
 
-Para despliegue en producción:
-1. Configurar variables de entorno apropiadas
-2. Asegurar conectividad con Moodle y SharePoint
-3. Configurar servidor web (nginx/Apache) como proxy reverso
-4. Configurar SSL/TLS
-5. Implementar monitoreo y logs
+- Input data validation
+- Duplicate request prevention
+- Secure file upload handling
+- Environment variables for credentials
 
-## 📝 Contribución
+## Deployment
 
-1. Fork el proyecto
-2. Crear rama para nueva funcionalidad (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -am 'Agrega nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear Pull Request
+For production deployment:
+1. Configure appropriate environment variables
+2. Ensure connectivity with Moodle and SharePoint
+3. Configure a web server (nginx/Apache) as a reverse proxy
+4. Set up SSL/TLS
+5. Implement monitoring and logging
 
-## 📄 Licencia
+## Contributing
 
-Este proyecto está bajo la Licencia ISC.
+1. Fork the project
+2. Create a branch for the new feature (`git checkout -b feature/new-feature`)
+3. Commit changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Create a Pull Request
 
-## 🤝 Soporte
+## License
 
-Para soporte técnico o consultas, contactar al equipo de desarrollo.
+This project is licensed under the ISC License.
+
+## Support
+
+For technical support or inquiries, contact the development team.
 
 ---
 
-**Versión**: 1.0.0  
-**Node.js**: 14.16.1  
-**Autor**: Equipo de Desarrollo
+**Version**: 1.0.0  
+**Node.js**: 18.x  
+**Author**: Development Team
