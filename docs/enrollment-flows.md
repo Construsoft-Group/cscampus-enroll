@@ -11,19 +11,24 @@ This document provides a high-level comparison of all enrollment flows supported
 | CS — Hotmart webhook | [cs-flow.md](cs-flow.md) |
 | Trimble Connect (TC) | [tc-flow.md](tc-flow.md) |
 | EUDE | [eude-flow.md](eude-flow.md) |
+| BIMTC | [bimtc-flow.md](bimtc-flow.md) |
+| ISO 19650 | [iso-flow.md](iso-flow.md) |
+| TC Certification | [tc-certification-flow.md](tc-certification-flow.md) |
+| Enrollment Extension | [enrollment-extend-flow.md](enrollment-extend-flow.md) |
 
 ## Program Comparison
 
-| Aspect | Beca | CS Customer | CS Hotmart | TC | EUDE |
-|--------|------|-------------|------------|----|------|
-| **Request table** | `beca_request` | `customer_enrollment_request` | `hotmart_enrollments` | `tc_request` | `eude_request` |
-| **Enrollment trigger** | Cron job (async) | Immediate (sync) | Webhook (sync) | Immediate (sync) | Immediate (sync) |
-| **Enrollment duration** | 60 days | 30 days | Variable (defined per pack) | 30 days | 30 days |
-| **Multiple courses** | No | No | Yes | No | No |
-| **Group assignment** | By role (Student / Teacher) | Static — Clientes 2025 | Dynamic — "Hotmart" group | By company category | Static — group 3483 |
-| **Duplicate window** | Per calendar year | 24 hours | Per transaction ID | 24 hours | 24 hours |
-| **Course selection** | User selects | User selects | Determined by Hotmart product | Fixed (TC course) | Fixed (EUDE course) |
-| **SharePoint** | Planned (disabled) | Planned (disabled) | Not used | Planned (disabled) | Declared (unused) |
+| Aspect | Beca | CS Customer | CS Hotmart | TC | EUDE | BIMTC | ISO 19650 | TC Cert. | Enroll. Extend |
+|--------|------|-------------|------------|----|------|-------|-----------|----------|----------------|
+| **Request table** | `beca_request` | `customer_enrollment_request` | `hotmart_enrollments` | `tc_request` | `eude_request` | `customer_enrollment_request` | `customer_enrollment_request` | `customer_enrollment_request` | `enrollment_extension` |
+| **Enrollment trigger** | Cron job (async) | Immediate (sync) | Webhook (sync) | Immediate (sync) | Immediate (sync) | Immediate (sync) | Immediate (sync) | Immediate (sync) | Immediate (sync) |
+| **Enrollment duration** | 60 days | 30 days | Variable (defined per pack) | 30 days | 30 days | 30 days | 30 days | 30 days | +1 month |
+| **Multiple courses** | No | No | Yes | No | No | No | No | No | No |
+| **Group assignment** | By role (Student / Teacher) | Static — Clientes 2025 | Dynamic — "Hotmart" group | By company category | Static — group 3483 | Static — group 3949 | Static — group 3987 | None (GROUP_ID = 0) | N/A |
+| **Duplicate window** | Per calendar year | Permanent (any prior request) | Per transaction ID | 24 hours | 24 hours | Permanent (any prior request) | Permanent (any prior request) | Permanent (any prior request) | N/A (extensions allowed up to limit) |
+| **Course selection** | User selects | User selects | Determined by Hotmart product | Fixed (TC course) | Fixed (EUDE course) | Fixed (course 251) | Fixed (course 259) | Fixed (course 249) | User selects from their enrolled courses |
+| **Creates Moodle user** | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| **SharePoint** | Planned (disabled) | Planned (disabled) | Not used | Planned (disabled) | Declared (unused) | Not used | Not used | Not used | Not used |
 
 ## Shared Technical Details
 
