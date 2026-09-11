@@ -15,7 +15,7 @@ This Node.js application automates the Moodle enrollment process through special
 - **Email notification system** with custom templates
 - **Duplicate request validation** to prevent repeated submissions
 - **Automatic processing** via scheduled cron jobs
-- **MySQL database** for request storage and tracking
+- **MySQL/MariaDB database** for request storage and tracking (JawsDB Maria add-on on Heroku)
 
 ## Project Architecture
 
@@ -84,8 +84,12 @@ npm install
 
 Create a `.env` file in the project root:
 ```env
-# Database
+# Database (MySQL / MariaDB)
+# Production (Heroku): the JawsDB Maria add-on injects JAWSDB_MARIA_URL and it takes
+# precedence over the DB_* variables below, which are the fallback for local development.
+# JAWSDB_MARIA_URL=mysql://user:pass@host:3306/db
 DB_HOST=db_server
+DB_PORT=3306
 DB_NAME=db_name
 DB_USER=db_user
 DB_PASS=db_password
