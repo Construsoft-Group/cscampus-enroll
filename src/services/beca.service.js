@@ -23,6 +23,8 @@ export const newRecord = async (req, res, next) => {
   
   var formData = new formidable.IncomingForm();
 	formData.parse(req, async (error, fields, files) => {
+      try {
+        if (error) throw error;
         const {firstname, lastname, institution, country, role, course, email, phone} = fields;
         var filename = email +"-"+ files.file.originalFilename;
         const file = files.file;
@@ -80,7 +82,6 @@ export const newRecord = async (req, res, next) => {
           
           //var listItemResult = await createListItem(spAccessToken.data.access_token, data, sitename, listname);
           
-          console.log("Nuevo registro exitoso" + newUser.email + " sp status " + listItemResult.status);
           console.log("Nuevo registro exitoso" + newUser.email );
 
           const dataResponse = {
@@ -129,6 +130,17 @@ export const newRecord = async (req, res, next) => {
           console.log("Nuestro sistema registra ya una solicitud este año.");
 
         }
+      } catch (err) {
+        // Never let a failure here take the whole process down (unhandled rejection => dyno crash).
+        console.error('[BECA] Error procesando la solicitud:', err);
+        if (!res.headersSent) {
+          res.status(500).render('forms/form_response', {
+            title:   'No hemos podido registrar tu solicitud',
+            message: 'Se ha producido un error al procesar el formulario. Por favor, inténtalo de nuevo en unos minutos o escríbenos a campus@construsoft.es.',
+            link:    { url: '/beca/form', text: 'Volver al formulario' }
+          });
+        }
+      }
     });
 }
 
